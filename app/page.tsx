@@ -843,7 +843,7 @@ export default function Home() {
     <main>
       <header className="topbar">
         <a className="brand" href="#top" aria-label="St Peter's Cambridge retrieval starter builder home">
-          <img className="brand-crest" src="/stpeters-crest.webp" alt="St Peter's Cambridge owl crest" />
+          <img className="brand-crest" src="./stpeters-crest.webp" alt="St Peter's Cambridge owl crest" />
           <span className="brand-wordmark">
             <strong>St Peter&apos;s Cambridge</strong>
             <small>Retrieval Starter Builder</small>
