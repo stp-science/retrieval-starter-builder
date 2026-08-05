@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const developmentPreviewMeta =
@@ -30,4 +31,24 @@ test("renders development preview metadata", async () => {
     /^text\/html\b/i,
   );
   assert.match(await response.text(), developmentPreviewMeta);
+});
+
+test("includes the expanded 24-activity catalogue", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const activityIds = [...source.matchAll(/\{ id: "([a-z-]+)", name:/g)].map((match) => match[1]);
+
+  assert.equal(activityIds.length, 24);
+  assert.equal(new Set(activityIds).size, 24);
+  for (const id of [
+    "retrieval-clock",
+    "picture-prompts",
+    "question-chain",
+    "match-up",
+    "cloze-recall",
+    "flashcard-sprint",
+    "two-things",
+    "connect-four",
+  ]) {
+    assert.ok(activityIds.includes(id), `missing activity: ${id}`);
+  }
 });
