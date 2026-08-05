@@ -10,12 +10,16 @@ Teachers choose a year group, one or more previously taught topics, and an activ
 
 - 600 questions across 15 Year 7-9 Science topics
 - 40 questions in every topic bank
-- 16 retrieval-practice activity formats
+- 24 retrieval-practice activity formats
 - animated **Surprise me** wheel
 - individual **Swap** controls for replacing unwanted questions
 - difficulty and question-count controls
 - answer reveal, classroom display, print, PDF and Word export options
 - St Peter's Cambridge branding
+
+The expanded activity catalogue includes retrieval clocks, picture prompts,
+question chains, match-ups, cloze recall, flashcard sprints, Two Things and
+Connect Four alongside the original 16 formats.
 
 ## Included topics
 

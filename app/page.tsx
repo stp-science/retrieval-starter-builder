@@ -14,6 +14,12 @@ type Question = {
 
 type GeneratedQuestion = Question & { topicId: string };
 
+type VisualPrompt = {
+  symbol: string;
+  answer: string;
+  topicId: string;
+};
+
 type Topic = {
   id: string;
   year: 7 | 8 | 9;
@@ -39,7 +45,15 @@ type ActivityId =
   | "retrieval-roulette"
   | "back-to-back"
   | "answer-first"
-  | "concept-map";
+  | "concept-map"
+  | "retrieval-clock"
+  | "picture-prompts"
+  | "question-chain"
+  | "match-up"
+  | "cloze-recall"
+  | "flashcard-sprint"
+  | "two-things"
+  | "connect-four";
 
 const baseTopics: Topic[] = [
   {
@@ -299,6 +313,159 @@ const baseTopics: Topic[] = [
   },
 ];
 
+const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">[]> = {
+  "y7-material-properties": [
+    { symbol: "🧲", answer: "Magnetism" },
+    { symbol: "🪟", answer: "Transparency" },
+    { symbol: "🔌", answer: "Electrical conduction" },
+    { symbol: "🧽", answer: "Absorbency" },
+    { symbol: "🧥", answer: "Water resistance" },
+    { symbol: "🥄", answer: "Thermal conduction" },
+    { symbol: "🪢", answer: "Flexibility" },
+    { symbol: "🧱", answer: "Strength and hardness" },
+  ],
+  "y7-particle-model": [
+    { symbol: "🧊", answer: "A solid or freezing" },
+    { symbol: "💧", answer: "A liquid" },
+    { symbol: "💨", answer: "A gas" },
+    { symbol: "♨️", answer: "Heating or boiling" },
+    { symbol: "❄️", answer: "Cooling or freezing" },
+    { symbol: "🌸", answer: "Diffusion of scent particles" },
+    { symbol: "🎈", answer: "Gas particles and compression" },
+    { symbol: "☁️", answer: "Condensation" },
+  ],
+  "y7-cells": [
+    { symbol: "🔬", answer: "Cells viewed with a microscope" },
+    { symbol: "🌿", answer: "Plant cells and chloroplasts" },
+    { symbol: "🧱", answer: "The plant cell wall" },
+    { symbol: "⚡", answer: "Energy release in mitochondria" },
+    { symbol: "🫁", answer: "An organ within an organ system" },
+    { symbol: "💪", answer: "Specialised muscle cells" },
+    { symbol: "🌱", answer: "A root hair cell" },
+    { symbol: "🧠", answer: "A specialised nerve cell or organ" },
+  ],
+  "y7-thermal-energy": [
+    { symbol: "🔥", answer: "A hotter region transferring energy" },
+    { symbol: "🥄", answer: "Conduction through a metal" },
+    { symbol: "🌬️", answer: "Convection in a fluid" },
+    { symbol: "☀️", answer: "Infrared radiation" },
+    { symbol: "🧤", answer: "Thermal insulation" },
+    { symbol: "🌡️", answer: "Temperature" },
+    { symbol: "🏠", answer: "Reducing thermal energy transfer from a building" },
+    { symbol: "⚖️", answer: "Thermal equilibrium" },
+  ],
+  "y8-mixtures": [
+    { symbol: "🧂", answer: "A solute" },
+    { symbol: "💧", answer: "A solvent" },
+    { symbol: "🥤", answer: "A solution" },
+    { symbol: "🧻", answer: "Filtration" },
+    { symbol: "☕", answer: "Concentration" },
+    { symbol: "🎨", answer: "Chromatography" },
+    { symbol: "♨️", answer: "Evaporation to separate a dissolved solid" },
+    { symbol: "🌬️", answer: "Air as a mixture of gases" },
+  ],
+  "y8-solubility": [
+    { symbol: "🧂", answer: "A soluble or insoluble solute" },
+    { symbol: "🥄", answer: "Stirring changes dissolving rate" },
+    { symbol: "🔥", answer: "Heating often increases solubility" },
+    { symbol: "💎", answer: "Crystallisation" },
+    { symbol: "🧊", answer: "Cooling a saturated solution" },
+    { symbol: "🧻", answer: "Filtering an insoluble solid" },
+    { symbol: "🥛", answer: "A saturated solution" },
+    { symbol: "⏱️", answer: "The rate of dissolving" },
+  ],
+  "y8-reproduction": [
+    { symbol: "🥚", answer: "An egg cell" },
+    { symbol: "🏊", answer: "A sperm cell adapted for movement" },
+    { symbol: "🧬", answer: "Fertilisation and inherited information" },
+    { symbol: "🌱", answer: "An embryo beginning to develop" },
+    { symbol: "👶", answer: "A fetus developing in the uterus" },
+    { symbol: "🫄", answer: "Pregnancy and the uterus" },
+    { symbol: "⏳", answer: "Puberty" },
+    { symbol: "🔄", answer: "The menstrual cycle" },
+  ],
+  "y8-chemical-changes": [
+    { symbol: "🔥", answer: "Burning as a chemical change" },
+    { symbol: "🫧", answer: "Gas production as evidence of reaction" },
+    { symbol: "🎨", answer: "A colour change" },
+    { symbol: "🌡️", answer: "A temperature change" },
+    { symbol: "⚖️", answer: "Conservation of mass" },
+    { symbol: "🧪", answer: "A precipitate forming" },
+    { symbol: "↩️", answer: "A reversible physical change" },
+    { symbol: "🔗", answer: "Atoms rearranging as bonds change" },
+  ],
+  "y9-elements-compounds": [
+    { symbol: "⚛️", answer: "An atom" },
+    { symbol: "O₂", answer: "A molecule of an element" },
+    { symbol: "H₂O", answer: "A compound with a fixed atom ratio" },
+    { symbol: "🔗", answer: "A chemical bond" },
+    { symbol: "🥣", answer: "A mixture" },
+    { symbol: "Au", answer: "A chemical symbol for an element" },
+    { symbol: "CO₂", answer: "A formula showing one carbon and two oxygen atoms" },
+    { symbol: "🧱", answer: "Particles as the building blocks of substances" },
+  ],
+  "y9-periodic-table": [
+    { symbol: "▦", answer: "The periodic table arranged in groups and periods" },
+    { symbol: "🔩", answer: "A metal" },
+    { symbol: "🎈", answer: "A noble gas" },
+    { symbol: "🧂", answer: "A halogen forming a salt" },
+    { symbol: "🔥", answer: "Group 1 reactivity" },
+    { symbol: "⚛️", answer: "Atomic number and proton number" },
+    { symbol: "↕️", answer: "A trend down a group" },
+    { symbol: "e⁻", answer: "Outer-shell electrons" },
+  ],
+  "y9-traits": [
+    { symbol: "🧬", answer: "DNA and genes" },
+    { symbol: "👨‍👩‍👧", answer: "Inherited characteristics" },
+    { symbol: "☀️", answer: "An environmental influence such as a suntan" },
+    { symbol: "🌈", answer: "Variation" },
+    { symbol: "X", answer: "A chromosome" },
+    { symbol: "🎭", answer: "Phenotype" },
+    { symbol: "Aa", answer: "A genotype made from two alleles" },
+    { symbol: "🌱", answer: "Genes and environment both affecting growth" },
+  ],
+  "y9-reactions": [
+    { symbol: "🔥", answer: "An exothermic reaction" },
+    { symbol: "❄️", answer: "An endothermic reaction" },
+    { symbol: "💥", answer: "Particle collisions" },
+    { symbol: "⏱️", answer: "Reaction rate" },
+    { symbol: "🧪", answer: "Concentration affecting collision frequency" },
+    { symbol: "🧱", answer: "Surface area affecting reaction rate" },
+    { symbol: "⚡", answer: "Activation energy" },
+    { symbol: "➡️", answer: "Reactants forming products" },
+  ],
+  "y9-acids-bases": [
+    { symbol: "🍋", answer: "An acid" },
+    { symbol: "🧼", answer: "An alkali" },
+    { symbol: "pH", answer: "The pH scale" },
+    { symbol: "💧", answer: "Dilution" },
+    { symbol: "🟣", answer: "An indicator colour" },
+    { symbol: "🧂", answer: "A salt produced by neutralisation" },
+    { symbol: "H⁺", answer: "Hydrogen ions in acidic solutions" },
+    { symbol: "⚖️", answer: "Neutralisation towards pH 7" },
+  ],
+  "y9-forces": [
+    { symbol: "🛒", answer: "A resultant force causing acceleration" },
+    { symbol: "🚗", answer: "Speed, velocity or acceleration" },
+    { symbol: "🪂", answer: "Air resistance" },
+    { symbol: "🧲", answer: "A non-contact magnetic force" },
+    { symbol: "⚖️", answer: "Balanced forces" },
+    { symbol: "⬇️", answer: "Weight acting downwards" },
+    { symbol: "F = ma", answer: "The relationship between force, mass and acceleration" },
+    { symbol: "↔️", answer: "Equal and opposite interaction forces" },
+  ],
+  "y9-pressure-fluids": [
+    { symbol: "👠", answer: "A small area producing greater pressure" },
+    { symbol: "🔪", answer: "A sharp edge concentrating force" },
+    { symbol: "🏊", answer: "Upthrust in a liquid" },
+    { symbol: "🚰", answer: "Liquid pressure" },
+    { symbol: "🎈", answer: "Gas pressure" },
+    { symbol: "⚖️", answer: "Upthrust balancing weight when floating" },
+    { symbol: "🌊", answer: "Pressure increasing with depth" },
+    { symbol: "P = F/A", answer: "The pressure equation" },
+  ],
+};
+
 const topics: Topic[] = baseTopics.map((topic) => ({
   ...topic,
   questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
@@ -321,6 +488,14 @@ const activities: { id: ActivityId; name: string; description: string; tag: stri
   { id: "back-to-back", name: "Back-to-Back Keywords", description: "Describe scientific terms for a partner to identify without seeing them.", tag: "Speaking" },
   { id: "answer-first", name: "Answer First", description: "Pupils see the answer and reconstruct an accurate question.", tag: "Reverse" },
   { id: "concept-map", name: "Concept Map", description: "Connect selected keywords using labelled scientific links.", tag: "Connections" },
+  { id: "retrieval-clock", name: "Retrieval Clock", description: "Twelve timed prompts arranged around a revision clock.", tag: "Spaced" },
+  { id: "picture-prompts", name: "Picture Prompts", description: "Use visual clues to retrieve and explain scientific knowledge.", tag: "Visual" },
+  { id: "question-chain", name: "Question Chain", description: "Move from factual recall to connections and explanation.", tag: "Build" },
+  { id: "match-up", name: "Match-Up", description: "Match shuffled answers to the correct scientific questions.", tag: "Pairs" },
+  { id: "cloze-recall", name: "Cloze Recall", description: "Restore missing scientific terms using a mixed word bank.", tag: "Cued" },
+  { id: "flashcard-sprint", name: "Flashcard Sprint", description: "Self-test with ready-to-fold question and answer cards.", tag: "Self-test" },
+  { id: "two-things", name: "Two Things", description: "Rapidly retrieve two important ideas from each selected topic.", tag: "Mini-whiteboard" },
+  { id: "connect-four", name: "Connect Four", description: "Answer questions to claim squares and build a line of four.", tag: "Game" },
 ];
 
 const activityInstructions: Record<ActivityId, string> = {
@@ -340,6 +515,14 @@ const activityInstructions: Record<ActivityId, string> = {
   "back-to-back": "Partner A describes a keyword without saying it. Partner B identifies the term and explains one related fact, then swap roles.",
   "answer-first": "The answers are provided. Write a precise scientific question that would produce each answer, then compare with the model question.",
   "concept-map": "Arrange and connect the keywords. Every joining line must include a phrase that clearly explains the scientific relationship.",
+  "retrieval-clock": "Start at 12 and work clockwise. Spend a short, fixed time on each prompt before moving to the next section.",
+  "picture-prompts": "Explain how each picture connects to the selected science topics. Use precise vocabulary and add as much relevant knowledge as you can.",
+  "question-chain": "Work through the chain in order. Secure the recall questions first, then connect ideas and explain the more demanding prompts.",
+  "match-up": "Match each numbered question to one lettered answer. Then justify two of your matches without using notes.",
+  "cloze-recall": "Complete each answer by retrieving the missing scientific term. Use the word bank only after attempting every gap from memory.",
+  "flashcard-sprint": "Answer each card aloud or in writing before checking the reverse. Mark it Again, Nearly or Secure, then revisit the weakest cards.",
+  "two-things": "For each topic, write two accurate things you can remember. Be specific enough that someone else could check each statement.",
+  "connect-four": "Take turns choosing a square. Give an accurate answer to claim it; the first player or team to connect four squares wins.",
 };
 
 type TeacherGuide = {
@@ -446,6 +629,54 @@ const teacherGuides: Record<ActivityId, TeacherGuide> = {
     run: "Pupils connect the central concept to keywords, then add cross-links between keywords. Every line needs a linking phrase.",
     review: "Compare maps, test whether each label is scientifically accurate and add one important missing connection.",
   },
+  "retrieval-clock": {
+    time: "12–20 minutes",
+    prepare: "Display or print the clock and choose a realistic time for each section, such as one minute per prompt.",
+    run: "Pupils begin at 12 and move clockwise, recording an answer before the time for each section ends.",
+    review: "Reveal answers after the full circuit. Pupils use a second colour to fill gaps and circle prompts that need revisiting.",
+  },
+  "picture-prompts": {
+    time: "8–12 minutes",
+    prepare: "Display or print the six visual clues. Model how one picture can cue several connected facts rather than a single word.",
+    run: "Pupils explain each connection from memory, using the picture only as a cue. Encourage precise scientific vocabulary.",
+    review: "Reveal the suggested links, accept other valid connections and ask pupils to add one missing detail in a second colour.",
+  },
+  "question-chain": {
+    time: "8–14 minutes",
+    prepare: "Explain that the chain deliberately moves from component knowledge towards connected, higher-order thinking.",
+    run: "Pupils complete the chain in order. Pause if an early link is insecure because later explanations depend on it.",
+    review: "Check factual links quickly, then spend more feedback time comparing and improving the explanation questions.",
+  },
+  "match-up": {
+    time: "6–10 minutes",
+    prepare: "Display or print the two columns. Keep notes closed and ask pupils to record question-number and answer-letter pairs.",
+    run: "Pupils match independently first, then explain selected choices to a partner rather than relying only on recognition.",
+    review: "Reveal the matches and require corrections. Ask why tempting but incorrect pairings do not work.",
+  },
+  "cloze-recall": {
+    time: "6–10 minutes",
+    prepare: "Display the incomplete answers and ask pupils to cover the word bank for their first attempt if appropriate.",
+    run: "Pupils retrieve the missing terms, then use grammar and scientific meaning to check that each completed statement works.",
+    review: "Reveal full answers, correct spelling and discuss which contextual clues helped without replacing genuine recall.",
+  },
+  "flashcard-sprint": {
+    time: "8–15 minutes",
+    prepare: "Print and fold the cards, or display them one at a time. Pupils need to commit to an answer before checking.",
+    run: "Pupils self-test or test a partner, sorting cards into Again, Nearly and Secure after each deliberate retrieval attempt.",
+    review: "Return immediately to the Again pile and finish by checking that confident answers were complete, not merely familiar.",
+  },
+  "two-things": {
+    time: "3–6 minutes",
+    prepare: "Use mini-whiteboards, exercise books or the generated sheet. Set a short silent thinking time.",
+    run: "Pupils write two accurate points for every topic. Cold call a broad sample to share one point each.",
+    review: "Build a brief class answer bank, correct misconceptions and have pupils improve one vague statement.",
+  },
+  "connect-four": {
+    time: "10–18 minutes",
+    prepare: "Print one board per pair or display a shared board. Decide whether pupils play individually or in teams.",
+    run: "Players choose a square and answer without notes. A correct answer claims the square; opponents can challenge incomplete responses.",
+    review: "Check disputed squares and revisit unanswered questions. Require pupils to correct any answer that lost a square.",
+  },
 };
 
 const difficultyRank: Record<Difficulty, number> = { foundation: 1, core: 2, stretch: 3 };
@@ -465,6 +696,46 @@ function matchesLevel(question: Question, level: "balanced" | Difficulty) {
   return question.difficulty === "core";
 }
 
+const clozeStopWords = new Set([
+  "about", "after", "again", "because", "between", "called", "during", "example", "formed", "from", "into", "more", "other", "present", "same", "such", "than", "that", "their", "there", "these", "they", "this", "through", "when", "which", "with",
+]);
+
+function makeCloze(answer: string) {
+  const words = answer.match(/[A-Za-z][A-Za-z-]*/g) ?? [];
+  const candidates = words
+    .filter((word) => word.length > 3 && !clozeStopWords.has(word.toLowerCase()))
+    .sort((left, right) => right.length - left.length);
+  const missing = candidates[0] ?? words.sort((left, right) => right.length - left.length)[0] ?? answer;
+  if (!missing) return { text: "________________", missing: answer };
+  const escaped = missing.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const text = answer.replace(new RegExp(`\\b${escaped}\\b`, "i"), "________________");
+  return { text: text === answer ? "________________" : text, missing };
+}
+
+function chainLabel(difficulty: Difficulty) {
+  if (difficulty === "foundation") return "1 • Recall";
+  if (difficulty === "core") return "2 • Connect";
+  return "3 • Explain";
+}
+
+const fixedPromptCounts: Partial<Record<ActivityId, number>> = {
+  "retrieval-clock": 12,
+  "picture-prompts": 6,
+  "connect-four": 16,
+};
+
+const nonQuestionActivities: ActivityId[] = [
+  "thinking-linking",
+  "brain-dump",
+  "cops-robbers",
+  "retrieval-relay",
+  "list-it",
+  "back-to-back",
+  "concept-map",
+  "picture-prompts",
+  "two-things",
+];
+
 export default function Home() {
   const [year, setYear] = useState<7 | 8 | 9>(9);
   const [selected, setSelected] = useState<string[]>(["y9-pressure-fluids"]);
@@ -473,6 +744,7 @@ export default function Home() {
   const [level, setLevel] = useState<"balanced" | Difficulty>("balanced");
   const [generated, setGenerated] = useState<GeneratedQuestion[]>([]);
   const [keywordSet, setKeywordSet] = useState<string[]>([]);
+  const [visualSet, setVisualSet] = useState<VisualPrompt[]>([]);
   const [showAnswers, setShowAnswers] = useState(false);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -487,31 +759,56 @@ export default function Home() {
 
   const yearTopics = useMemo(() => topics.filter((topic) => topic.year === year), [year]);
   const selectedTopics = topics.filter((topic) => selected.includes(topic.id));
+  const matchAnswerBank = useMemo(
+    () => shuffled(generated.map((question) => ({ key: question.q, answer: question.a }))),
+    [generated],
+  );
+  const clozeItems = useMemo(
+    () => generated.map((question) => ({ ...question, ...makeCloze(question.a) })),
+    [generated],
+  );
+  const clozeWordBank = useMemo(
+    () => shuffled([...new Set(clozeItems.map((item) => item.missing))]),
+    [clozeItems],
+  );
 
   function chooseYear(nextYear: 7 | 8 | 9) {
     setYear(nextYear);
     setSelected([]);
     setGenerated([]);
     setKeywordSet([]);
+    setVisualSet([]);
     setShowAnswers(false);
   }
 
   function toggleTopic(id: string) {
     setSelected((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
     setGenerated([]);
+    setVisualSet([]);
+  }
+
+  function chooseActivity(nextActivity: ActivityId) {
+    setActivity(nextActivity);
+    setGenerated([]);
+    setKeywordSet([]);
+    setVisualSet([]);
+    setShowAnswers(false);
+    const fixedCount = fixedPromptCounts[nextActivity];
+    if (fixedCount) setCount(fixedCount);
+    if (nextActivity === "question-chain") setLevel("balanced");
   }
 
   function generate() {
     if (!selectedTopics.length) return;
     const pool = selectedTopics.flatMap((topic) => topic.questions.map((question) => ({ ...question, topicId: topic.id })));
-    const suitable = pool.filter((question) => matchesLevel(question, level));
+    const suitable = pool.filter((question) => matchesLevel(question, activity === "question-chain" ? "balanced" : level));
     const oneWordPool = suitable.filter((question) => question.kind === "short");
     const source = activity === "one-worders" ? (oneWordPool.length ? oneWordPool : suitable) : suitable;
-    const requested = activity === "quiz-quiz-trade"
+    const requested = fixedPromptCounts[activity] ?? (activity === "quiz-quiz-trade"
       ? Math.min(count, 12)
       : activity === "retrieval-placemat"
         ? Math.min(count, 8)
-        : count;
+        : count);
     const result: GeneratedQuestion[] = [];
     const byTopic = selectedTopics.map((topic) => shuffled(source.filter((question) => question.topicId === topic.id)));
     let round = 0;
@@ -526,8 +823,37 @@ export default function Home() {
       result.push(...unused.slice(0, requested - result.length));
     }
     const keywords = shuffled(selectedTopics.flatMap((topic) => topic.keywords));
-    setGenerated(shuffled(result).slice(0, requested));
+    let finalResult = shuffled(result).slice(0, requested);
+    if (activity === "question-chain") {
+      const levelPools = (["foundation", "core", "stretch"] as Difficulty[])
+        .map((difficulty) => shuffled(source.filter((question) => question.difficulty === difficulty)));
+      const chained: GeneratedQuestion[] = [];
+      let levelRound = 0;
+      while (chained.length < requested && levelPools.some((group) => group.length > levelRound)) {
+        for (const group of levelPools) {
+          if (group[levelRound] && chained.length < requested) chained.push(group[levelRound]);
+        }
+        levelRound += 1;
+      }
+      finalResult = chained;
+    }
+    if (activity === "match-up") {
+      const candidates = [...finalResult, ...shuffled(source)]
+        .filter((question, index, all) => all.findIndex((item) => item.q === question.q) === index);
+      const seenAnswers = new Set<string>();
+      finalResult = candidates.filter((question) => {
+        const answerKey = question.a.trim().toLowerCase();
+        if (seenAnswers.has(answerKey)) return false;
+        seenAnswers.add(answerKey);
+        return true;
+      }).slice(0, requested);
+    }
+    const visuals = shuffled(selectedTopics.flatMap((topic) =>
+      (topicVisuals[topic.id] ?? []).map((prompt) => ({ ...prompt, topicId: topic.id })),
+    ));
+    setGenerated(finalResult);
     setKeywordSet(keywords.slice(0, 16));
+    setVisualSet(visuals.slice(0, fixedPromptCounts["picture-prompts"]));
     setShowAnswers(false);
     setCopied(false);
   }
@@ -536,15 +862,34 @@ export default function Home() {
     const currentQuestion = generated[index];
     if (!currentQuestion) return;
     const used = new Set(generated.map((question) => question.q));
+    const usedAnswers = new Set(generated.map((question) => question.a.trim().toLowerCase()));
     const pool = selectedTopics.flatMap((topic) => topic.questions
       .filter((question) => matchesLevel(question, level))
       .filter((question) => activity !== "one-worders" || question.kind === "short")
       .map((question) => ({ ...question, topicId: topic.id })));
-    const sameTopic = pool.filter((question) => question.topicId === currentQuestion.topicId && !used.has(question.q));
-    const anyTopic = pool.filter((question) => !used.has(question.q));
+    const canUse = (question: GeneratedQuestion) => !used.has(question.q)
+      && (activity !== "match-up" || !usedAnswers.has(question.a.trim().toLowerCase()));
+    const sameTopic = pool.filter((question) => question.topicId === currentQuestion.topicId && canUse(question));
+    const anyTopic = pool.filter(canUse);
     const replacement = shuffled(sameTopic)[0] ?? shuffled(anyTopic)[0];
     if (!replacement) return;
     setGenerated((current) => current.map((question, questionIndex) => questionIndex === index ? replacement : question));
+    setShowAnswers(false);
+    setCopied(false);
+  }
+
+  function replaceVisual(index: number) {
+    const currentPrompt = visualSet[index];
+    if (!currentPrompt) return;
+    const used = new Set(visualSet.map((prompt) => `${prompt.symbol}-${prompt.answer}`));
+    const pool = selectedTopics.flatMap((topic) =>
+      (topicVisuals[topic.id] ?? []).map((prompt) => ({ ...prompt, topicId: topic.id })),
+    );
+    const sameTopic = pool.filter((prompt) => prompt.topicId === currentPrompt.topicId && !used.has(`${prompt.symbol}-${prompt.answer}`));
+    const anyTopic = pool.filter((prompt) => !used.has(`${prompt.symbol}-${prompt.answer}`));
+    const replacement = shuffled(sameTopic)[0] ?? shuffled(anyTopic)[0];
+    if (!replacement) return;
+    setVisualSet((current) => current.map((prompt, promptIndex) => promptIndex === index ? replacement : prompt));
     setShowAnswers(false);
     setCopied(false);
   }
@@ -557,6 +902,23 @@ export default function Home() {
     }
     if (["brain-dump", "cops-robbers", "retrieval-relay", "list-it"].includes(activity)) {
       return [heading, topicLine, activityInstructions[activity], "", ...selectedTopics.map((topic) => `${topic.name}:\n• Key terms\n• Important ideas\n• Examples\n• Connections`)].join("\n");
+    }
+    if (activity === "two-things") {
+      return [heading, topicLine, activityInstructions[activity], "", ...selectedTopics.map((topic) => `${topic.name}:\n1. ______________________________\n2. ______________________________`)].join("\n");
+    }
+    if (activity === "picture-prompts") {
+      return [heading, topicLine, activityInstructions[activity], "", ...visualSet.map((prompt, index) => `${index + 1}. ${prompt.symbol}\nSuggested link: ${prompt.answer}`)].join("\n");
+    }
+    if (activity === "match-up") {
+      const questions = generated.map((question, index) => `${index + 1}. ${question.q}`);
+      const answers = matchAnswerBank.map((item, index) => `${String.fromCharCode(65 + index)}. ${item.answer}`);
+      return [heading, topicLine, activityInstructions[activity], "", "Questions", ...questions, "", "Answer bank", ...answers].join("\n");
+    }
+    if (activity === "cloze-recall") {
+      return [heading, topicLine, activityInstructions[activity], "", `Word bank: ${clozeWordBank.join(" • ")}`, "", ...clozeItems.map((item, index) => `${index + 1}. ${item.text}\nFull answer: ${item.a}`)].join("\n");
+    }
+    if (activity === "question-chain") {
+      return [heading, topicLine, activityInstructions[activity], "", ...[...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question, index) => `${index + 1}. ${chainLabel(question.difficulty)}\n${question.q}\nAnswer: ${question.a}`)].join("\n");
     }
     if (activity === "answer-first") {
       return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. Answer: ${question.a}\nModel question: ${question.q}`)].join("\n");
@@ -766,6 +1128,37 @@ export default function Home() {
         }));
       } else if (activity === "list-it") {
         content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("1. Four key terms"), para("2. Three accurate facts"), para("3. Two examples or applications"), para("4. One link to another topic"), ...blankLines(3)] })), 2));
+      } else if (activity === "two-things") {
+        content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("1.", { bold: true, color: "CF082B" }), ...blankLines(2), para("2.", { bold: true, color: "CF082B" }), ...blankLines(2)] })), 2));
+      } else if (activity === "picture-prompts") {
+        content.push(grid(visualSet.map((prompt, index) => ({ children: [para(`PICTURE ${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(prompt.symbol, { bold: true, center: true, size: 44 }), ...blankLines(2), ...(showAnswers ? [para(`Suggested link: ${prompt.answer}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
+      } else if (activity === "retrieval-clock") {
+        content.push(grid(generated.slice(0, 12).map((question, index) => ({ children: [para(`${index === 0 ? 12 : index} O'CLOCK`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 18 }), ...blankLines(2), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 15 })] : [])] })), 3));
+      } else if (activity === "question-chain") {
+        content.push(grid([...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question, index) => ({ children: [para(`${index + 1}. ${chainLabel(question.difficulty)}`, { bold: true, color: "CF082B", size: 16 }), para(question.q, { size: 19 }), ...blankLines(2), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
+      } else if (activity === "match-up") {
+        content.push(new Table({
+          rows: [
+            new TableRow({ children: [cell([para("Questions", { bold: true, center: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("Answer bank", { bold: true, center: true, color: "FFFFFF", after: 0 })], "171B22")] }),
+            ...generated.map((question, index) => new TableRow({ children: [
+              cell([para(`${index + 1}. ${question.q}`, { size: 18 }), ...(showAnswers ? [para(`Match: ${String.fromCharCode(65 + matchAnswerBank.findIndex((item) => item.key === question.q))}`, { color: "365F72", bold: true, size: 15 })] : [])]),
+              cell(matchAnswerBank[index] ? [para(`${String.fromCharCode(65 + index)}. ${matchAnswerBank[index].answer}`, { size: 18 })] : [para("")]),
+            ] })),
+          ],
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          layout: TableLayoutType.FIXED,
+          borders: tableBorders,
+        }));
+      } else if (activity === "cloze-recall") {
+        content.push(
+          grid([{ children: [para(`WORD BANK  •  ${clozeWordBank.join("  •  ")}`, { bold: true, center: true, color: "365F72", size: 17, after: 0 })], fill: "EEF4F7" }], 1),
+          para("", { after: 60 }),
+          grid(clozeItems.map((item, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(item.text, { size: 19 }), ...(showAnswers ? [para(`Full answer: ${item.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2),
+        );
+      } else if (activity === "flashcard-sprint") {
+        content.push(grid(generated.map((question, index) => ({ children: [para(`CARD ${index + 1}  •  QUESTION`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 19 }), para("- - - - - - - - - - - - - - - - -  FOLD  - - - - - - - - - - - - - - - - -", { center: true, color: "B7B0AA", size: 13 }), para("ANSWER", { bold: true, color: "365F72", size: 15 }), para(showAnswers ? question.a : "Show answers before downloading to include the reverse.", { size: 17 }), para("□ Again    □ Nearly    □ Secure", { color: "5D6C7B", size: 14, after: 0 })] })), 2));
+      } else if (activity === "connect-four") {
+        content.push(grid(generated.slice(0, 16).map((question, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 16 }), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 14 })] : [])] })), 4));
       } else if (activity === "answer-first") {
         content.push(grid(generated.map((question, index) => ({ children: [para(`${index + 1}. ANSWER`, { bold: true, color: "CF082B", size: 16 }), para(question.a, { bold: true, size: 21 }), para("Your question:", { color: "5D6C7B", size: 16 }), ...blankLines(2), ...(showAnswers ? [para(`Model question: ${question.q}`, { color: "365F72", italic: true, size: 16 })] : [])] })), 2));
       } else {
@@ -829,15 +1222,13 @@ export default function Home() {
     setWheelSpinning(true);
     setWheelRound((round) => round + 1);
     window.setTimeout(() => {
-      setActivity(pick.id);
-      setGenerated([]);
-      setKeywordSet([]);
+      chooseActivity(pick.id);
       setWheelResult(pick.name);
       setWheelSpinning(false);
     }, 2300);
   }
 
-  const hasOutput = generated.length > 0 || keywordSet.length > 0;
+  const hasOutput = generated.length > 0 || keywordSet.length > 0 || visualSet.length > 0;
 
   return (
     <main>
@@ -901,7 +1292,7 @@ export default function Home() {
           <div className="divider" />
           <div className="step-heading">
             <span className="step-number coral">2</span>
-            <div><h2>Choose the activity</h2><p>Each format uses the same trusted knowledge differently.</p></div>
+            <div><h2>Choose the activity</h2><p>{activities.length} formats use the same trusted knowledge in different ways.</p></div>
           </div>
 
           <button className="surprise-button" onClick={spinWheel}>
@@ -912,7 +1303,7 @@ export default function Home() {
 
           <div className="activity-grid">
             {activities.map((item) => (
-              <button key={item.id} className={`activity-card ${activity === item.id ? "selected" : ""}`} onClick={() => { setActivity(item.id); setGenerated([]); setKeywordSet([]); }}>
+              <button key={item.id} className={`activity-card ${activity === item.id ? "selected" : ""}`} onClick={() => chooseActivity(item.id)}>
                 <span className="activity-tag">{item.tag}</span>
                 <strong>{item.name}</strong>
                 <span>{item.description}</span>
@@ -923,13 +1314,13 @@ export default function Home() {
           <div className="options-row">
             <label>
               <span>Number of prompts</span>
-              <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "concept-map"].includes(activity)}>
-                {[6, 8, 10, 12].map((value) => <option key={value} value={value}>{value}</option>)}
+              <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "concept-map", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity)}>
+                {[6, 8, 10, 12, 16].map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </label>
             <label>
               <span>Challenge</span>
-              <select value={level} onChange={(event) => setLevel(event.target.value as "balanced" | Difficulty)}>
+              <select value={level} onChange={(event) => setLevel(event.target.value as "balanced" | Difficulty)} disabled={nonQuestionActivities.includes(activity) || activity === "question-chain"}>
                 <option value="balanced">Balanced mix</option>
                 <option value="foundation">Build confidence</option>
                 <option value="core">Core knowledge</option>
@@ -978,7 +1369,7 @@ export default function Home() {
               </div>
               <p className="instructions">{activityInstructions[activity]}</p>
 
-              {generated.length > 0 && (
+              {((generated.length > 0 && !nonQuestionActivities.includes(activity)) || (visualSet.length > 0 && activity === "picture-prompts")) && (
                 <div className="swap-help"><span>Want a different prompt?</span> Use <strong>Swap</strong> beside any question.</div>
               )}
 
@@ -1005,6 +1396,20 @@ export default function Home() {
                 <div className="keyword-card-grid">
                   {keywordSet.slice(0, count).map((word, index) => (
                     <div className="keyword-card" key={`${word}-${index}`}><span>Card {index + 1}</span><strong>{word}</strong><small>Describe it • Guess it • Link it</small></div>
+                  ))}
+                </div>
+              )}
+
+              {activity === "picture-prompts" && (
+                <div className="picture-prompt-grid">
+                  {visualSet.map((prompt, index) => (
+                    <div className="picture-prompt" key={`${prompt.symbol}-${prompt.answer}`}>
+                      <span>Picture {index + 1}</span>
+                      <button className="swap-button" onClick={() => replaceVisual(index)}>Swap</button>
+                      <strong aria-label={`Visual prompt ${index + 1}`}>{prompt.symbol}</strong>
+                      <div className="picture-lines"><i /><i /></div>
+                      {showAnswers && <em>Suggested link: {prompt.answer}</em>}
+                    </div>
                   ))}
                 </div>
               )}
@@ -1047,6 +1452,108 @@ export default function Home() {
                         <li>List one link to another topic.</li>
                       </ol>
                     </section>
+                  ))}
+                </div>
+              )}
+
+              {activity === "two-things" && (
+                <div className="two-things-grid">
+                  {selectedTopics.map((topic) => (
+                    <section key={topic.id}>
+                      <h3>{topic.name}</h3>
+                      <div><b>1</b><span /></div>
+                      <div><b>2</b><span /></div>
+                    </section>
+                  ))}
+                </div>
+              )}
+
+              {activity === "retrieval-clock" && (
+                <div className="retrieval-clock">
+                  <div className="clock-centre"><span>Move clockwise</span><strong>12 prompts</strong><small>Recall • check • improve</small></div>
+                  {generated.slice(0, 12).map((question, index) => {
+                    const clockNumber = index === 0 ? 12 : index;
+                    return (
+                      <div className={`clock-card clock-${clockNumber}`} key={question.q}>
+                        <b>{clockNumber}</b>
+                        <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                        <p>{question.q}</p>
+                        {showAnswers && <em>{question.a}</em>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {activity === "question-chain" && (
+                <div className="question-chain">
+                  {[...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question) => {
+                    const originalIndex = generated.findIndex((item) => item.q === question.q);
+                    return (
+                      <div className={`chain-card chain-${question.difficulty}`} key={question.q}>
+                        <span>{chainLabel(question.difficulty)}</span>
+                        <button className="swap-button" onClick={() => replaceQuestion(originalIndex)}>Swap</button>
+                        <p>{question.q}</p>
+                        {showAnswers && <em>{question.a}</em>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {activity === "match-up" && (
+                <div className="match-up-grid">
+                  <section>
+                    <h3>Questions</h3>
+                    {generated.map((question, index) => (
+                      <div className="match-item" key={question.q}>
+                        <b>{index + 1}</b>
+                        <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                        <p>{question.q}</p>
+                        {showAnswers && <em>Match: {String.fromCharCode(65 + matchAnswerBank.findIndex((item) => item.key === question.q))}</em>}
+                      </div>
+                    ))}
+                  </section>
+                  <section>
+                    <h3>Answer bank</h3>
+                    {matchAnswerBank.map((item, index) => (
+                      <div className="match-answer" key={item.key}><b>{String.fromCharCode(65 + index)}</b><p>{item.answer}</p></div>
+                    ))}
+                  </section>
+                </div>
+              )}
+
+              {activity === "cloze-recall" && (
+                <div className="cloze-recall">
+                  <div className="cloze-word-bank"><span>Word bank</span>{clozeWordBank.map((word) => <b key={word}>{word}</b>)}</div>
+                  <div className="cloze-grid">
+                    {clozeItems.map((item, index) => (
+                      <div key={item.q}>
+                        <span>{index + 1}</span>
+                        <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                        <p>{item.text}</p>
+                        {showAnswers && <em>Full answer: {item.a}</em>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activity === "flashcard-sprint" && (
+                <div className="flashcard-grid">
+                  {generated.map((question, index) => (
+                    <div className="flashcard" key={question.q}>
+                      <section><span>Card {index + 1} • Question</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p></section>
+                      <section className="flashcard-answer"><span>Fold • Answer</span><p>{showAnswers ? question.a : "Reveal answers before printing or downloading."}</p><small>□ Again &nbsp; □ Nearly &nbsp; □ Secure</small></section>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {activity === "connect-four" && (
+                <div className="connect-four-grid">
+                  {generated.slice(0, 16).map((question, index) => (
+                    <div key={question.q}><b>{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -1114,7 +1621,7 @@ export default function Home() {
                 </ol>
               )}
 
-              {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map"].includes(activity) && (
+              {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things"].includes(activity) && (
                 <button className="answer-toggle" onClick={() => setShowAnswers((value) => !value)}>{showAnswers ? "Hide answers" : "Show answers"}</button>
               )}
               <footer><span>From memory first</span><span>Check • Correct • Improve</span></footer>
