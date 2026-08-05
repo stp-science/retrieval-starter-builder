@@ -2,7 +2,7 @@
 
 A classroom retrieval-practice generator for St Peter's School, Cambridge.
 
-**Live app:** [retrieval-starter-builder.talbotino.chatgpt.site](https://retrieval-starter-builder.talbotino.chatgpt.site)
+**Live app:** [stp-science.github.io/retrieval-starter-builder](https://stp-science.github.io/retrieval-starter-builder/)
 
 Teachers choose a year group, one or more previously taught topics, and an activity format. The app selects from a checked question bank and creates a ready-to-use starter with answers. It does not require an AI account or generate questions with AI.
 
@@ -84,4 +84,4 @@ npm run lint
 - `public/stpeters-crest.webp` - school crest used in the interface
 - `tests/` - rendered-app check
 
-This source is configured for its existing ChatGPT Sites deployment. The public app link remains unchanged when the source is updated and redeployed.
+The app is hosted on GitHub Pages. Every push to `main` automatically builds and publishes the latest version through the GitHub Pages workflow.
