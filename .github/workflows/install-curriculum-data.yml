@@ -1,0 +1,94 @@
+name: Install complete curriculum topic data
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".curriculum-install-trigger"
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Restore curriculum data
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64
+          import gzip
+          from pathlib import Path
+
+          parts = sorted(Path(".curriculum-data").glob("part-*.txt"))
+          if not parts:
+              raise SystemExit("No curriculum data parts were found.")
+          encoded = "".join(path.read_text().strip() for path in parts)
+          content = gzip.decompress(base64.b64decode(encoded))
+          Path("app/curriculum-topics.ts").write_bytes(content)
+          PY
+
+      - name: Connect curriculum data to the app
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = "app/page.tsx";
+          let source = fs.readFileSync(path, "utf8");
+
+          if (!source.includes('import { curriculumTopics, curriculumVisuals } from "./curriculum-topics";')) {
+            source = source.replace(
+              'import { extraQuestions } from "./question-bank";',
+              'import { extraQuestions } from "./question-bank";\nimport { curriculumTopics, curriculumVisuals } from "./curriculum-topics";',
+            );
+          }
+
+          source = source.replace(
+            /const baseTopics: Topic\[\] = \[[\s\S]*?\n\];\n\nconst topicVisuals:/,
+            'const baseTopics: Topic[] = curriculumTopics;\n\nconst topicVisuals:',
+          );
+
+          source = source.replace(
+            /const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">\[\]> = \{[\s\S]*?\n\};\n\nconst topics:/,
+            'const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">[]> = curriculumVisuals;\n\nconst topics:',
+          );
+
+          if (!source.includes('const baseTopics: Topic[] = curriculumTopics;')) {
+            throw new Error("Could not replace the original topic list.");
+          }
+          if (!source.includes('const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">[]> = curriculumVisuals;')) {
+            throw new Error("Could not replace the original visual prompt list.");
+          }
+
+          fs.writeFileSync(path, source);
+          NODE
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate production build
+        run: npm run build
+
+      - name: Commit curriculum update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/page.tsx app/curriculum-topics.ts
+          if git diff --cached --quiet; then
+            echo "No curriculum changes to commit."
+          else
+            git commit -m "Add complete Years 7-9 curriculum question banks"
+            git push
+          fi
