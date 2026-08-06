@@ -1,6 +1,8 @@
 name: Deploy Curriculum App to GitHub Pages
 
 on:
+  pull_request:
+    branches: ["main"]
   issues:
     types: [opened]
   workflow_dispatch:
