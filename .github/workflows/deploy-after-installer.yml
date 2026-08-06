@@ -5,6 +5,7 @@ on:
     workflows:
       - "Install complete curriculum topic data"
       - "pages build and deployment"
+      - "Deploy to GitHub Pages"
     types: [completed]
 
 permissions:
