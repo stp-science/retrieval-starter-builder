@@ -236,6 +236,8 @@ async function downloadPowerPoint() {
 
 export default function PowerPointDownloadEnhancer() {
   useEffect(() => {
+    let disposed = false;
+
     const handleClick = async (event: Event) => {
       const button = event.currentTarget as HTMLButtonElement;
       if (button.disabled) return;
@@ -253,18 +255,13 @@ export default function PowerPointDownloadEnhancer() {
     };
 
     const installButton = () => {
+      if (disposed) return;
       const actions = document.querySelector<HTMLElement>(".preview-actions");
       if (!actions || actions.querySelector("[data-powerpoint-download]")) return;
 
       const buttons = Array.from(actions.querySelectorAll<HTMLButtonElement>("button"));
       const wordButton = buttons.find((button) => button.textContent?.includes("Word"));
       const pdfButton = buttons.find((button) => button.textContent?.includes("PDF"));
-
-      if (wordButton?.textContent === "Download Word") {
-        wordButton.textContent = "Download editable Word";
-        wordButton.setAttribute("aria-label", "Download the generated starter as an editable Word document");
-      }
-
       const button = document.createElement("button");
       button.type = "button";
       button.dataset.powerpointDownload = "true";
@@ -278,11 +275,11 @@ export default function PowerPointDownloadEnhancer() {
     };
 
     installButton();
-    const observer = new MutationObserver(installButton);
-    observer.observe(document.body, { childList: true, subtree: true });
+    const interval = window.setInterval(installButton, 750);
 
     return () => {
-      observer.disconnect();
+      disposed = true;
+      window.clearInterval(interval);
       document.querySelectorAll<HTMLButtonElement>("[data-powerpoint-download]").forEach((button) => {
         button.removeEventListener("click", handleClick);
         button.remove();
