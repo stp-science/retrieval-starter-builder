@@ -18,6 +18,59 @@
     padding: 22px;
   }
 
+  /* Topic choices also need full-width rows inside the narrow builder. */
+  .topic-list {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  .topic-option {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr) 18px;
+    grid-template-rows: auto auto;
+    column-gap: 8px;
+    row-gap: 3px;
+    align-items: center;
+    min-width: 0;
+    min-height: 62px;
+    padding: 10px 12px;
+  }
+
+  .topic-option .strand-dot {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .topic-option .topic-name {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .topic-option .question-count {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    margin: 0;
+    white-space: normal;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .topic-option .checkmark {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+
+  .topic-toolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
   /* The builder is intentionally narrow, so activity cards use one full-width column. */
   .activity-grid {
     grid-template-columns: 1fr !important;
