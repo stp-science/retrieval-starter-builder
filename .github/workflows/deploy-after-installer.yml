@@ -1,8 +1,10 @@
-name: Deploy Current Curriculum After Installer
+name: Deploy Current Curriculum After Workflow Completion
 
 on:
   workflow_run:
-    workflows: ["Install complete curriculum topic data"]
+    workflows:
+      - "Install complete curriculum topic data"
+      - "pages build and deployment"
     types: [completed]
 
 permissions:
