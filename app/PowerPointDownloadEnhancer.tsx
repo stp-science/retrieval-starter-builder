@@ -174,7 +174,7 @@ function extractTitleAndPrompts() {
     });
   }
 
-  return { sheet, title, prompts: unique(prompts) };
+  return { title, prompts: unique(prompts) };
 }
 
 function promptLayout(count: number) {
@@ -188,7 +188,6 @@ function promptLayout(count: number) {
   const usableHeight = SLIDE_HEIGHT - top - 0.3;
   return {
     columns,
-    rows,
     left,
     top,
     gapX,
@@ -218,7 +217,6 @@ async function downloadPowerPoint() {
     h: 0.66,
     fontFace: "Georgia",
     fontSize: 28,
-    bold: false,
     color: "171B22",
     margin: 0,
     fit: "shrink",
@@ -252,14 +250,11 @@ async function downloadPowerPoint() {
       fontFace: "Aptos",
       fontSize,
       color: "171B22",
-      bold: false,
       margin: 0.14,
-      breakLine: false,
       fit: "shrink",
       valign: "mid",
       line: { color: "D8D0C9", width: 1 },
       fill: { color: index % 2 === 0 ? "FFFDF9" : "F7F3EF" },
-      radius: 0.08,
     });
   });
 
@@ -288,13 +283,13 @@ async function downloadWord() {
     })),
   ];
 
-  const document = new Document({
+  const wordDocument = new Document({
     sections: [{
       properties: { page: { margin: { top: 620, right: 720, bottom: 620, left: 720 } } },
       children,
     }],
   });
-  const blob = await Packer.toBlob(document);
+  const blob = await Packer.toBlob(wordDocument);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
