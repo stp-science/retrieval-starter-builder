@@ -89,7 +89,9 @@ function unique(values: string[]) {
 }
 
 function texts(root: ParentNode, selector: string) {
-  return Array.from(root.querySelectorAll<HTMLElement>(selector)).map((element) => cleanText(element.textContent));
+  return Array.from(root.querySelectorAll<HTMLElement>(selector))
+    .map((element) => cleanText(element.textContent))
+    .filter(Boolean);
 }
 
 function activityId(sheet: HTMLElement) {
@@ -97,11 +99,13 @@ function activityId(sheet: HTMLElement) {
   return className?.replace("activity-", "") ?? "";
 }
 
-function extractTitleAndPrompts() {
+function extractTeachingContent() {
   const sheet = document.querySelector<HTMLElement>(".starter-sheet");
   if (!sheet) throw new Error("Generate an activity before downloading it.");
 
   const title = cleanText(sheet.querySelector("h2")?.textContent) || "Retrieval Activity";
+  const instructions = cleanText(sheet.querySelector(".instructions")?.textContent)
+    || "Complete the activity from memory. Check and improve your answers when instructed.";
   const activity = activityId(sheet);
   let prompts: string[] = [];
 
@@ -170,11 +174,11 @@ function extractTitleAndPrompts() {
       return value.length > 2
         && !lower.includes("want a different prompt")
         && !lower.includes("from memory first")
-        && value !== cleanText(sheet.querySelector(".instructions")?.textContent);
+        && value !== instructions;
     });
   }
 
-  return { title, prompts: unique(prompts) };
+  return { title, instructions, prompts: unique(prompts) };
 }
 
 function promptLayout(count: number) {
@@ -183,9 +187,9 @@ function promptLayout(count: number) {
   const gapX = 0.18;
   const gapY = 0.14;
   const left = 0.42;
-  const top = 1.16;
+  const top = 1.84;
   const usableWidth = SLIDE_WIDTH - left * 2;
-  const usableHeight = SLIDE_HEIGHT - top - 0.3;
+  const usableHeight = SLIDE_HEIGHT - top - 0.28;
   return {
     columns,
     left,
@@ -198,7 +202,7 @@ function promptLayout(count: number) {
 }
 
 async function downloadPowerPoint() {
-  const { title, prompts } = extractTitleAndPrompts();
+  const { title, instructions, prompts } = extractTeachingContent();
   const PptxGenJS = await loadPptx();
   const presentation = new PptxGenJS();
   presentation.layout = "LAYOUT_WIDE";
@@ -212,9 +216,9 @@ async function downloadPowerPoint() {
   slide.background = { color: "FFFDF9" };
   slide.addText(title, {
     x: 0.42,
-    y: 0.24,
+    y: 0.18,
     w: 12.48,
-    h: 0.66,
+    h: 0.56,
     fontFace: "Georgia",
     fontSize: 28,
     color: "171B22",
@@ -224,18 +228,25 @@ async function downloadPowerPoint() {
     line: { color: "FFFFFF", transparency: 100, width: 0 },
     fill: { color: "FFFFFF", transparency: 100 },
   });
-  slide.addText("", {
+
+  slide.addText(instructions, {
     x: 0.42,
-    y: 0.96,
+    y: 0.86,
     w: 12.48,
-    h: 0.04,
-    margin: 0,
-    line: { color: "CF082B", width: 2.4 },
-    fill: { color: "CF082B" },
+    h: 0.72,
+    fontFace: "Aptos",
+    fontSize: 15,
+    bold: true,
+    color: "515966",
+    margin: 0.14,
+    fit: "shrink",
+    valign: "mid",
+    line: { color: "CF082B", width: 1.25 },
+    fill: { color: "FDF1F3" },
   });
 
   const layout = promptLayout(prompts.length);
-  const fontSize = prompts.length <= 6 ? 21 : prompts.length <= 10 ? 18 : prompts.length <= 16 ? 15 : 12.5;
+  const fontSize = prompts.length <= 6 ? 20 : prompts.length <= 10 ? 17 : prompts.length <= 16 ? 14.5 : 12;
 
   prompts.forEach((prompt, index) => {
     const column = index % layout.columns;
@@ -259,20 +270,43 @@ async function downloadPowerPoint() {
   });
 
   await presentation.writeFile({
-    fileName: `${safeFilePart(title)}-Editable.pptx`,
+    fileName: `${safeFilePart(title)}-Teaching-Slide.pptx`,
     compression: true,
   });
 }
 
 async function downloadWord() {
-  const { title, prompts } = extractTitleAndPrompts();
-  const { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun } = await import("docx");
+  const { title, instructions, prompts } = extractTeachingContent();
+  const {
+    AlignmentType,
+    BorderStyle,
+    Document,
+    HeadingLevel,
+    Packer,
+    Paragraph,
+    ShadingType,
+    TextRun,
+  } = await import("docx");
+
+  const instructionBorder = { style: BorderStyle.SINGLE, size: 8, color: "CF082B" };
   const children = [
     new Paragraph({
       heading: HeadingLevel.TITLE,
       alignment: AlignmentType.CENTER,
-      spacing: { after: 260 },
+      spacing: { after: 220 },
       children: [new TextRun({ text: title, bold: true, color: "171B22", size: 34 })],
+    }),
+    new Paragraph({
+      spacing: { after: 260, line: 300 },
+      indent: { left: 160, right: 160 },
+      shading: { type: ShadingType.CLEAR, color: "auto", fill: "FDF1F3" },
+      border: {
+        top: instructionBorder,
+        bottom: instructionBorder,
+        left: instructionBorder,
+        right: instructionBorder,
+      },
+      children: [new TextRun({ text: instructions, bold: true, color: "515966", size: 23 })],
     }),
     ...prompts.map((prompt, index) => new Paragraph({
       spacing: { after: 180, line: 320 },
@@ -293,7 +327,7 @@ async function downloadWord() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${safeFilePart(title)}-Editable.docx`;
+  link.download = `${safeFilePart(title)}-Teaching-Resource.docx`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -338,10 +372,10 @@ export default function PowerPointDownloadEnhancer() {
       const button = event.currentTarget as HTMLButtonElement;
       if (button.disabled) return;
       button.disabled = true;
-      button.textContent = "Preparing PowerPoint…";
+      button.textContent = "Preparing teaching slide…";
       try {
         await downloadPowerPoint();
-        button.textContent = "Download editable PowerPoint";
+        button.textContent = "Download teaching PowerPoint";
       } catch (error) {
         console.error("PowerPoint download failed", error);
         button.textContent = "Try PowerPoint again";
@@ -356,10 +390,10 @@ export default function PowerPointDownloadEnhancer() {
       const button = event.currentTarget as HTMLButtonElement;
       if (button.disabled) return;
       button.disabled = true;
-      button.textContent = "Preparing Word…";
+      button.textContent = "Preparing teaching resource…";
       try {
         await downloadWord();
-        button.textContent = "Download editable Word";
+        button.textContent = "Download teaching Word";
       } catch (error) {
         console.error("Word download failed", error);
         button.textContent = "Try Word again";
@@ -379,7 +413,8 @@ export default function PowerPointDownloadEnhancer() {
 
       if (wordButton && !wordButton.dataset.cleanWordDownload) {
         wordButton.dataset.cleanWordDownload = "true";
-        wordButton.textContent = "Download editable Word";
+        wordButton.textContent = "Download teaching Word";
+        wordButton.setAttribute("aria-label", "Download a static teaching resource with the title, student instructions and task content");
         wordButton.addEventListener("click", handleWordClick, true);
       }
 
@@ -388,8 +423,8 @@ export default function PowerPointDownloadEnhancer() {
         button.type = "button";
         button.dataset.powerpointDownload = "true";
         button.className = wordButton?.className || "word-button";
-        button.textContent = "Download editable PowerPoint";
-        button.setAttribute("aria-label", "Download the activity title and questions as an editable PowerPoint slide");
+        button.textContent = "Download teaching PowerPoint";
+        button.setAttribute("aria-label", "Download a static teaching slide with the title, student instructions and task content");
         button.addEventListener("click", handlePowerPointClick);
         if (pdfButton) actions.insertBefore(button, pdfButton);
         else actions.appendChild(button);
