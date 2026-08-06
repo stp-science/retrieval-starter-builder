@@ -118,10 +118,17 @@
     font-size: clamp(40px, 3.2vw, 56px);
   }
 
+  /* Make the student instructions a prominent, classroom-readable teaching cue. */
   .starter-sheet .instructions {
-    font-size: 19px;
-    line-height: 1.55;
-    font-weight: 600;
+    margin: 16px 0 24px;
+    padding: 14px 18px;
+    border-left: 5px solid #365f72;
+    border-radius: 10px;
+    background: #eef4f7;
+    color: #263640;
+    font-size: clamp(24px, 1.7vw, 28px);
+    line-height: 1.45;
+    font-weight: 700;
   }
 
   body .preview-shell .starter-sheet :is(
