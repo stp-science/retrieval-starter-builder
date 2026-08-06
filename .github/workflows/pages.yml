@@ -4,18 +4,14 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
-  issues:
-    types: [opened]
-  schedule:
-    - cron: "*/5 * * * *"
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "pages-v2"
   cancel-in-progress: true
 
 jobs:
@@ -24,70 +20,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Restore curriculum topic data
-        shell: bash
-        run: |
-          python - <<'PY'
-          import base64
-          import gzip
-          from pathlib import Path
-
-          parts = sorted(Path(".curriculum-data").glob("part-*.txt"))
-          if not parts:
-              raise SystemExit("No curriculum data parts were found.")
-          encoded = "".join(path.read_text().strip() for path in parts)
-          content = gzip.decompress(base64.b64decode(encoded))
-          Path("app/curriculum-topics.ts").write_bytes(content)
-          PY
-
-      - name: Connect curriculum topics to the app
-        shell: bash
-        run: |
-          node <<'NODE'
-          const fs = require("fs");
-          const path = "app/page.tsx";
-          let source = fs.readFileSync(path, "utf8");
-
-          if (!source.includes('import { curriculumTopics, curriculumVisuals } from "./curriculum-topics";')) {
-            source = source.replace(
-              'import { extraQuestions } from "./question-bank";',
-              'import { extraQuestions } from "./question-bank";\nimport { curriculumTopics, curriculumVisuals } from "./curriculum-topics";',
-            );
-          }
-
-          source = source.replace(
-            /const baseTopics: Topic\[\] = \[[\s\S]*?\n\];\n\nconst topicVisuals:/,
-            'const baseTopics: Topic[] = curriculumTopics;\n\nconst topicVisuals:',
-          );
-
-          source = source.replace(
-            /const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">\[\]> = \{[\s\S]*?\n\};\n\nconst topics:/,
-            'const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">[]> = curriculumVisuals;\n\nconst topics:',
-          );
-
-          if (!source.includes('const baseTopics: Topic[] = curriculumTopics;')) {
-            throw new Error("Could not replace the original topic list.");
-          }
-          if (!source.includes('const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">[]> = curriculumVisuals;')) {
-            throw new Error("Could not replace the original visual prompt list.");
-          }
-
-          fs.writeFileSync(path, source);
-          NODE
-
-      - name: Commit generated curriculum source
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add app/page.tsx app/curriculum-topics.ts
-          if git diff --cached --quiet; then
-            echo "Curriculum source is already current."
-          else
-            git commit -m "Add complete Years 7-9 curriculum question banks"
-            git push
-          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
