@@ -6,21 +6,23 @@
     padding-right: clamp(14px, 1.8vw, 32px);
   }
 
+  /* Give the builder enough room for two activity columns and move the preview right. */
   .workspace {
     max-width: 1920px;
     padding-left: clamp(14px, 1.8vw, 32px);
     padding-right: clamp(14px, 1.8vw, 32px);
-    grid-template-columns: minmax(320px, 0.48fr) minmax(860px, 1.52fr);
-    gap: 16px;
+    grid-template-columns: minmax(500px, 0.72fr) minmax(650px, 1.28fr);
+    gap: 18px;
   }
 
   .builder-panel {
     padding: 22px;
+    min-width: 0;
   }
 
-  /* Topic choices also need full-width rows inside the narrow builder. */
+  /* Topic cards can safely return to two columns in the wider builder. */
   .topic-list {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px;
   }
 
@@ -32,7 +34,7 @@
     row-gap: 3px;
     align-items: center;
     min-width: 0;
-    min-height: 62px;
+    min-height: 66px;
     padding: 10px 12px;
   }
 
@@ -71,25 +73,28 @@
     flex-wrap: wrap;
   }
 
-  /* The builder is intentionally narrow, so activity cards use one full-width column. */
+  /* Two activity columns on normal desktop screens. */
   .activity-grid {
-    grid-template-columns: 1fr !important;
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
   }
 
   .activity-card {
-    min-height: 88px;
-    padding: 13px 15px;
-    overflow: hidden;
+    min-width: 0;
+    min-height: 132px;
+    height: auto;
+    padding: 15px;
+    overflow: visible;
   }
 
   .activity-card.selected {
-    padding: 12px 14px;
+    padding: 14px;
   }
 
   .activity-card strong,
   .activity-card > span:last-child {
     max-width: 100%;
+    min-width: 0;
     overflow-wrap: anywhere;
     word-break: normal;
   }
@@ -203,7 +208,7 @@
 
 @media (min-width: 1500px) {
   .workspace {
-    grid-template-columns: minmax(330px, 0.42fr) minmax(1040px, 1.58fr);
+    grid-template-columns: minmax(580px, 0.7fr) minmax(820px, 1.3fr);
   }
 
   .starter-sheet {
@@ -214,6 +219,16 @@
 
 @media (min-width: 1750px) {
   .workspace {
-    grid-template-columns: minmax(340px, 0.38fr) minmax(1220px, 1.62fr);
+    grid-template-columns: minmax(650px, 0.72fr) minmax(1020px, 1.28fr);
+  }
+
+  /* Three activity columns only when there is genuinely enough space. */
+  .activity-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
+
+  .activity-card {
+    min-height: 144px;
   }
 }
