@@ -18,6 +18,33 @@
     padding: 22px;
   }
 
+  /* The builder is intentionally narrow, so activity cards use one full-width column. */
+  .activity-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  .activity-card {
+    min-height: 88px;
+    padding: 13px 15px;
+    overflow: hidden;
+  }
+
+  .activity-card.selected {
+    padding: 12px 14px;
+  }
+
+  .activity-card strong,
+  .activity-card > span:last-child {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .activity-card > span:last-child {
+    line-height: 1.45;
+  }
+
   .preview-shell {
     top: 96px;
     min-height: 790px;
