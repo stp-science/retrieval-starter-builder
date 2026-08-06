@@ -22,7 +22,7 @@ for (const topic of curriculumTopics) {
       value: curriculumVisuals[topic.id] ?? [],
       enumerable: false,
       configurable: true,
-      writable: false,
+      writable: true,
     });
   }
 }
