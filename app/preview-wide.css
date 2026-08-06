@@ -1,0 +1,107 @@
+/* Wider, easier-to-read classroom preview on desktop screens. */
+@media (min-width: 1180px) {
+  .hero {
+    max-width: 1760px;
+    padding-left: clamp(18px, 2.5vw, 44px);
+    padding-right: clamp(18px, 2.5vw, 44px);
+  }
+
+  .workspace {
+    max-width: 1760px;
+    padding-left: clamp(18px, 2.5vw, 44px);
+    padding-right: clamp(18px, 2.5vw, 44px);
+    grid-template-columns: minmax(350px, 0.62fr) minmax(760px, 1.38fr);
+    gap: 20px;
+  }
+
+  .builder-panel {
+    padding: 24px;
+  }
+
+  .preview-shell {
+    top: 96px;
+    min-height: 760px;
+  }
+
+  .starter-sheet {
+    margin: 14px;
+    min-height: 700px;
+    padding: 34px 40px;
+  }
+
+  .starter-sheet h2 {
+    font-size: clamp(38px, 3vw, 52px);
+  }
+
+  .starter-sheet .instructions {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  body .preview-shell .starter-sheet :is(
+    .question-list li,
+    .retrieval-grid p,
+    .challenge-grid p,
+    .trade-card strong,
+    .bingo-grid p,
+    .roulette-grid p,
+    .placemat-grid > div p,
+    .clock-card p,
+    .chain-card p,
+    .match-item p,
+    .cloze-grid p,
+    .flashcard p,
+    .connect-four-grid p,
+    .list-grid li
+  ) {
+    font-size: 18px !important;
+    line-height: 1.5 !important;
+  }
+
+  .question-list {
+    column-gap: 54px;
+  }
+
+  .retrieval-grid,
+  .challenge-grid,
+  .trade-grid,
+  .bingo-grid,
+  .roulette-grid,
+  .cloze-grid,
+  .flashcard-grid,
+  .keyword-card-grid,
+  .picture-prompt-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .brain-grid,
+  .list-grid,
+  .two-things-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .linking-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .linking-grid div {
+    min-height: 96px;
+    font-size: 17px;
+  }
+
+  .preview-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 1500px) {
+  .workspace {
+    grid-template-columns: minmax(370px, 0.55fr) minmax(900px, 1.45fr);
+  }
+
+  .starter-sheet {
+    padding-left: 46px;
+    padding-right: 46px;
+  }
+}
