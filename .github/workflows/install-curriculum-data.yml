@@ -4,14 +4,13 @@ on:
   push:
     branches:
       - main
-    paths:
-      - ".curriculum-install-trigger"
 
 permissions:
   contents: write
 
 jobs:
   install:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
