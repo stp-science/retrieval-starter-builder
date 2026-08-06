@@ -1,41 +1,41 @@
 /* Wider, easier-to-read classroom preview on desktop screens. */
 @media (min-width: 1180px) {
   .hero {
-    max-width: 1760px;
-    padding-left: clamp(18px, 2.5vw, 44px);
-    padding-right: clamp(18px, 2.5vw, 44px);
+    max-width: 1920px;
+    padding-left: clamp(14px, 1.8vw, 32px);
+    padding-right: clamp(14px, 1.8vw, 32px);
   }
 
   .workspace {
-    max-width: 1760px;
-    padding-left: clamp(18px, 2.5vw, 44px);
-    padding-right: clamp(18px, 2.5vw, 44px);
-    grid-template-columns: minmax(350px, 0.62fr) minmax(760px, 1.38fr);
-    gap: 20px;
+    max-width: 1920px;
+    padding-left: clamp(14px, 1.8vw, 32px);
+    padding-right: clamp(14px, 1.8vw, 32px);
+    grid-template-columns: minmax(320px, 0.48fr) minmax(860px, 1.52fr);
+    gap: 16px;
   }
 
   .builder-panel {
-    padding: 24px;
+    padding: 22px;
   }
 
   .preview-shell {
     top: 96px;
-    min-height: 760px;
+    min-height: 790px;
   }
 
   .starter-sheet {
-    margin: 14px;
-    min-height: 700px;
-    padding: 34px 40px;
+    margin: 10px;
+    min-height: 730px;
+    padding: 34px 42px;
   }
 
   .starter-sheet h2 {
-    font-size: clamp(38px, 3vw, 52px);
+    font-size: clamp(40px, 3.2vw, 56px);
   }
 
   .starter-sheet .instructions {
-    font-size: 14px;
-    line-height: 1.55;
+    font-size: 16px;
+    line-height: 1.58;
   }
 
   body .preview-shell .starter-sheet :is(
@@ -52,14 +52,29 @@
     .cloze-grid p,
     .flashcard p,
     .connect-four-grid p,
-    .list-grid li
+    .list-grid li,
+    .brain-grid p,
+    .concept-map p,
+    .knowledge-columns strong
+  ) {
+    font-size: 20px !important;
+    line-height: 1.52 !important;
+  }
+
+  /* Revealed answers must be readable from the teacher preview too. */
+  body .preview-shell .starter-sheet :is(
+    em,
+    .card-answer,
+    .flashcard-answer p,
+    .match-answer p,
+    .answer-first-list strong
   ) {
     font-size: 18px !important;
-    line-height: 1.5 !important;
+    line-height: 1.48 !important;
   }
 
   .question-list {
-    column-gap: 54px;
+    column-gap: 60px;
   }
 
   .retrieval-grid,
@@ -85,8 +100,19 @@
   }
 
   .linking-grid div {
-    min-height: 96px;
-    font-size: 17px;
+    min-height: 100px;
+    font-size: 19px;
+  }
+
+  .keyword-card strong {
+    font-size: 23px !important;
+  }
+
+  .topic-chips span,
+  .sheet-kicker,
+  .starter-sheet footer,
+  .swap-help {
+    font-size: 12px;
   }
 
   .preview-actions {
@@ -97,11 +123,17 @@
 
 @media (min-width: 1500px) {
   .workspace {
-    grid-template-columns: minmax(370px, 0.55fr) minmax(900px, 1.45fr);
+    grid-template-columns: minmax(330px, 0.42fr) minmax(1040px, 1.58fr);
   }
 
   .starter-sheet {
-    padding-left: 46px;
-    padding-right: 46px;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
+
+@media (min-width: 1750px) {
+  .workspace {
+    grid-template-columns: minmax(340px, 0.38fr) minmax(1220px, 1.62fr);
   }
 }
