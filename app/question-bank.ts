@@ -71,21 +71,11 @@ if (typeof window !== "undefined") {
 
   const updateQuestionCount = () => {
     const pill = document.querySelector<HTMLElement>(".beta-pill");
-    if (pill) {
-      pill.textContent = `${totalQuestions.toLocaleString()}-question bank`;
+    const nextText = `${totalQuestions.toLocaleString()}-question bank`;
+    if (pill && pill.textContent !== nextText) {
+      pill.textContent = nextText;
     }
   };
 
-  queueMicrotask(updateQuestionCount);
-
-  const observer = new MutationObserver(updateQuestionCount);
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-
-  window.setTimeout(() => {
-    updateQuestionCount();
-    observer.disconnect();
-  }, 5000);
+  window.setTimeout(updateQuestionCount, 0);
 }
