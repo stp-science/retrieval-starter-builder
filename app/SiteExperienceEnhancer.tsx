@@ -5,20 +5,18 @@ import { useEffect } from "react";
 export default function SiteExperienceEnhancer() {
   useEffect(() => {
     let disposed = false;
-    let legacySelectionCleared = false;
 
     const clearLegacyDefaultTopic = () => {
-      if (disposed || legacySelectionCleared) return;
+      if (disposed) return;
       const selectedOptions = Array.from(document.querySelectorAll<HTMLLabelElement>(".topic-option.selected"));
-      if (selectedOptions.length !== 1) return;
 
-      const topicName = selectedOptions[0].querySelector<HTMLElement>(".topic-name")?.textContent?.trim();
-      if (topicName !== "Pressure and Fluids") return;
+      selectedOptions.forEach((option) => {
+        const topicName = option.querySelector<HTMLElement>(".topic-name")?.textContent?.trim();
+        if (topicName !== "Pressure and Fluids") return;
 
-      const input = selectedOptions[0].querySelector<HTMLInputElement>('input[type="checkbox"]');
-      if (!input?.checked) return;
-      input.click();
-      legacySelectionCleared = true;
+        const input = option.querySelector<HTMLInputElement>('input[type="checkbox"]');
+        if (input?.checked) input.click();
+      });
     };
 
     const installScienceArtwork = () => {
@@ -48,9 +46,14 @@ export default function SiteExperienceEnhancer() {
     };
 
     installScienceArtwork();
-    clearLegacyDefaultTopic();
 
-    const retryTimers = [50, 180, 450, 900].map((delay) => window.setTimeout(clearLegacyDefaultTopic, delay));
+    // The legacy page component still hydrates with Pressure and Fluids selected.
+    // Clear that exact default several times during hydration, then stop. This
+    // does not affect any other topic and does not continue running afterwards.
+    const retryTimers = [0, 80, 220, 500, 900, 1500].map((delay) =>
+      window.setTimeout(clearLegacyDefaultTopic, delay),
+    );
+
     const observer = new MutationObserver(() => installScienceArtwork());
     observer.observe(document.body, { childList: true, subtree: true });
 
