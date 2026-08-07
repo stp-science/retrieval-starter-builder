@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import PowerPointDownloadEnhancer from "./PowerPointDownloadEnhancer";
+import SiteExperienceEnhancer from "./SiteExperienceEnhancer";
 import "./globals.css";
 import "./preview-wide.css";
 import "./activity-polish.css";
+import "./site-science.css";
 
 export const metadata: Metadata = {
   title: "Retrieval Starter Builder",
@@ -27,6 +29,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <PowerPointDownloadEnhancer />
+        <SiteExperienceEnhancer />
       </body>
     </html>
   );
