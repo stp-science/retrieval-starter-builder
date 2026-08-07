@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PowerPointDownloadEnhancer from "./PowerPointDownloadEnhancer";
 import "./globals.css";
 import "./preview-wide.css";
+import "./activity-polish.css";
 
 export const metadata: Metadata = {
   title: "Retrieval Starter Builder",
