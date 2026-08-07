@@ -5,14 +5,20 @@ import { useEffect } from "react";
 export default function SiteExperienceEnhancer() {
   useEffect(() => {
     let disposed = false;
+    let legacySelectionCleared = false;
 
-    const clearInitialTopicSelection = () => {
-      if (disposed) return;
+    const clearLegacyDefaultTopic = () => {
+      if (disposed || legacySelectionCleared) return;
       const selectedOptions = Array.from(document.querySelectorAll<HTMLLabelElement>(".topic-option.selected"));
-      selectedOptions.forEach((option) => {
-        const input = option.querySelector<HTMLInputElement>('input[type="checkbox"]');
-        if (input?.checked) input.click();
-      });
+      if (selectedOptions.length !== 1) return;
+
+      const topicName = selectedOptions[0].querySelector<HTMLElement>(".topic-name")?.textContent?.trim();
+      if (topicName !== "Pressure and Fluids") return;
+
+      const input = selectedOptions[0].querySelector<HTMLInputElement>('input[type="checkbox"]');
+      if (!input?.checked) return;
+      input.click();
+      legacySelectionCleared = true;
     };
 
     const installScienceArtwork = () => {
@@ -41,16 +47,16 @@ export default function SiteExperienceEnhancer() {
       }
     };
 
-    // The legacy page source still contains a default selected topic. Clear any
-    // checked topic once on first mount so every fresh load starts with none.
-    clearInitialTopicSelection();
     installScienceArtwork();
+    clearLegacyDefaultTopic();
 
+    const retryTimers = [50, 180, 450, 900].map((delay) => window.setTimeout(clearLegacyDefaultTopic, delay));
     const observer = new MutationObserver(() => installScienceArtwork());
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       disposed = true;
+      retryTimers.forEach((timer) => window.clearTimeout(timer));
       observer.disconnect();
       document.querySelectorAll("[data-science-hero-art], [data-science-doodles]").forEach((element) => element.remove());
     };
