@@ -26,6 +26,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Remove legacy default topic selection
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("app/page.tsx")
+          source = path.read_text()
+          old = 'const [selected, setSelected] = useState<string[]>(["y9-pressure-fluids"]);'
+          new = 'const [selected, setSelected] = useState<string[]>([]);'
+          if old not in source:
+              raise SystemExit("Legacy Pressure and Fluids default was not found; refusing to build an unexpected source state.")
+          path.write_text(source.replace(old, new, 1))
+          PY
+
       - name: Build static site
         run: npx next build
 
