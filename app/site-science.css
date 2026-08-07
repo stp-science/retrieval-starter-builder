@@ -1,0 +1,186 @@
+/* Science-teacher visual layer */
+
+.hero {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.18fr) minmax(340px, .82fr);
+  align-items: center !important;
+  min-height: 390px;
+}
+
+.hero > div:first-child {
+  position: relative;
+  z-index: 2;
+  max-width: 830px;
+}
+
+.hero-stat {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  justify-self: end;
+  position: relative;
+  z-index: 3;
+  margin: 0 16px 10px 0;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 253, 249, .9) !important;
+}
+
+.science-hero-art {
+  grid-column: 2;
+  grid-row: 1;
+  width: min(100%, 560px);
+  justify-self: end;
+  align-self: center;
+  transform: translate(22px, 2px) rotate(1deg);
+  filter: saturate(.98) contrast(1.02);
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.hero::before {
+  width: 150px;
+  height: 150px;
+  right: 36%;
+  top: 42px;
+  border: 1px solid rgba(54, 95, 114, .13);
+  box-shadow: 0 0 0 26px rgba(130, 173, 191, .05), 0 0 0 52px rgba(207, 8, 43, .025);
+}
+
+.hero::after {
+  width: 10px;
+  height: 10px;
+  right: 34%;
+  top: 78px;
+  background: #cf082b;
+  box-shadow: 34px 55px 0 #82adbf, -26px 103px 0 #d8b35c, 72px 124px 0 #596c87;
+}
+
+.builder-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.builder-panel::before {
+  content: "⚛";
+  position: absolute;
+  right: -24px;
+  top: 118px;
+  font-size: 118px;
+  line-height: 1;
+  color: rgba(54, 95, 114, .035);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.builder-panel::after {
+  content: "⌁";
+  position: absolute;
+  left: -10px;
+  bottom: 92px;
+  font-size: 128px;
+  line-height: 1;
+  color: rgba(207, 8, 43, .025);
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+
+.empty-preview {
+  position: relative;
+  overflow: hidden;
+}
+
+.science-doodle-strip {
+  width: min(92%, 650px);
+  height: auto;
+  margin: -22px auto 8px;
+  opacity: .82;
+  pointer-events: none;
+  user-select: none;
+}
+
+.empty-preview .paper-stack {
+  margin-top: 8px;
+}
+
+.empty-preview::before {
+  content: "";
+  position: absolute;
+  inset: auto -90px -110px auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(130, 173, 191, .14), rgba(130, 173, 191, 0) 70%);
+  pointer-events: none;
+}
+
+.activity-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.activity-card::after {
+  position: absolute;
+  right: 9px;
+  top: 7px;
+  font-size: 20px;
+  opacity: .12;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.activity-card:nth-child(4n + 1)::after { content: "⚛"; }
+.activity-card:nth-child(4n + 2)::after { content: "🧬"; }
+.activity-card:nth-child(4n + 3)::after { content: "⚗"; }
+.activity-card:nth-child(4n + 4)::after { content: "〰"; }
+
+.activity-card:hover::after,
+.activity-card.selected::after {
+  opacity: .24;
+  transform: rotate(0deg) scale(1.08);
+  transition: .18s ease;
+}
+
+@media (max-width: 1050px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    min-height: 360px;
+  }
+  .science-hero-art { width: 390px; opacity: .92; }
+}
+
+@media (max-width: 780px) {
+  .hero {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch !important;
+    min-height: 0;
+  }
+  .science-hero-art {
+    order: 2;
+    width: min(100%, 520px);
+    margin: 18px auto 0;
+    transform: none;
+  }
+  .hero-stat {
+    order: 3;
+    align-self: flex-end;
+    margin: -54px 6px 0 0;
+  }
+  .hero::before,
+  .hero::after { display: none; }
+  .science-doodle-strip { margin-top: -8px; }
+}
+
+@media (max-width: 520px) {
+  .hero-stat { margin-top: -26px; }
+  .science-doodle-strip { width: 108%; }
+}
