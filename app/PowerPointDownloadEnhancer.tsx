@@ -33,6 +33,9 @@ const SCRIPT_URLS = [
 
 const SLIDE_WIDTH = 13.333;
 const SLIDE_HEIGHT = 7.5;
+const READING_BACKGROUND = "FFF6D6";
+const READING_PANEL = "FFFBEA";
+const READING_PANEL_ALT = "FFF0B8";
 let loader: Promise<PptxConstructor> | null = null;
 
 const activityPalettes: Record<string, { accent: string; soft: string }> = {
@@ -236,7 +239,7 @@ async function downloadPowerPoint() {
   presentation.lang = "en-NZ";
 
   const slide = presentation.addSlide();
-  slide.background = { color: "FFFDF9" };
+  slide.background = { color: READING_BACKGROUND };
 
   slide.addText("ST PETER'S  •  DO NOW", {
     x: 0,
@@ -265,8 +268,8 @@ async function downloadPowerPoint() {
     margin: 0,
     fit: "shrink",
     valign: "mid",
-    line: { color: "FFFFFF", transparency: 100, width: 0 },
-    fill: { color: "FFFFFF", transparency: 100 },
+    line: { color: READING_BACKGROUND, transparency: 100, width: 0 },
+    fill: { color: READING_BACKGROUND, transparency: 100 },
   });
 
   slide.addText(yearLabel, {
@@ -311,7 +314,7 @@ async function downloadPowerPoint() {
     fit: "shrink",
     valign: "mid",
     line: { color: palette.accent, width: 1.3 },
-    fill: { color: palette.soft },
+    fill: { color: READING_PANEL_ALT },
   });
 
   const layout = promptLayout(prompts.length);
@@ -351,8 +354,8 @@ async function downloadPowerPoint() {
       margin: { left: 0.14, right: 0.12, top: 0.42, bottom: 0.12 },
       fit: "shrink",
       valign: "mid",
-      line: { color: index % 2 === 0 ? palette.accent : "D7DEE8", width: index % 2 === 0 ? 1.1 : 0.8 },
-      fill: { color: index % 2 === 0 ? palette.soft : "FFFFFF" },
+      line: { color: index % 2 === 0 ? palette.accent : "D8C98A", width: index % 2 === 0 ? 1.1 : 0.8 },
+      fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
     });
   });
 
