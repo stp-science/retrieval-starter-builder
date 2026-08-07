@@ -5,18 +5,23 @@ import { useEffect } from "react";
 export default function SiteExperienceEnhancer() {
   useEffect(() => {
     let disposed = false;
+    let legacySelectionCleared = false;
 
     const clearLegacyDefaultTopic = () => {
-      if (disposed) return;
+      if (disposed || legacySelectionCleared) return;
       const selectedOptions = Array.from(document.querySelectorAll<HTMLLabelElement>(".topic-option.selected"));
 
-      selectedOptions.forEach((option) => {
-        const topicName = option.querySelector<HTMLElement>(".topic-name")?.textContent?.trim();
-        if (topicName !== "Pressure and Fluids") return;
-
-        const input = option.querySelector<HTMLInputElement>('input[type="checkbox"]');
-        if (input?.checked) input.click();
+      const legacyOption = selectedOptions.find((option) => {
+        const topicName = option.querySelector<HTMLElement>(".topic-name")?.textContent?.trim().toLowerCase() ?? "";
+        return topicName.includes("pressure") && topicName.includes("fluid");
       });
+
+      if (!legacyOption) return;
+      const input = legacyOption.querySelector<HTMLInputElement>('input[type="checkbox"]');
+      if (!input?.checked) return;
+
+      input.click();
+      legacySelectionCleared = true;
     };
 
     const installScienceArtwork = () => {
@@ -47,14 +52,17 @@ export default function SiteExperienceEnhancer() {
 
     installScienceArtwork();
 
-    // The legacy page component still hydrates with Pressure and Fluids selected.
-    // Clear that exact default several times during hydration, then stop. This
-    // does not affect any other topic and does not continue running afterwards.
-    const retryTimers = [0, 80, 220, 500, 900, 1500].map((delay) =>
+    // The legacy page component hydrates with the fluids/pressure topic selected.
+    // Clear that one initial default during hydration regardless of word order,
+    // then stop so teachers can select it normally afterwards.
+    const retryTimers = [0, 80, 220, 500, 900, 1500, 2500].map((delay) =>
       window.setTimeout(clearLegacyDefaultTopic, delay),
     );
 
-    const observer = new MutationObserver(() => installScienceArtwork());
+    const observer = new MutationObserver(() => {
+      installScienceArtwork();
+      clearLegacyDefaultTopic();
+    });
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
