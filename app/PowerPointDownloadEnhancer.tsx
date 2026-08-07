@@ -33,8 +33,34 @@ const SCRIPT_URLS = [
 
 const SLIDE_WIDTH = 13.333;
 const SLIDE_HEIGHT = 7.5;
-const STYLE_ID = "retrieval-export-and-text-improvements";
 let loader: Promise<PptxConstructor> | null = null;
+
+const activityPalettes: Record<string, { accent: string; soft: string }> = {
+  "quick-quiz": { accent: "C8102E", soft: "FCE8EC" },
+  "one-worders": { accent: "C8102E", soft: "FCE8EC" },
+  "retrieval-grid": { accent: "C8102E", soft: "FCE8EC" },
+  "thinking-linking": { accent: "6D4AFF", soft: "EEEAFE" },
+  "concept-map": { accent: "6D4AFF", soft: "EEEAFE" },
+  "question-chain": { accent: "6D4AFF", soft: "EEEAFE" },
+  "challenge-grid": { accent: "D97706", soft: "FFF4D6" },
+  "retrieval-roulette": { accent: "D97706", soft: "FFF4D6" },
+  "connect-four": { accent: "D97706", soft: "FFF4D6" },
+  "quiz-quiz-trade": { accent: "087F8C", soft: "E4F6F6" },
+  "back-to-back": { accent: "087F8C", soft: "E4F6F6" },
+  "walkabout-bingo": { accent: "087F8C", soft: "E4F6F6" },
+  "retrieval-relay": { accent: "087F8C", soft: "E4F6F6" },
+  "cops-robbers": { accent: "087F8C", soft: "E4F6F6" },
+  "picture-prompts": { accent: "2563EB", soft: "EAF2FF" },
+  "match-up": { accent: "2563EB", soft: "EAF2FF" },
+  "cloze-recall": { accent: "2563EB", soft: "EAF2FF" },
+  "flashcard-sprint": { accent: "2563EB", soft: "EAF2FF" },
+  "brain-dump": { accent: "334155", soft: "EEF2F6" },
+  "list-it": { accent: "334155", soft: "EEF2F6" },
+  "two-things": { accent: "334155", soft: "EEF2F6" },
+  "retrieval-placemat": { accent: "334155", soft: "EEF2F6" },
+  "retrieval-clock": { accent: "334155", soft: "EEF2F6" },
+  "answer-first": { accent: "C8102E", soft: "FCE8EC" },
+};
 
 function loadScript(src: string) {
   return new Promise<void>((resolve, reject) => {
@@ -94,9 +120,9 @@ function texts(root: ParentNode, selector: string) {
     .filter(Boolean);
 }
 
-function activityId(sheet: HTMLElement) {
+function getActivityId(sheet: HTMLElement) {
   const className = Array.from(sheet.classList).find((name) => name.startsWith("activity-"));
-  return className?.replace("activity-", "") ?? "";
+  return className?.replace("activity-", "") ?? "quick-quiz";
 }
 
 function extractTeachingContent() {
@@ -106,7 +132,9 @@ function extractTeachingContent() {
   const title = cleanText(sheet.querySelector("h2")?.textContent) || "Retrieval Activity";
   const instructions = cleanText(sheet.querySelector(".instructions")?.textContent)
     || "Complete the activity from memory. Check and improve your answers when instructed.";
-  const activity = activityId(sheet);
+  const activity = getActivityId(sheet);
+  const yearLabel = cleanText(sheet.querySelector(".sheet-kicker span:last-child")?.textContent) || "Junior Science";
+  const topicLine = texts(sheet, ".topic-chips span").join(" • ");
   let prompts: string[] = [];
 
   switch (activity) {
@@ -115,23 +143,23 @@ function extractTeachingContent() {
       break;
     case "concept-map": {
       const centre = cleanText(sheet.querySelector(".concept-core strong")?.textContent);
-      prompts = texts(sheet, ".concept-terms span").map((word) => `Connect ${word} to ${centre || "the central concept"}.`);
+      prompts = texts(sheet, ".concept-terms span").map((word) => `${word} ↔ ${centre || "central concept"}`);
       break;
     }
     case "back-to-back":
-      prompts = texts(sheet, ".keyword-card strong").map((word) => `Describe the term: ${word}`);
+      prompts = texts(sheet, ".keyword-card strong").map((word) => `Describe: ${word}`);
       break;
     case "picture-prompts":
       prompts = texts(sheet, ".picture-prompt strong").map((symbol, index) => `Picture ${index + 1}: ${symbol}`);
       break;
     case "brain-dump":
-      prompts = texts(sheet, ".brain-grid h3").map((topic) => `Write everything you can remember about ${topic}.`);
+      prompts = texts(sheet, ".brain-grid h3").map((topic) => `${topic}: recall key terms, ideas, examples and connections.`);
       break;
     case "cops-robbers":
-      prompts = texts(sheet, ".robbers-grid h3").map((topic) => `Recall as much knowledge as possible about ${topic}.`);
+      prompts = texts(sheet, ".robbers-grid h3").map((topic) => `${topic}: my knowledge / stolen knowledge`);
       break;
     case "retrieval-relay":
-      prompts = texts(sheet, ".relay-grid h3").map((topic) => `Take turns recalling facts about ${topic}.`);
+      prompts = texts(sheet, ".relay-grid h3").map((topic) => `${topic}: build the answer one turn at a time.`);
       break;
     case "list-it":
       prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".list-grid section")).flatMap((section) => {
@@ -140,7 +168,7 @@ function extractTeachingContent() {
       });
       break;
     case "two-things":
-      prompts = texts(sheet, ".two-things-grid h3").map((topic) => `Write two accurate things you remember about ${topic}.`);
+      prompts = texts(sheet, ".two-things-grid h3").map((topic) => `${topic}: write two accurate things you remember.`);
       break;
     case "retrieval-clock":
       prompts = texts(sheet, ".clock-card p");
@@ -169,25 +197,19 @@ function extractTeachingContent() {
   }
 
   if (!prompts.length) {
-    prompts = texts(sheet, "p").filter((value) => {
-      const lower = value.toLowerCase();
-      return value.length > 2
-        && !lower.includes("want a different prompt")
-        && !lower.includes("from memory first")
-        && value !== instructions;
-    });
+    prompts = texts(sheet, "p").filter((value) => value.length > 2 && value !== instructions);
   }
 
-  return { title, instructions, prompts: unique(prompts) };
+  return { title, instructions, prompts: unique(prompts), activity, yearLabel, topicLine };
 }
 
 function promptLayout(count: number) {
-  const columns = count <= 6 ? 1 : count <= 12 ? 2 : 3;
+  const columns = count <= 6 ? 2 : count <= 12 ? 3 : 4;
   const rows = Math.max(1, Math.ceil(count / columns));
-  const gapX = 0.18;
-  const gapY = 0.14;
+  const gapX = 0.14;
+  const gapY = 0.12;
   const left = 0.42;
-  const top = 1.84;
+  const top = 2.05;
   const usableWidth = SLIDE_WIDTH - left * 2;
   const usableHeight = SLIDE_HEIGHT - top - 0.28;
   return {
@@ -202,7 +224,8 @@ function promptLayout(count: number) {
 }
 
 async function downloadPowerPoint() {
-  const { title, instructions, prompts } = extractTeachingContent();
+  const { title, instructions, prompts, activity, yearLabel, topicLine } = extractTeachingContent();
+  const palette = activityPalettes[activity] ?? activityPalettes["quick-quiz"];
   const PptxGenJS = await loadPptx();
   const presentation = new PptxGenJS();
   presentation.layout = "LAYOUT_WIDE";
@@ -214,14 +237,31 @@ async function downloadPowerPoint() {
 
   const slide = presentation.addSlide();
   slide.background = { color: "FFFDF9" };
+
+  slide.addText("ST PETER'S  •  DO NOW", {
+    x: 0,
+    y: 0,
+    w: SLIDE_WIDTH,
+    h: 0.34,
+    fontFace: "Aptos",
+    fontSize: 11,
+    bold: true,
+    color: "FFFFFF",
+    margin: 0.08,
+    fill: { color: palette.accent },
+    line: { color: palette.accent, width: 0 },
+    valign: "mid",
+  });
+
   slide.addText(title, {
     x: 0.42,
-    y: 0.18,
-    w: 12.48,
-    h: 0.56,
+    y: 0.48,
+    w: 8.8,
+    h: 0.55,
     fontFace: "Georgia",
-    fontSize: 28,
-    color: "171B22",
+    fontSize: 27,
+    bold: true,
+    color: "172033",
     margin: 0,
     fit: "shrink",
     valign: "mid",
@@ -229,43 +269,90 @@ async function downloadPowerPoint() {
     fill: { color: "FFFFFF", transparency: 100 },
   });
 
+  slide.addText(yearLabel, {
+    x: 9.55,
+    y: 0.5,
+    w: 3.35,
+    h: 0.42,
+    fontFace: "Aptos",
+    fontSize: 12,
+    bold: true,
+    color: palette.accent,
+    align: "right",
+    margin: 0,
+    fit: "shrink",
+  });
+
+  if (topicLine) {
+    slide.addText(topicLine, {
+      x: 0.42,
+      y: 1.08,
+      w: 12.48,
+      h: 0.3,
+      fontFace: "Aptos",
+      fontSize: 10.5,
+      bold: true,
+      color: "536174",
+      margin: 0,
+      fit: "shrink",
+    });
+  }
+
   slide.addText(instructions, {
     x: 0.42,
-    y: 0.86,
+    y: 1.43,
     w: 12.48,
-    h: 0.72,
+    h: 0.46,
     fontFace: "Aptos",
-    fontSize: 15,
+    fontSize: 12.5,
     bold: true,
-    color: "515966",
-    margin: 0.14,
+    color: "263244",
+    margin: 0.1,
     fit: "shrink",
     valign: "mid",
-    line: { color: "CF082B", width: 1.25 },
-    fill: { color: "FDF1F3" },
+    line: { color: palette.accent, width: 1.3 },
+    fill: { color: palette.soft },
   });
 
   const layout = promptLayout(prompts.length);
-  const fontSize = prompts.length <= 6 ? 20 : prompts.length <= 10 ? 17 : prompts.length <= 16 ? 14.5 : 12;
+  const fontSize = prompts.length <= 6 ? 18 : prompts.length <= 10 ? 15.5 : prompts.length <= 16 ? 13 : 11.5;
 
   prompts.forEach((prompt, index) => {
     const column = index % layout.columns;
     const row = Math.floor(index / layout.columns);
     const x = layout.left + column * (layout.boxWidth + layout.gapX);
     const y = layout.top + row * (layout.boxHeight + layout.gapY);
-    slide.addText(`${index + 1}.  ${prompt}`, {
+
+    slide.addText(`${index + 1}`, {
+      x: x + 0.08,
+      y: y + 0.08,
+      w: 0.34,
+      h: 0.28,
+      fontFace: "Aptos",
+      fontSize: 10.5,
+      bold: true,
+      color: "FFFFFF",
+      align: "center",
+      valign: "mid",
+      margin: 0,
+      fill: { color: palette.accent },
+      line: { color: palette.accent, width: 0 },
+    });
+
+    slide.addText(prompt, {
       x,
       y,
       w: layout.boxWidth,
       h: layout.boxHeight,
       fontFace: "Aptos",
       fontSize,
-      color: "171B22",
-      margin: 0.14,
+      bold: false,
+      color: "172033",
+      margin: { left: 0.14, right: 0.12, top: 0.42, bottom: 0.12 },
       fit: "shrink",
       valign: "mid",
-      line: { color: "D8D0C9", width: 1 },
-      fill: { color: index % 2 === 0 ? "FFFDF9" : "F7F3EF" },
+      line: { color: index % 2 === 0 ? palette.accent : "D7DEE8", width: index % 2 === 0 ? 1.1 : 0.8 },
+      fill: { color: index % 2 === 0 ? palette.soft : "FFFFFF" },
     });
   });
 
@@ -273,95 +360,6 @@ async function downloadPowerPoint() {
     fileName: `${safeFilePart(title)}-Teaching-Slide.pptx`,
     compression: true,
   });
-}
-
-async function downloadWord() {
-  const { title, instructions, prompts } = extractTeachingContent();
-  const {
-    AlignmentType,
-    BorderStyle,
-    Document,
-    HeadingLevel,
-    Packer,
-    Paragraph,
-    ShadingType,
-    TextRun,
-  } = await import("docx");
-
-  const instructionBorder = { style: BorderStyle.SINGLE, size: 8, color: "CF082B" };
-  const children = [
-    new Paragraph({
-      heading: HeadingLevel.TITLE,
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 220 },
-      children: [new TextRun({ text: title, bold: true, color: "171B22", size: 34 })],
-    }),
-    new Paragraph({
-      spacing: { after: 260, line: 300 },
-      indent: { left: 160, right: 160 },
-      shading: { type: ShadingType.CLEAR, color: "auto", fill: "FDF1F3" },
-      border: {
-        top: instructionBorder,
-        bottom: instructionBorder,
-        left: instructionBorder,
-        right: instructionBorder,
-      },
-      children: [new TextRun({ text: instructions, bold: true, color: "515966", size: 23 })],
-    }),
-    ...prompts.map((prompt, index) => new Paragraph({
-      spacing: { after: 180, line: 320 },
-      children: [
-        new TextRun({ text: `${index + 1}. `, bold: true, color: "CF082B", size: 25 }),
-        new TextRun({ text: prompt, color: "171B22", size: 25 }),
-      ],
-    })),
-  ];
-
-  const wordDocument = new Document({
-    sections: [{
-      properties: { page: { margin: { top: 620, right: 720, bottom: 620, left: 720 } } },
-      children,
-    }],
-  });
-  const blob = await Packer.toBlob(wordDocument);
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${safeFilePart(title)}-Teaching-Resource.docx`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1200);
-}
-
-function installTextSizeStyles() {
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement("style");
-  style.id = STYLE_ID;
-  style.textContent = `
-    .starter-sheet :is(
-      .question-list li,
-      .retrieval-grid p,
-      .challenge-grid p,
-      .trade-card strong,
-      .bingo-grid p,
-      .roulette-grid p,
-      .placemat-grid > div p,
-      .clock-card p,
-      .chain-card p,
-      .match-item p,
-      .cloze-grid p,
-      .flashcard p,
-      .connect-four-grid p,
-      .list-grid li
-    ) {
-      font-size: 16px !important;
-      line-height: 1.48 !important;
-    }
-    .starter-sheet .keyword-card strong { font-size: 20px !important; }
-    .starter-sheet .picture-prompt strong { font-size: 46px !important; }
-  `;
-  document.head.appendChild(style);
 }
 
 export default function PowerPointDownloadEnhancer() {
@@ -372,10 +370,10 @@ export default function PowerPointDownloadEnhancer() {
       const button = event.currentTarget as HTMLButtonElement;
       if (button.disabled) return;
       button.disabled = true;
-      button.textContent = "Preparing teaching slide…";
+      button.textContent = "Preparing PowerPoint…";
       try {
         await downloadPowerPoint();
-        button.textContent = "Download teaching PowerPoint";
+        button.textContent = "Download PowerPoint";
       } catch (error) {
         console.error("PowerPoint download failed", error);
         button.textContent = "Try PowerPoint again";
@@ -384,65 +382,31 @@ export default function PowerPointDownloadEnhancer() {
       }
     };
 
-    const handleWordClick = async (event: Event) => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const button = event.currentTarget as HTMLButtonElement;
-      if (button.disabled) return;
-      button.disabled = true;
-      button.textContent = "Preparing teaching resource…";
-      try {
-        await downloadWord();
-        button.textContent = "Download teaching Word";
-      } catch (error) {
-        console.error("Word download failed", error);
-        button.textContent = "Try Word again";
-      } finally {
-        button.disabled = false;
-      }
-    };
-
-    const installButtons = () => {
+    const installButton = () => {
       if (disposed) return;
       const actions = document.querySelector<HTMLElement>(".preview-actions");
-      if (!actions) return;
+      if (!actions || actions.querySelector("[data-powerpoint-download]")) return;
 
       const buttons = Array.from(actions.querySelectorAll<HTMLButtonElement>("button"));
       const wordButton = buttons.find((button) => button.textContent?.includes("Word"));
       const pdfButton = buttons.find((button) => button.textContent?.includes("PDF"));
-
-      if (wordButton && !wordButton.dataset.cleanWordDownload) {
-        wordButton.dataset.cleanWordDownload = "true";
-        wordButton.textContent = "Download teaching Word";
-        wordButton.setAttribute("aria-label", "Download a static teaching resource with the title, student instructions and task content");
-        wordButton.addEventListener("click", handleWordClick, true);
-      }
-
-      if (!actions.querySelector("[data-powerpoint-download]")) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.dataset.powerpointDownload = "true";
-        button.className = wordButton?.className || "word-button";
-        button.textContent = "Download teaching PowerPoint";
-        button.setAttribute("aria-label", "Download a static teaching slide with the title, student instructions and task content");
-        button.addEventListener("click", handlePowerPointClick);
-        if (pdfButton) actions.insertBefore(button, pdfButton);
-        else actions.appendChild(button);
-      }
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.powerpointDownload = "true";
+      button.className = wordButton?.className || "word-button";
+      button.textContent = "Download PowerPoint";
+      button.setAttribute("aria-label", "Download an editable classroom PowerPoint slide for this activity");
+      button.addEventListener("click", handlePowerPointClick);
+      if (pdfButton) actions.insertBefore(button, pdfButton);
+      else actions.appendChild(button);
     };
 
-    installTextSizeStyles();
-    installButtons();
-    const interval = window.setInterval(installButtons, 750);
+    installButton();
+    const interval = window.setInterval(installButton, 750);
 
     return () => {
       disposed = true;
       window.clearInterval(interval);
-      document.getElementById(STYLE_ID)?.remove();
-      document.querySelectorAll<HTMLButtonElement>("[data-clean-word-download]").forEach((button) => {
-        button.removeEventListener("click", handleWordClick, true);
-        delete button.dataset.cleanWordDownload;
-      });
       document.querySelectorAll<HTMLButtonElement>("[data-powerpoint-download]").forEach((button) => {
         button.removeEventListener("click", handlePowerPointClick);
         button.remove();
