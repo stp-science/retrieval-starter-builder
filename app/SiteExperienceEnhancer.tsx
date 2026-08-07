@@ -6,16 +6,13 @@ export default function SiteExperienceEnhancer() {
   useEffect(() => {
     let disposed = false;
 
-    const clearLegacyDefaultTopic = () => {
+    const clearInitialTopicSelection = () => {
       if (disposed) return;
       const selectedOptions = Array.from(document.querySelectorAll<HTMLLabelElement>(".topic-option.selected"));
-      if (selectedOptions.length !== 1) return;
-
-      const topicName = selectedOptions[0].querySelector<HTMLElement>(".topic-name")?.textContent?.trim();
-      if (topicName !== "Pressure and Fluids") return;
-
-      const input = selectedOptions[0].querySelector<HTMLInputElement>('input[type="checkbox"]');
-      input?.click();
+      selectedOptions.forEach((option) => {
+        const input = option.querySelector<HTMLInputElement>('input[type="checkbox"]');
+        if (input?.checked) input.click();
+      });
     };
 
     const installScienceArtwork = () => {
@@ -44,7 +41,9 @@ export default function SiteExperienceEnhancer() {
       }
     };
 
-    clearLegacyDefaultTopic();
+    // The legacy page source still contains a default selected topic. Clear any
+    // checked topic once on first mount so every fresh load starts with none.
+    clearInitialTopicSelection();
     installScienceArtwork();
 
     const observer = new MutationObserver(() => installScienceArtwork());
