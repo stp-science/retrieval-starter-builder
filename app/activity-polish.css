@@ -1,0 +1,393 @@
+/* Shared classroom activity styling. These rules intentionally affect the on-screen
+   preview and PDF capture so the generated resource keeps the same visual identity. */
+
+.starter-sheet {
+  --activity-accent: #c8102e;
+  --activity-soft: #fce8ec;
+  --activity-soft-2: #fff7f8;
+  --activity-ink: #172033;
+  --activity-muted: #5a6677;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #d8dfe8 !important;
+  border-radius: 20px !important;
+  background: #fffdf9 !important;
+  box-shadow: 0 18px 46px rgba(23, 32, 51, 0.10) !important;
+}
+
+.starter-sheet::before {
+  content: "";
+  display: block;
+  height: 8px;
+  margin: -1px -1px 18px;
+  background: var(--activity-accent);
+}
+
+.starter-sheet.activity-thinking-linking,
+.starter-sheet.activity-concept-map,
+.starter-sheet.activity-question-chain {
+  --activity-accent: #6d4aff;
+  --activity-soft: #eeeafe;
+  --activity-soft-2: #f8f6ff;
+}
+
+.starter-sheet.activity-challenge-grid,
+.starter-sheet.activity-retrieval-roulette,
+.starter-sheet.activity-connect-four {
+  --activity-accent: #d97706;
+  --activity-soft: #fff2cf;
+  --activity-soft-2: #fffaf0;
+}
+
+.starter-sheet.activity-quiz-quiz-trade,
+.starter-sheet.activity-back-to-back,
+.starter-sheet.activity-walkabout-bingo,
+.starter-sheet.activity-retrieval-relay,
+.starter-sheet.activity-cops-robbers {
+  --activity-accent: #087f8c;
+  --activity-soft: #e4f6f6;
+  --activity-soft-2: #f4fbfb;
+}
+
+.starter-sheet.activity-picture-prompts,
+.starter-sheet.activity-match-up,
+.starter-sheet.activity-cloze-recall,
+.starter-sheet.activity-flashcard-sprint {
+  --activity-accent: #2563eb;
+  --activity-soft: #eaf2ff;
+  --activity-soft-2: #f5f8ff;
+}
+
+.starter-sheet.activity-brain-dump,
+.starter-sheet.activity-list-it,
+.starter-sheet.activity-two-things,
+.starter-sheet.activity-retrieval-placemat,
+.starter-sheet.activity-retrieval-clock {
+  --activity-accent: #334155;
+  --activity-soft: #eef2f6;
+  --activity-soft-2: #f8fafc;
+}
+
+.starter-sheet .sheet-kicker {
+  margin-top: 0 !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #e7ebf0 !important;
+  color: var(--activity-muted) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+.starter-sheet .sheet-kicker span:first-child {
+  color: var(--activity-accent) !important;
+}
+
+.starter-sheet > h2 {
+  position: relative;
+  margin-top: 16px !important;
+  margin-bottom: 12px !important;
+  color: var(--activity-ink) !important;
+  letter-spacing: -0.025em !important;
+}
+
+.starter-sheet > h2::after {
+  content: "";
+  display: block;
+  width: 58px;
+  height: 5px;
+  margin-top: 9px;
+  border-radius: 999px;
+  background: var(--activity-accent);
+}
+
+.starter-sheet .topic-chips {
+  gap: 7px !important;
+}
+
+.starter-sheet .topic-chips span {
+  border: 1px solid color-mix(in srgb, var(--activity-accent) 28%, #dfe5ec) !important;
+  border-radius: 999px !important;
+  background: var(--activity-soft-2) !important;
+  color: var(--activity-ink) !important;
+  font-weight: 750 !important;
+  box-shadow: 0 2px 5px rgba(23, 32, 51, 0.04) !important;
+}
+
+.starter-sheet .instructions {
+  position: relative;
+  margin: 16px 0 18px !important;
+  padding: 14px 16px 14px 20px !important;
+  border: 1px solid color-mix(in srgb, var(--activity-accent) 35%, #dbe2ea) !important;
+  border-left: 6px solid var(--activity-accent) !important;
+  border-radius: 12px !important;
+  background: var(--activity-soft-2) !important;
+  color: #283548 !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 5px 14px rgba(23, 32, 51, 0.05) !important;
+}
+
+.starter-sheet .swap-help {
+  border-radius: 10px !important;
+  background: #f7f8fa !important;
+  border: 1px dashed #cfd6df !important;
+}
+
+.starter-sheet :is(
+  .retrieval-grid > div,
+  .challenge-grid > div,
+  .bingo-grid > div,
+  .roulette-grid > div,
+  .connect-four-grid > div,
+  .picture-prompt,
+  .keyword-card,
+  .chain-card,
+  .cloze-grid > div,
+  .match-item,
+  .match-answer,
+  .clock-card,
+  .trade-card,
+  .list-grid section,
+  .brain-grid section,
+  .robbers-grid section,
+  .relay-grid section,
+  .two-things-grid section,
+  .flashcard,
+  .answer-first-list li,
+  .question-list li
+) {
+  border: 1px solid #dce2ea !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  box-shadow: 0 5px 14px rgba(23, 32, 51, 0.055) !important;
+}
+
+.starter-sheet :is(
+  .retrieval-grid > div,
+  .challenge-grid > div,
+  .bingo-grid > div,
+  .roulette-grid > div,
+  .connect-four-grid > div,
+  .picture-prompt,
+  .keyword-card,
+  .chain-card,
+  .cloze-grid > div,
+  .match-item,
+  .match-answer,
+  .clock-card,
+  .trade-card,
+  .list-grid section,
+  .brain-grid section,
+  .robbers-grid section,
+  .relay-grid section,
+  .two-things-grid section,
+  .flashcard
+):nth-child(4n + 1) {
+  background: var(--activity-soft-2) !important;
+  border-color: color-mix(in srgb, var(--activity-accent) 30%, #dce2ea) !important;
+}
+
+.starter-sheet :is(
+  .retrieval-grid > div,
+  .challenge-grid > div,
+  .bingo-grid > div,
+  .roulette-grid > div,
+  .connect-four-grid > div,
+  .picture-prompt,
+  .keyword-card,
+  .chain-card,
+  .cloze-grid > div,
+  .clock-card,
+  .trade-card
+):nth-child(4n + 3) {
+  background: #f8fafc !important;
+}
+
+.starter-sheet :is(
+  .retrieval-grid > div > span:first-child,
+  .bingo-grid > div > span:first-child,
+  .cloze-grid > div > span:first-child,
+  .picture-prompt > span:first-child,
+  .keyword-card > span:first-child,
+  .trade-card > span:first-child,
+  .match-item > b,
+  .match-answer > b,
+  .roulette-grid > div > b,
+  .connect-four-grid > div > b,
+  .clock-card > b
+) {
+  color: var(--activity-accent) !important;
+  font-weight: 900 !important;
+}
+
+.starter-sheet .question-list {
+  gap: 10px !important;
+}
+
+.starter-sheet .question-list li {
+  position: relative;
+  padding: 16px 16px 16px 50px !important;
+  counter-increment: polished-question;
+}
+
+.starter-sheet .question-list {
+  counter-reset: polished-question;
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+.starter-sheet .question-list li::before {
+  content: counter(polished-question);
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--activity-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.starter-sheet :is(
+  .question-list li,
+  .retrieval-grid p,
+  .challenge-grid p,
+  .trade-card strong,
+  .bingo-grid p,
+  .roulette-grid p,
+  .placemat-grid > div p,
+  .clock-card p,
+  .chain-card p,
+  .match-item p,
+  .match-answer p,
+  .cloze-grid p,
+  .flashcard p,
+  .connect-four-grid p,
+  .list-grid li
+) {
+  font-size: 16px !important;
+  line-height: 1.47 !important;
+  color: #1e293b !important;
+}
+
+.starter-sheet .linking-grid {
+  gap: 10px !important;
+}
+
+.starter-sheet .linking-grid > div {
+  min-height: 78px !important;
+  border: 1px solid #dadfea !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 5px 14px rgba(23, 32, 51, 0.05) !important;
+  font-weight: 800 !important;
+}
+
+.starter-sheet .linking-grid > div:nth-child(odd) {
+  background: var(--activity-soft-2) !important;
+}
+
+.starter-sheet .linking-grid > div span {
+  background: var(--activity-accent) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+}
+
+.starter-sheet .concept-core {
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: var(--activity-accent) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(23, 32, 51, 0.15) !important;
+}
+
+.starter-sheet .concept-core :is(span, strong) {
+  color: #fff !important;
+}
+
+.starter-sheet .concept-terms span,
+.starter-sheet .cloze-word-bank b {
+  border-radius: 999px !important;
+  border: 1px solid color-mix(in srgb, var(--activity-accent) 30%, #d9dfe8) !important;
+  background: var(--activity-soft) !important;
+  color: var(--activity-ink) !important;
+  box-shadow: 0 2px 6px rgba(23, 32, 51, 0.045) !important;
+}
+
+.starter-sheet .picture-prompt strong {
+  font-size: 48px !important;
+  filter: drop-shadow(0 4px 5px rgba(23, 32, 51, 0.12));
+}
+
+.starter-sheet .keyword-card strong {
+  font-size: 21px !important;
+  color: var(--activity-ink) !important;
+}
+
+.starter-sheet .points {
+  border-radius: 999px !important;
+  background: var(--activity-accent) !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+}
+
+.starter-sheet .placemat-grid > div {
+  border-color: #dce2ea !important;
+  background: #fff !important;
+}
+
+.starter-sheet .placemat-grid > div:nth-child(odd) {
+  background: var(--activity-soft-2) !important;
+}
+
+.starter-sheet .placemat-centre,
+.starter-sheet .clock-centre {
+  border: 0 !important;
+  background: var(--activity-accent) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(23, 32, 51, 0.16) !important;
+}
+
+.starter-sheet .clock-centre :is(span, strong, small) {
+  color: #fff !important;
+}
+
+.starter-sheet .answer-toggle {
+  border: 1px solid var(--activity-accent) !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: var(--activity-accent) !important;
+  font-weight: 850 !important;
+}
+
+.starter-sheet .swap-button {
+  border-radius: 999px !important;
+  border-color: #cfd6df !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #667085 !important;
+}
+
+.starter-sheet footer {
+  margin-top: 20px !important;
+  padding: 12px 14px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: #172033 !important;
+  color: #fff !important;
+}
+
+.starter-sheet footer span {
+  color: #fff !important;
+  font-weight: 750 !important;
+}
+
+@media print {
+  .starter-sheet {
+    box-shadow: none !important;
+  }
+}
