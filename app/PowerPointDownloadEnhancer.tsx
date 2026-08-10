@@ -20,6 +20,11 @@ type PptxDocument = {
 
 type PptxConstructor = new () => PptxDocument;
 
+type ExportAnswer = {
+  answer: string;
+  number: number;
+};
+
 declare global {
   interface Window {
     PptxGenJS?: PptxConstructor;
@@ -128,7 +133,7 @@ function getActivityId(sheet: HTMLElement) {
   return className?.replace("activity-", "") ?? "quick-quiz";
 }
 
-function extractTeachingContent() {
+export function extractTeachingContent() {
   const sheet = document.querySelector<HTMLElement>(".starter-sheet");
   if (!sheet) throw new Error("Generate an activity before downloading it.");
 
@@ -141,6 +146,10 @@ function extractTeachingContent() {
   let prompts: string[] = [];
 
   switch (activity) {
+    case "quick-quiz":
+    case "one-worders":
+      prompts = texts(sheet, ".question-list li > span:not(.question-number)");
+      break;
     case "thinking-linking":
       prompts = texts(sheet, ".linking-grid > div").map((value) => value.replace(/^\d+\s*/, ""));
       break;
@@ -225,18 +234,20 @@ function extractTeachingContent() {
   }
 
   const answerItems = Array.from(sheet.querySelectorAll<HTMLElement>(".export-answer-bank [data-export-answer]"));
-  const answers = answerItems.map((item, index) => {
-    const prompt = cleanText(item.dataset.exportPrompt);
-    const answer = cleanText(item.dataset.exportAnswer);
-    return `${index + 1}. ${answer}${prompt ? `  (${prompt})` : ""}`;
-  });
+  const answers: ExportAnswer[] = answerItems
+    .map((item, index) => ({
+      answer: cleanText(item.dataset.exportAnswer),
+      number: index + 1,
+    }))
+    .filter((item) => item.answer);
   const wordBank = activity === "cloze-recall" ? texts(sheet, ".cloze-word-bank b").join(" • ") : "";
 
   return { title, instructions, prompts: unique(prompts), answers, wordBank, activity, yearLabel, topicLine };
 }
 
-function promptLayout(count: number) {
-  const columns = count <= 6 ? 2 : count <= 12 ? 3 : 4;
+export function promptLayout(count: number, preferredColumns?: number) {
+  const automaticColumns = count <= 8 ? 2 : count <= 12 ? 3 : 4;
+  const columns = Math.max(1, Math.min(count || 1, preferredColumns ?? automaticColumns));
   const rows = Math.max(1, Math.ceil(count / columns));
   const gapX = 0.14;
   const gapY = 0.12;
@@ -255,10 +266,10 @@ function promptLayout(count: number) {
   };
 }
 
-async function downloadPowerPoint() {
+export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
   const { title, instructions, prompts, answers, wordBank, activity, yearLabel, topicLine } = extractTeachingContent();
   const palette = activityPalettes[activity] ?? activityPalettes["quick-quiz"];
-  const PptxGenJS = await loadPptx();
+  const PptxGenJS = PptxGenJSOverride ?? await loadPptx();
   const presentation = new PptxGenJS();
   presentation.layout = "LAYOUT_WIDE";
   presentation.author = "Retrieval Starter Builder";
@@ -346,7 +357,8 @@ async function downloadPowerPoint() {
     fill: { color: READING_PANEL_ALT },
   });
 
-  const layout = promptLayout(prompts.length);
+  const numberedQuestionColumns = activity === "quick-quiz" || activity === "one-worders" ? 2 : undefined;
+  const layout = promptLayout(prompts.length, numberedQuestionColumns);
   const fontSize = prompts.length <= 6 ? 18 : prompts.length <= 10 ? 15.5 : prompts.length <= 16 ? 13 : 11.5;
 
   prompts.forEach((prompt, index) => {
@@ -356,6 +368,22 @@ async function downloadPowerPoint() {
     const y = layout.top + row * (layout.boxHeight + layout.gapY);
 
     const isPlacemat = activity === "retrieval-placemat";
+    slide.addText(prompt, {
+      x,
+      y,
+      w: layout.boxWidth,
+      h: layout.boxHeight,
+      fontFace: "Aptos",
+      fontSize: isPlacemat ? 18 : fontSize,
+      bold: false,
+      color: "172033",
+      margin: { left: 0.14, right: 0.12, top: 0.42, bottom: 0.12 },
+      fit: "shrink",
+      valign: "mid",
+      line: { color: index % 2 === 0 ? palette.accent : "D8C98A", width: index % 2 === 0 ? 1.1 : 0.8 },
+      fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
+    });
+
     slide.addText(isPlacemat ? `ZONE ${String.fromCharCode(65 + index)}` : `${index + 1}`, {
       x: x + 0.08,
       y: y + 0.08,
@@ -372,22 +400,6 @@ async function downloadPowerPoint() {
       fit: "shrink",
       fill: { color: palette.accent },
       line: { color: palette.accent, width: 0 },
-    });
-
-    slide.addText(prompt, {
-      x,
-      y,
-      w: layout.boxWidth,
-      h: layout.boxHeight,
-      fontFace: "Aptos",
-      fontSize: isPlacemat ? 18 : fontSize,
-      bold: false,
-      color: "172033",
-      margin: { left: 0.14, right: 0.12, top: 0.42, bottom: 0.12 },
-      fit: "shrink",
-      valign: "mid",
-      line: { color: index % 2 === 0 ? palette.accent : "D8C98A", width: index % 2 === 0 ? 1.1 : 0.8 },
-      fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
     });
   });
 
@@ -465,13 +477,13 @@ async function downloadPowerPoint() {
     });
 
     const answerLayout = promptLayout(answers.length);
-    const answerFontSize = answers.length <= 6 ? 17 : answers.length <= 10 ? 14.5 : answers.length <= 16 ? 12.5 : 11;
-    answers.forEach((answer, index) => {
+    const answerFontSize = answers.length <= 6 ? 17 : answers.length <= 8 ? 15.5 : answers.length <= 12 ? 14 : answers.length <= 16 ? 12.5 : 11;
+    answers.forEach((item, index) => {
       const column = index % answerLayout.columns;
       const row = Math.floor(index / answerLayout.columns);
       const x = answerLayout.left + column * (answerLayout.boxWidth + answerLayout.gapX);
       const y = answerLayout.top + row * (answerLayout.boxHeight + answerLayout.gapY);
-      answerSlide.addText(answer, {
+      answerSlide.addText(item.answer, {
         x,
         y,
         w: answerLayout.boxWidth,
@@ -479,17 +491,41 @@ async function downloadPowerPoint() {
         fontFace: "Aptos",
         fontSize: answerFontSize,
         color: "172033",
-        margin: 0.14,
+        margin: { left: 0.14, right: 0.12, top: 0.42, bottom: 0.12 },
         fit: "shrink",
         valign: "mid",
         line: { color: palette.accent, width: 1 },
         fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
       });
+      answerSlide.addText(`${item.number}`, {
+        x: x + 0.08,
+        y: y + 0.08,
+        w: 0.3,
+        h: 0.3,
+        fontFace: "Aptos",
+        fontSize: 9.5,
+        bold: true,
+        color: "FFFFFF",
+        align: "center",
+        valign: "mid",
+        margin: 0,
+        shape: "ellipse",
+        fill: { color: palette.accent },
+        line: { color: palette.accent, width: 0 },
+      });
     });
   }
 
-  await presentation.writeFile({
+  return {
+    presentation,
     fileName: `${safeFilePart(title)}-Teaching-Slide.pptx`,
+  };
+}
+
+export async function downloadPowerPoint() {
+  const { presentation, fileName } = await createPowerPoint();
+  await presentation.writeFile({
+    fileName,
     compression: true,
   });
 }
