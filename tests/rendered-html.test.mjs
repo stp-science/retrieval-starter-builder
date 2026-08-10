@@ -52,3 +52,19 @@ test("includes the expanded 24-activity catalogue", async () => {
     assert.ok(activityIds.includes(id), `missing activity: ${id}`);
   }
 });
+
+test("includes the teacher-testing activity improvements", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const powerpoint = await readFile(new URL("../app/PowerPointDownloadEnhancer.tsx", import.meta.url), "utf8");
+  const polish = await readFile(new URL("../app/activity-polish.css", import.meta.url), "utf8");
+
+  assert.match(page, /\[4, 6, 8, 10, 12, 16\]/, "four-prompt option is missing");
+  assert.match(page, /Knowledge focus/, "focused Brain Dump and Cops & Robbers option is missing");
+  assert.match(page, /Write your own question/, "custom question editor is missing");
+  assert.match(page, /roulette-answer-button/, "per-question Roulette reveal is missing");
+  assert.match(page, /cloze-context/, "contextual Cloze Recall prompt is missing");
+  assert.match(page, /presentation-stage/, "full-screen teaching mode is missing");
+  assert.match(powerpoint, /Answers/, "PowerPoint answer slide is missing");
+  assert.match(powerpoint, /activity-flashcard-sprint/, "Flashcard Sprint PowerPoint suppression is missing");
+  assert.doesNotMatch(polish, /color-mix\(/, "PDF-incompatible colour syntax remains");
+});

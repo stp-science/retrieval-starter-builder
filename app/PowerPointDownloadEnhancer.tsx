@@ -153,7 +153,12 @@ function extractTeachingContent() {
       prompts = texts(sheet, ".keyword-card strong").map((word) => `Describe: ${word}`);
       break;
     case "picture-prompts":
-      prompts = texts(sheet, ".picture-prompt strong").map((symbol, index) => `Picture ${index + 1}: ${symbol}`);
+      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".picture-prompt")).map((card, index) => {
+        const symbol = cleanText(card.querySelector("strong")?.textContent);
+        const keyword = cleanText(card.querySelector(".picture-keyword")?.textContent);
+        const topic = cleanText(card.querySelector(".picture-topic")?.textContent);
+        return `Picture ${index + 1}: ${symbol}  •  ${keyword}  •  ${topic}`;
+      });
       break;
     case "brain-dump":
       prompts = texts(sheet, ".brain-grid h3").map((topic) => `${topic}: recall key terms, ideas, examples and connections.`);
@@ -165,9 +170,10 @@ function extractTeachingContent() {
       prompts = texts(sheet, ".relay-grid h3").map((topic) => `${topic}: build the answer one turn at a time.`);
       break;
     case "list-it":
-      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".list-grid section")).flatMap((section) => {
+      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".list-grid section")).map((section) => {
         const topic = cleanText(section.querySelector("h3")?.textContent);
-        return texts(section, "li").map((item) => `${topic}: ${item}`);
+        const prompt = cleanText(section.querySelector("p")?.textContent);
+        return `${topic}: ${prompt}`;
       });
       break;
     case "two-things":
@@ -183,13 +189,21 @@ function extractTeachingContent() {
       prompts = texts(sheet, ".match-item p");
       break;
     case "cloze-recall":
-      prompts = texts(sheet, ".cloze-grid p");
+      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".cloze-grid > div")).map((item) => {
+        const context = cleanText(item.querySelector(".cloze-context")?.textContent);
+        const incomplete = cleanText(item.querySelector("p")?.textContent).replace(/^Incomplete answer\s*/i, "");
+        return `${context}  Incomplete answer: ${incomplete}`;
+      });
       break;
     case "flashcard-sprint":
       prompts = texts(sheet, ".flashcard section:first-child p");
       break;
     case "answer-first":
-      prompts = texts(sheet, ".answer-first-list li strong").map((answer) => `Write a question whose answer is: ${answer}`);
+      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".answer-first-list li")).map((item) => {
+        const answer = cleanText(item.querySelector("strong")?.textContent);
+        const scaffold = cleanText(item.querySelector(".answer-scaffold")?.textContent);
+        return `Write a question whose answer is: ${answer}${scaffold ? `  •  ${scaffold}` : ""}`;
+      });
       break;
     default:
       prompts = texts(
@@ -203,7 +217,15 @@ function extractTeachingContent() {
     prompts = texts(sheet, "p").filter((value) => value.length > 2 && value !== instructions);
   }
 
-  return { title, instructions, prompts: unique(prompts), activity, yearLabel, topicLine };
+  const answerItems = Array.from(sheet.querySelectorAll<HTMLElement>(".export-answer-bank [data-export-answer]"));
+  const answers = answerItems.map((item, index) => {
+    const prompt = cleanText(item.dataset.exportPrompt);
+    const answer = cleanText(item.dataset.exportAnswer);
+    return `${index + 1}. ${answer}${prompt ? `  (${prompt})` : ""}`;
+  });
+  const wordBank = activity === "cloze-recall" ? texts(sheet, ".cloze-word-bank b").join(" • ") : "";
+
+  return { title, instructions, prompts: unique(prompts), answers, wordBank, activity, yearLabel, topicLine };
 }
 
 function promptLayout(count: number) {
@@ -227,7 +249,7 @@ function promptLayout(count: number) {
 }
 
 async function downloadPowerPoint() {
-  const { title, instructions, prompts, activity, yearLabel, topicLine } = extractTeachingContent();
+  const { title, instructions, prompts, answers, wordBank, activity, yearLabel, topicLine } = extractTeachingContent();
   const palette = activityPalettes[activity] ?? activityPalettes["quick-quiz"];
   const PptxGenJS = await loadPptx();
   const presentation = new PptxGenJS();
@@ -301,7 +323,7 @@ async function downloadPowerPoint() {
     });
   }
 
-  slide.addText(instructions, {
+  slide.addText(wordBank ? `${instructions}  Word bank: ${wordBank}` : instructions, {
     x: 0.42,
     y: 1.43,
     w: 12.48,
@@ -359,6 +381,103 @@ async function downloadPowerPoint() {
     });
   });
 
+  if (answers.length > 0) {
+    const answerSlide = presentation.addSlide();
+    answerSlide.background = { color: READING_BACKGROUND };
+    answerSlide.addText("ST PETER'S  •  CHECK AND IMPROVE", {
+      x: 0,
+      y: 0,
+      w: SLIDE_WIDTH,
+      h: 0.34,
+      fontFace: "Aptos",
+      fontSize: 11,
+      bold: true,
+      color: "FFFFFF",
+      margin: 0.08,
+      fill: { color: palette.accent },
+      line: { color: palette.accent, width: 0 },
+      valign: "mid",
+    });
+    answerSlide.addText(`${title} — Answers`, {
+      x: 0.42,
+      y: 0.48,
+      w: 9.1,
+      h: 0.55,
+      fontFace: "Georgia",
+      fontSize: 25,
+      bold: true,
+      color: "172033",
+      margin: 0,
+      fit: "shrink",
+      valign: "mid",
+    });
+    answerSlide.addText(yearLabel, {
+      x: 9.55,
+      y: 0.5,
+      w: 3.35,
+      h: 0.42,
+      fontFace: "Aptos",
+      fontSize: 12,
+      bold: true,
+      color: palette.accent,
+      align: "right",
+      margin: 0,
+      fit: "shrink",
+    });
+    if (topicLine) {
+      answerSlide.addText(topicLine, {
+        x: 0.42,
+        y: 1.08,
+        w: 12.48,
+        h: 0.3,
+        fontFace: "Aptos",
+        fontSize: 10.5,
+        bold: true,
+        color: "536174",
+        margin: 0,
+        fit: "shrink",
+      });
+    }
+    answerSlide.addText("Reveal after pupils have committed to an answer. Correct and improve in a different colour.", {
+      x: 0.42,
+      y: 1.43,
+      w: 12.48,
+      h: 0.46,
+      fontFace: "Aptos",
+      fontSize: 12.5,
+      bold: true,
+      color: "263244",
+      margin: 0.1,
+      fit: "shrink",
+      valign: "mid",
+      line: { color: palette.accent, width: 1.3 },
+      fill: { color: READING_PANEL_ALT },
+    });
+
+    const answerLayout = promptLayout(answers.length);
+    const answerFontSize = answers.length <= 6 ? 17 : answers.length <= 10 ? 14.5 : answers.length <= 16 ? 12.5 : 11;
+    answers.forEach((answer, index) => {
+      const column = index % answerLayout.columns;
+      const row = Math.floor(index / answerLayout.columns);
+      const x = answerLayout.left + column * (answerLayout.boxWidth + answerLayout.gapX);
+      const y = answerLayout.top + row * (answerLayout.boxHeight + answerLayout.gapY);
+      answerSlide.addText(answer, {
+        x,
+        y,
+        w: answerLayout.boxWidth,
+        h: answerLayout.boxHeight,
+        fontFace: "Aptos",
+        fontSize: answerFontSize,
+        color: "172033",
+        margin: 0.14,
+        fit: "shrink",
+        valign: "mid",
+        line: { color: palette.accent, width: 1 },
+        fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
+      });
+    });
+  }
+
   await presentation.writeFile({
     fileName: `${safeFilePart(title)}-Teaching-Slide.pptx`,
     compression: true,
@@ -388,7 +507,13 @@ export default function PowerPointDownloadEnhancer() {
     const installButton = () => {
       if (disposed) return;
       const actions = document.querySelector<HTMLElement>(".preview-actions");
-      if (!actions || actions.querySelector("[data-powerpoint-download]")) return;
+      if (!actions) return;
+
+      if (document.querySelector(".starter-sheet.activity-flashcard-sprint")) {
+        actions.querySelector<HTMLButtonElement>("[data-powerpoint-download]")?.remove();
+        return;
+      }
+      if (actions.querySelector("[data-powerpoint-download]")) return;
 
       const buttons = Array.from(actions.querySelectorAll<HTMLButtonElement>("button"));
       const wordButton = buttons.find((button) => button.textContent?.includes("Word"));

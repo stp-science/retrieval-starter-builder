@@ -15,11 +15,20 @@ Teachers choose a year group, one or more previously taught topics, and an activ
 - individual **Swap** controls for replacing unwanted questions
 - difficulty and question-count controls
 - answer reveal, classroom display, print, PDF and Word export options
+- full-screen classroom presentation mode with live answer controls
+- editable teacher-written questions and focused knowledge prompts
+- editable PowerPoint question and answer slides where appropriate
 - St Peter's Cambridge branding
 
 The expanded activity catalogue includes retrieval clocks, picture prompts,
 question chains, match-ups, cloze recall, flashcard sprints, Two Things and
 Connect Four alongside the original 16 formats.
+
+Activity-specific behaviour includes four-question retrieval placemats,
+mixed-topic List It prompts, single-topic concept maps, focused Brain Dump and
+Cops & Robbers prompts, connected Question Chains, labelled Picture Prompts,
+context-rich cloze statements, automatic Flashcard Sprint answers and
+one-question-at-a-time Retrieval Roulette reveals.
 
 ## Included topics
 

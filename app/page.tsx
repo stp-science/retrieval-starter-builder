@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { extraQuestions } from "./question-bank";
 
 type Difficulty = "foundation" | "core" | "stretch";
@@ -18,6 +18,16 @@ type VisualPrompt = {
   symbol: string;
   answer: string;
   topicId: string;
+  topicName: string;
+  keyword: string;
+};
+
+type KnowledgeFocus = "focused" | "whole-topic";
+
+type ListPrompt = {
+  topicId: string;
+  topicName: string;
+  prompt: string;
 };
 
 type Topic = {
@@ -313,7 +323,7 @@ const baseTopics: Topic[] = [
   },
 ];
 
-const topicVisuals: Record<string, Omit<VisualPrompt, "topicId">[]> = {
+const topicVisuals: Record<string, Pick<VisualPrompt, "symbol" | "answer">[]> = {
   "y7-material-properties": [
     { symbol: "🧲", answer: "Magnetism" },
     { symbol: "🪟", answer: "Transparency" },
@@ -712,10 +722,54 @@ function makeCloze(answer: string) {
   return { text: text === answer ? "________________" : text, missing };
 }
 
-function chainLabel(difficulty: Difficulty) {
-  if (difficulty === "foundation") return "1 • Recall";
-  if (difficulty === "core") return "2 • Connect";
+function chainLabel(index: number, total: number) {
+  const progress = total <= 1 ? 0 : index / (total - 1);
+  if (progress < 0.34) return "1 • Recall";
+  if (progress < 0.67) return "2 • Connect";
   return "3 • Explain";
+}
+
+function visualKeyword(answer: string, topic: Topic) {
+  const normalised = answer.toLowerCase();
+  const match = [...topic.keywords]
+    .sort((left, right) => right.length - left.length)
+    .find((keyword) => normalised.includes(keyword.toLowerCase()));
+  if (match) return match;
+  return answer
+    .replace(/^(a|an|the)\s+/i, "")
+    .split(/\s+/)
+    .slice(0, 3)
+    .join(" ");
+}
+
+function questionScaffold(question: string) {
+  const words = question.replace(/[?!.]+$/, "").split(/\s+/).filter(Boolean);
+  const starterLength = words[0]?.toLowerCase() === "how" && words[1]?.toLowerCase() === "does" ? 2 : 1;
+  return `${words.slice(0, starterLength).join(" ")} …?`;
+}
+
+function buildListPrompts(selectedTopics: Topic[]): ListPrompt[] {
+  const prompts = [
+    "List four key terms and define one of them.",
+    "List three accurate scientific facts.",
+    "List two examples, uses or applications.",
+    "List one clear link to another idea or topic.",
+  ];
+  return prompts.map((prompt, index) => {
+    const topic = selectedTopics[index % selectedTopics.length];
+    return { topicId: topic.id, topicName: topic.name, prompt };
+  });
+}
+
+function meaningfulTerms(value: string) {
+  const ignored = new Set(["about", "after", "called", "does", "from", "give", "into", "name", "that", "their", "these", "what", "when", "where", "which", "with", "why"]);
+  return new Set((value.toLowerCase().match(/[a-z][a-z-]{2,}/g) ?? []).filter((word) => !ignored.has(word)));
+}
+
+function relatedness(question: GeneratedQuestion, context: GeneratedQuestion[]) {
+  const terms = meaningfulTerms(`${question.q} ${question.a}`);
+  const contextTerms = meaningfulTerms(context.map((item) => `${item.q} ${item.a}`).join(" "));
+  return [...terms].filter((term) => contextTerms.has(term)).length;
 }
 
 const fixedPromptCounts: Partial<Record<ActivityId, number>> = {
@@ -738,14 +792,22 @@ const nonQuestionActivities: ActivityId[] = [
 
 export default function Home() {
   const [year, setYear] = useState<7 | 8 | 9>(9);
-  const [selected, setSelected] = useState<string[]>(["y9-pressure-fluids"]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [activity, setActivity] = useState<ActivityId>("quick-quiz");
   const [count, setCount] = useState(8);
   const [level, setLevel] = useState<"balanced" | Difficulty>("balanced");
+  const [knowledgeFocus, setKnowledgeFocus] = useState<KnowledgeFocus>("focused");
   const [generated, setGenerated] = useState<GeneratedQuestion[]>([]);
   const [keywordSet, setKeywordSet] = useState<string[]>([]);
   const [visualSet, setVisualSet] = useState<VisualPrompt[]>([]);
+  const [listPromptSet, setListPromptSet] = useState<ListPrompt[]>([]);
   const [showAnswers, setShowAnswers] = useState(false);
+  const [revealedRoulette, setRevealedRoulette] = useState<Set<number>>(new Set());
+  const [presentationMode, setPresentationMode] = useState(false);
+  const [customQuestionOpen, setCustomQuestionOpen] = useState(false);
+  const [customQuestionIndex, setCustomQuestionIndex] = useState(0);
+  const [customQuestion, setCustomQuestion] = useState("");
+  const [customAnswer, setCustomAnswer] = useState("");
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState(false);
@@ -756,9 +818,13 @@ export default function Home() {
   const [wheelResult, setWheelResult] = useState<string | null>(null);
   const [wheelRound, setWheelRound] = useState(0);
   const sheetRef = useRef<HTMLElement | null>(null);
+  const presentationRef = useRef<HTMLDivElement | null>(null);
 
   const yearTopics = useMemo(() => topics.filter((topic) => topic.year === year), [year]);
   const selectedTopics = topics.filter((topic) => selected.includes(topic.id));
+  const displayTopics = activity === "question-chain" && generated.length
+    ? selectedTopics.filter((topic) => generated.some((question) => question.topicId === topic.id))
+    : selectedTopics;
   const matchAnswerBank = useMemo(
     () => shuffled(generated.map((question) => ({ key: question.q, answer: question.a }))),
     [generated],
@@ -772,29 +838,55 @@ export default function Home() {
     [clozeItems],
   );
 
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) setPresentationMode(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPresentationMode(false);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   function chooseYear(nextYear: 7 | 8 | 9) {
     setYear(nextYear);
     setSelected([]);
     setGenerated([]);
     setKeywordSet([]);
     setVisualSet([]);
+    setListPromptSet([]);
     setShowAnswers(false);
+    setRevealedRoulette(new Set());
   }
 
   function toggleTopic(id: string) {
-    setSelected((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+    setSelected((current) => {
+      if (current.includes(id)) return current.filter((item) => item !== id);
+      if (activity === "concept-map") return [id];
+      return [...current, id];
+    });
     setGenerated([]);
     setVisualSet([]);
+    setListPromptSet([]);
   }
 
   function chooseActivity(nextActivity: ActivityId) {
     setActivity(nextActivity);
+    if (nextActivity === "concept-map" && selected.length > 1) setSelected([selected[0]]);
     setGenerated([]);
     setKeywordSet([]);
     setVisualSet([]);
-    setShowAnswers(false);
+    setListPromptSet([]);
+    setShowAnswers(nextActivity === "flashcard-sprint");
+    setRevealedRoulette(new Set());
     const fixedCount = fixedPromptCounts[nextActivity];
     if (fixedCount) setCount(fixedCount);
+    if (nextActivity === "retrieval-placemat" || nextActivity === "brain-dump" || nextActivity === "cops-robbers") setCount(4);
     if (nextActivity === "question-chain") setLevel("balanced");
   }
 
@@ -825,17 +917,24 @@ export default function Home() {
     const keywords = shuffled(selectedTopics.flatMap((topic) => topic.keywords));
     let finalResult = shuffled(result).slice(0, requested);
     if (activity === "question-chain") {
-      const levelPools = (["foundation", "core", "stretch"] as Difficulty[])
-        .map((difficulty) => shuffled(source.filter((question) => question.difficulty === difficulty)));
-      const chained: GeneratedQuestion[] = [];
-      let levelRound = 0;
-      while (chained.length < requested && levelPools.some((group) => group.length > levelRound)) {
-        for (const group of levelPools) {
-          if (group[levelRound] && chained.length < requested) chained.push(group[levelRound]);
-        }
-        levelRound += 1;
+      const chainTopic = shuffled(selectedTopics.filter((topic) => topic.questions.length))[0];
+      const topicQuestions = chainTopic.questions.map((question) => ({ ...question, topicId: chainTopic.id }));
+      const windowSize = Math.min(Math.max(requested + 4, 12), topicQuestions.length);
+      const starts = Array.from(
+        { length: Math.max(1, Math.ceil(topicQuestions.length / 8)) },
+        (_, index) => Math.min(index * 8, Math.max(0, topicQuestions.length - windowSize)),
+      );
+      const start = shuffled([...new Set(starts)])[0] ?? 0;
+      const connectedWindow = topicQuestions.slice(start, start + windowSize);
+      const seed = connectedWindow.find((question) => question.difficulty === "foundation") ?? connectedWindow[0];
+      const connected: GeneratedQuestion[] = seed ? [seed] : [];
+      while (connected.length < requested) {
+        const candidates = connectedWindow.filter((question) => !connected.some((picked) => picked.q === question.q));
+        const next = candidates.sort((left, right) => relatedness(right, connected) - relatedness(left, connected))[0];
+        if (!next) break;
+        connected.push(next);
       }
-      finalResult = chained;
+      finalResult = connected.sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]);
     }
     if (activity === "match-up") {
       const candidates = [...finalResult, ...shuffled(source)]
@@ -849,12 +948,19 @@ export default function Home() {
       }).slice(0, requested);
     }
     const visuals = shuffled(selectedTopics.flatMap((topic) =>
-      (topicVisuals[topic.id] ?? []).map((prompt) => ({ ...prompt, topicId: topic.id })),
+      (topicVisuals[topic.id] ?? []).map((prompt) => ({
+        ...prompt,
+        topicId: topic.id,
+        topicName: topic.name,
+        keyword: visualKeyword(prompt.answer, topic),
+      })),
     ));
     setGenerated(finalResult);
     setKeywordSet(keywords.slice(0, 16));
     setVisualSet(visuals.slice(0, fixedPromptCounts["picture-prompts"]));
-    setShowAnswers(false);
+    setListPromptSet(buildListPrompts(selectedTopics));
+    setShowAnswers(activity === "flashcard-sprint");
+    setRevealedRoulette(new Set());
     setCopied(false);
   }
 
@@ -871,10 +977,17 @@ export default function Home() {
       && (activity !== "match-up" || !usedAnswers.has(question.a.trim().toLowerCase()));
     const sameTopic = pool.filter((question) => question.topicId === currentQuestion.topicId && canUse(question));
     const anyTopic = pool.filter(canUse);
-    const replacement = shuffled(sameTopic)[0] ?? shuffled(anyTopic)[0];
+    const replacement = activity === "question-chain"
+      ? [...sameTopic].sort((left, right) => relatedness(right, generated) - relatedness(left, generated))[0]
+      : shuffled(sameTopic)[0] ?? shuffled(anyTopic)[0];
     if (!replacement) return;
     setGenerated((current) => current.map((question, questionIndex) => questionIndex === index ? replacement : question));
-    setShowAnswers(false);
+    setShowAnswers(activity === "flashcard-sprint");
+    setRevealedRoulette((current) => {
+      const next = new Set(current);
+      next.delete(index);
+      return next;
+    });
     setCopied(false);
   }
 
@@ -883,7 +996,12 @@ export default function Home() {
     if (!currentPrompt) return;
     const used = new Set(visualSet.map((prompt) => `${prompt.symbol}-${prompt.answer}`));
     const pool = selectedTopics.flatMap((topic) =>
-      (topicVisuals[topic.id] ?? []).map((prompt) => ({ ...prompt, topicId: topic.id })),
+      (topicVisuals[topic.id] ?? []).map((prompt) => ({
+        ...prompt,
+        topicId: topic.id,
+        topicName: topic.name,
+        keyword: visualKeyword(prompt.answer, topic),
+      })),
     );
     const sameTopic = pool.filter((prompt) => prompt.topicId === currentPrompt.topicId && !used.has(`${prompt.symbol}-${prompt.answer}`));
     const anyTopic = pool.filter((prompt) => !used.has(`${prompt.symbol}-${prompt.answer}`));
@@ -894,20 +1012,75 @@ export default function Home() {
     setCopied(false);
   }
 
+  function openCustomQuestion() {
+    const question = generated[0];
+    if (!question) return;
+    setCustomQuestionIndex(0);
+    setCustomQuestion(question.q);
+    setCustomAnswer(question.a);
+    setCustomQuestionOpen(true);
+  }
+
+  function selectCustomQuestion(index: number) {
+    const question = generated[index];
+    if (!question) return;
+    setCustomQuestionIndex(index);
+    setCustomQuestion(question.q);
+    setCustomAnswer(question.a);
+  }
+
+  function saveCustomQuestion() {
+    const q = customQuestion.trim();
+    const a = customAnswer.trim();
+    if (!q || !a) return;
+    setGenerated((current) => current.map((question, index) => index === customQuestionIndex ? { ...question, q, a } : question));
+    setShowAnswers(activity === "flashcard-sprint");
+    setRevealedRoulette((current) => {
+      const next = new Set(current);
+      next.delete(customQuestionIndex);
+      return next;
+    });
+    setCustomQuestionOpen(false);
+  }
+
+  function toggleRouletteAnswer(index: number) {
+    setRevealedRoulette((current) => {
+      const next = new Set(current);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  }
+
+  function enterPresentationMode() {
+    if (!presentationRef.current) return;
+    setPresentationMode(true);
+  }
+
+  function exitPresentationMode() {
+    setPresentationMode(false);
+  }
+
   function outputAsText() {
     const heading = `${titleForActivity(activity)} — Year ${year} Science`;
-    const topicLine = `Topics: ${selectedTopics.map((topic) => topic.name).join(", ")}`;
+    const topicLine = `Topics: ${displayTopics.map((topic) => topic.name).join(", ")}`;
     if (activity === "thinking-linking" || activity === "concept-map" || activity === "back-to-back") {
       return [heading, topicLine, activityInstructions[activity], "", ...keywordSet.map((word, index) => `${index + 1}. ${word}`)].join("\n");
     }
-    if (["brain-dump", "cops-robbers", "retrieval-relay", "list-it"].includes(activity)) {
+    if ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "focused") {
+      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. ${topics.find((topic) => topic.id === question.topicId)?.name ?? "Science"}\nFocus prompt: ${question.q}\n• Recall\n• Check\n• Improve`)].join("\n");
+    }
+    if (activity === "brain-dump" || activity === "cops-robbers" || activity === "retrieval-relay") {
       return [heading, topicLine, activityInstructions[activity], "", ...selectedTopics.map((topic) => `${topic.name}:\n• Key terms\n• Important ideas\n• Examples\n• Connections`)].join("\n");
+    }
+    if (activity === "list-it") {
+      return [heading, topicLine, activityInstructions[activity], "", ...listPromptSet.map((item, index) => `${index + 1}. ${item.topicName}: ${item.prompt}`)].join("\n");
     }
     if (activity === "two-things") {
       return [heading, topicLine, activityInstructions[activity], "", ...selectedTopics.map((topic) => `${topic.name}:\n1. ______________________________\n2. ______________________________`)].join("\n");
     }
     if (activity === "picture-prompts") {
-      return [heading, topicLine, activityInstructions[activity], "", ...visualSet.map((prompt, index) => `${index + 1}. ${prompt.symbol}\nSuggested link: ${prompt.answer}`)].join("\n");
+      return [heading, topicLine, activityInstructions[activity], "", ...visualSet.map((prompt, index) => `${index + 1}. ${prompt.symbol}\nKeyword: ${prompt.keyword}\nTopic: ${prompt.topicName}\nSuggested link: ${prompt.answer}`)].join("\n");
     }
     if (activity === "match-up") {
       const questions = generated.map((question, index) => `${index + 1}. ${question.q}`);
@@ -915,13 +1088,14 @@ export default function Home() {
       return [heading, topicLine, activityInstructions[activity], "", "Questions", ...questions, "", "Answer bank", ...answers].join("\n");
     }
     if (activity === "cloze-recall") {
-      return [heading, topicLine, activityInstructions[activity], "", `Word bank: ${clozeWordBank.join(" • ")}`, "", ...clozeItems.map((item, index) => `${index + 1}. ${item.text}\nFull answer: ${item.a}`)].join("\n");
+      return [heading, topicLine, activityInstructions[activity], "", `Word bank: ${clozeWordBank.join(" • ")}`, "", ...clozeItems.map((item, index) => `${index + 1}. ${item.q}\nIncomplete answer: ${item.text}\nFull answer: ${item.a}`)].join("\n");
     }
     if (activity === "question-chain") {
-      return [heading, topicLine, activityInstructions[activity], "", ...[...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question, index) => `${index + 1}. ${chainLabel(question.difficulty)}\n${question.q}\nAnswer: ${question.a}`)].join("\n");
+      const chain = [...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]);
+      return [heading, topicLine, activityInstructions[activity], "", ...chain.map((question, index) => `${index + 1}. ${chainLabel(index, chain.length)}\n${question.q}\nAnswer: ${question.a}`)].join("\n");
     }
     if (activity === "answer-first") {
-      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. Answer: ${question.a}\nModel question: ${question.q}`)].join("\n");
+      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. Answer: ${question.a}${level === "foundation" ? `\nQuestion starter: ${questionScaffold(question.q)}` : ""}\nModel question: ${question.q}`)].join("\n");
     }
     return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. ${question.q}\nAnswer: ${question.a}`)].join("\n");
   }
@@ -958,13 +1132,24 @@ export default function Home() {
             clonedSheet.style.width = "794px";
             clonedSheet.style.maxWidth = "794px";
           }
-          clonedDocument.querySelectorAll(".swap-help, .swap-button, .answer-toggle").forEach((element) => {
+          clonedDocument.querySelectorAll(".swap-help, .swap-button, .answer-toggle, .roulette-answer-button, .presentation-controls, .export-answer-bank").forEach((element) => {
             (element as HTMLElement).style.display = "none";
           });
         },
       });
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+      const savePdf = (fileName: string) => {
+        const blob = pdf.output("blob");
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      };
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 10;
@@ -986,7 +1171,7 @@ export default function Home() {
           "FAST",
         );
         const activityName = titleForActivity(activity).replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-        pdf.save(`Year-${year}-${activityName}.pdf`);
+        savePdf(`Year-${year}-${activityName}.pdf`);
         return;
       }
 
@@ -1013,7 +1198,7 @@ export default function Home() {
       }
 
       const activityName = titleForActivity(activity).replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-      pdf.save(`Year-${year}-${activityName}.pdf`);
+      savePdf(`Year-${year}-${activityName}.pdf`);
     } catch (error) {
       console.error("PDF download failed", error);
       setDownloadError(true);
@@ -1084,7 +1269,7 @@ export default function Home() {
           spacing: { after: 90 },
           children: [new TextRun({ text: titleForActivity(activity), bold: true, color: "171B22" })],
         }),
-        para(`Year ${year} Science  •  ${selectedTopics.map((topic) => topic.name).join("  •  ")}`, { center: true, color: "5D6C7B", size: 18, after: 150 }),
+        para(`Year ${year} Science  •  ${displayTopics.map((topic) => topic.name).join("  •  ")}`, { center: true, color: "5D6C7B", size: 18, after: 150 }),
         new Table({
           rows: [new TableRow({ children: [cell([para(activityInstructions[activity], { color: "515966", size: 19, after: 0 })], "FDF1F3")] })],
           width: { size: 100, type: WidthType.PERCENTAGE },
@@ -1105,12 +1290,19 @@ export default function Home() {
       } else if (activity === "back-to-back") {
         content.push(grid(keywordSet.slice(0, count).map((word, index) => ({ children: [para(`CARD ${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(word, { bold: true, center: true, size: 23 }), para("Describe it • Guess it • Link it", { center: true, color: "5D6C7B", size: 15, after: 0 })] })), 2));
       } else if (activity === "brain-dump") {
-        content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("Key terms • Important ideas • Examples • Connections", { color: "5D6C7B", size: 16 }), ...blankLines(5)] })), 2));
+        if (knowledgeFocus === "focused") {
+          content.push(grid(generated.map((question) => ({ children: [para(topics.find((topic) => topic.id === question.topicId)?.name ?? "Science", { bold: true, color: "CF082B", size: 16 }), para(question.q, { bold: true, size: 20 }), para("Recall connected terms • ideas • examples • links", { color: "5D6C7B", size: 15 }), ...blankLines(5)] })), 2));
+        } else {
+          content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("Key terms • Important ideas • Examples • Connections", { color: "5D6C7B", size: 16 }), ...blankLines(5)] })), 2));
+        }
       } else if (activity === "cops-robbers") {
+        const robberPrompts = knowledgeFocus === "focused"
+          ? generated.map((question) => ({ name: topics.find((topic) => topic.id === question.topicId)?.name ?? "Science", prompt: question.q }))
+          : selectedTopics.map((topic) => ({ name: topic.name, prompt: "Whole-topic recall" }));
         content.push(new Table({
           rows: [
-            new TableRow({ children: [cell([para("Topic", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("My knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("Stolen knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22")] }),
-            ...selectedTopics.map((topic) => new TableRow({ children: [cell([para(topic.name, { bold: true })], "F1F2ED"), cell(blankLines(4)), cell(blankLines(4))] })),
+            new TableRow({ children: [cell([para("Focus prompt", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("My knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("Stolen knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22")] }),
+            ...robberPrompts.map((item) => new TableRow({ children: [cell([para(item.name, { bold: true, color: "CF082B", size: 15 }), para(item.prompt, { bold: true, size: 17 })], "F1F2ED"), cell(blankLines(4)), cell(blankLines(4))] })),
           ],
           width: { size: 100, type: WidthType.PERCENTAGE },
           layout: TableLayoutType.FIXED,
@@ -1127,15 +1319,16 @@ export default function Home() {
           borders: tableBorders,
         }));
       } else if (activity === "list-it") {
-        content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("1. Four key terms"), para("2. Three accurate facts"), para("3. Two examples or applications"), para("4. One link to another topic"), ...blankLines(3)] })), 2));
+        content.push(grid(listPromptSet.map((item, index) => ({ children: [para(`${index + 1}. ${item.topicName}`, { bold: true, color: "CF082B", size: 18 }), para(item.prompt, { bold: true, size: 20 }), ...blankLines(4)] })), 2));
       } else if (activity === "two-things") {
         content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("1.", { bold: true, color: "CF082B" }), ...blankLines(2), para("2.", { bold: true, color: "CF082B" }), ...blankLines(2)] })), 2));
       } else if (activity === "picture-prompts") {
-        content.push(grid(visualSet.map((prompt, index) => ({ children: [para(`PICTURE ${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(prompt.symbol, { bold: true, center: true, size: 44 }), ...blankLines(2), ...(showAnswers ? [para(`Suggested link: ${prompt.answer}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
+        content.push(grid(visualSet.map((prompt, index) => ({ children: [para(`PICTURE ${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(prompt.symbol, { bold: true, center: true, size: 44 }), para(`Keyword: ${prompt.keyword}`, { bold: true, center: true, color: "365F72", size: 16 }), para(`Topic: ${prompt.topicName}`, { center: true, color: "5D6C7B", size: 14 }), ...blankLines(2), ...(showAnswers ? [para(`Suggested link: ${prompt.answer}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
       } else if (activity === "retrieval-clock") {
         content.push(grid(generated.slice(0, 12).map((question, index) => ({ children: [para(`${index === 0 ? 12 : index} O'CLOCK`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 18 }), ...blankLines(2), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 15 })] : [])] })), 3));
       } else if (activity === "question-chain") {
-        content.push(grid([...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question, index) => ({ children: [para(`${index + 1}. ${chainLabel(question.difficulty)}`, { bold: true, color: "CF082B", size: 16 }), para(question.q, { size: 19 }), ...blankLines(2), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
+        const chain = [...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]);
+        content.push(grid(chain.map((question, index) => ({ children: [para(`${index + 1}. ${chainLabel(index, chain.length)}`, { bold: true, color: "CF082B", size: 16 }), para(question.q, { size: 19 }), ...blankLines(2), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
       } else if (activity === "match-up") {
         content.push(new Table({
           rows: [
@@ -1153,14 +1346,14 @@ export default function Home() {
         content.push(
           grid([{ children: [para(`WORD BANK  •  ${clozeWordBank.join("  •  ")}`, { bold: true, center: true, color: "365F72", size: 17, after: 0 })], fill: "EEF4F7" }], 1),
           para("", { after: 60 }),
-          grid(clozeItems.map((item, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(item.text, { size: 19 }), ...(showAnswers ? [para(`Full answer: ${item.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2),
+          grid(clozeItems.map((item, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(item.q, { bold: true, size: 17 }), para(`Incomplete answer: ${item.text}`, { size: 19 }), ...(showAnswers ? [para(`Full answer: ${item.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2),
         );
       } else if (activity === "flashcard-sprint") {
-        content.push(grid(generated.map((question, index) => ({ children: [para(`CARD ${index + 1}  •  QUESTION`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 19 }), para("- - - - - - - - - - - - - - - - -  FOLD  - - - - - - - - - - - - - - - - -", { center: true, color: "B7B0AA", size: 13 }), para("ANSWER", { bold: true, color: "365F72", size: 15 }), para(showAnswers ? question.a : "Show answers before downloading to include the reverse.", { size: 17 }), para("□ Again    □ Nearly    □ Secure", { color: "5D6C7B", size: 14, after: 0 })] })), 2));
+        content.push(grid(generated.map((question, index) => ({ children: [para(`CARD ${index + 1}  •  QUESTION`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 19 }), para("- - - - - - - - - - - - - - - - -  FOLD  - - - - - - - - - - - - - - - - -", { center: true, color: "B7B0AA", size: 13 }), para("ANSWER", { bold: true, color: "365F72", size: 15 }), para(question.a, { size: 17 }), para("□ Again    □ Nearly    □ Secure", { color: "5D6C7B", size: 14, after: 0 })] })), 2));
       } else if (activity === "connect-four") {
         content.push(grid(generated.slice(0, 16).map((question, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 16 }), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 14 })] : [])] })), 4));
       } else if (activity === "answer-first") {
-        content.push(grid(generated.map((question, index) => ({ children: [para(`${index + 1}. ANSWER`, { bold: true, color: "CF082B", size: 16 }), para(question.a, { bold: true, size: 21 }), para("Your question:", { color: "5D6C7B", size: 16 }), ...blankLines(2), ...(showAnswers ? [para(`Model question: ${question.q}`, { color: "365F72", italic: true, size: 16 })] : [])] })), 2));
+        content.push(grid(generated.map((question, index) => ({ children: [para(`${index + 1}. ANSWER`, { bold: true, color: "CF082B", size: 16 }), para(question.a, { bold: true, size: 21 }), ...(level === "foundation" ? [para(`Question starter: ${questionScaffold(question.q)}`, { color: "5D6C7B", italic: true, size: 15 })] : []), para("Your question:", { color: "5D6C7B", size: 16 }), ...blankLines(2), ...(showAnswers ? [para(`Model question: ${question.q}`, { color: "365F72", italic: true, size: 16 })] : [])] })), 2));
       } else {
         const columns = activity === "walkabout-bingo" ? 3 : activity === "quick-quiz" || activity === "one-worders" ? 1 : 2;
         const items = generated.map((question, index) => {
@@ -1271,10 +1464,12 @@ export default function Home() {
           <div className="topic-toolbar">
             <span>{selected.length} of {yearTopics.length} topics selected</span>
             <div>
-              <button className="text-button" onClick={() => setSelected(yearTopics.map((topic) => topic.id))}>Select all</button>
+              {activity !== "concept-map" && <button className="text-button" onClick={() => setSelected(yearTopics.map((topic) => topic.id))}>Select all</button>}
               <button className="text-button muted" onClick={() => setSelected([])}>Clear</button>
             </div>
           </div>
+
+          {activity === "concept-map" && <p className="selection-note">Concept Map uses one topic so its keywords form meaningful scientific links.</p>}
 
           <div className="topic-list">
             {yearTopics.map((topic) => (
@@ -1311,11 +1506,22 @@ export default function Home() {
             ))}
           </div>
 
+          {(activity === "brain-dump" || activity === "cops-robbers") && (
+            <label className="focus-option">
+              <span>Knowledge focus</span>
+              <select value={knowledgeFocus} onChange={(event) => setKnowledgeFocus(event.target.value as KnowledgeFocus)}>
+                <option value="focused">Focused concept prompts</option>
+                <option value="whole-topic">Whole topics</option>
+              </select>
+              <small>Focused prompts can be swapped or replaced with your own question.</small>
+            </label>
+          )}
+
           <div className="options-row">
             <label>
               <span>Number of prompts</span>
-              <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "concept-map", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity)}>
-                {[6, 8, 10, 12, 16].map((value) => <option key={value} value={value}>{value}</option>)}
+              <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "retrieval-relay", "list-it", "concept-map", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "whole-topic")}>
+                {[4, 6, 8, 10, 12, 16].map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </label>
             <label>
@@ -1329,18 +1535,21 @@ export default function Home() {
             </label>
           </div>
 
-          <button className="generate-button" onClick={generate} disabled={!selected.length}>
+          <button className="generate-button" onClick={generate} disabled={!selected.length || (activity === "concept-map" && selected.length !== 1)}>
             <span>Generate starter</span><span aria-hidden="true">→</span>
           </button>
           {!selected.length && <p className="validation-note">Select at least one topic to continue.</p>}
+          {activity === "concept-map" && selected.length > 1 && <p className="validation-note">Choose one topic for a connected concept map.</p>}
         </section>
 
-        <aside className="preview-shell" aria-live="polite">
+        <aside className={`preview-shell ${presentationMode ? "presenting" : ""}`} aria-live="polite">
           <div className="preview-topline">
             <div><span className="live-dot" /> Classroom preview</div>
             {hasOutput && (
               <div className="preview-actions">
                 <button onClick={copyOutput}>{copied ? "Copied!" : "Copy text"}</button>
+                {generated.length > 0 && <button onClick={openCustomQuestion}>Write your own question</button>}
+                <button className="fullscreen-button" onClick={enterPresentationMode}>Full screen</button>
                 <button onClick={() => window.print()}>Print</button>
                 <button className="word-button" onClick={downloadWord} disabled={downloadingWord}>
                   {downloadingWord ? "Preparing Word…" : wordDownloadError ? "Try Word again" : "Download Word"}
@@ -1361,15 +1570,24 @@ export default function Home() {
             </div>
           ) : (
             <>
+            <div ref={presentationRef} className={`presentation-stage ${presentationMode ? "active" : ""}`}>
+              <div className="presentation-controls">
+                <strong>{titleForActivity(activity)}</strong>
+                <span>{activity === "retrieval-roulette" ? "Reveal each answer beside its question." : "Use Show answers when pupils are ready to check."}</span>
+                {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things", "flashcard-sprint", "retrieval-roulette"].includes(activity) && (
+                  <button onClick={() => setShowAnswers((value) => !value)}>{showAnswers ? "Hide answers" : "Show answers"}</button>
+                )}
+                <button onClick={exitPresentationMode}>Exit full screen</button>
+              </div>
             <article className={`starter-sheet activity-${activity}`} ref={sheetRef}>
               <div className="sheet-kicker"><span>St Peter&apos;s • Do Now</span><span>Year {year} Science</span></div>
               <h2>{titleForActivity(activity)}</h2>
               <div className="topic-chips">
-                {selectedTopics.map((topic) => <span key={topic.id}>{topic.name}</span>)}
+                {displayTopics.map((topic) => <span key={topic.id}>{topic.name}</span>)}
               </div>
               <p className="instructions">{activityInstructions[activity]}</p>
 
-              {((generated.length > 0 && !nonQuestionActivities.includes(activity)) || (visualSet.length > 0 && activity === "picture-prompts")) && (
+              {((generated.length > 0 && (!nonQuestionActivities.includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "focused"))) || (visualSet.length > 0 && activity === "picture-prompts")) && (
                 <div className="swap-help"><span>Want a different prompt?</span> Use <strong>Swap</strong> beside any question.</div>
               )}
 
@@ -1407,6 +1625,8 @@ export default function Home() {
                       <span>Picture {index + 1}</span>
                       <button className="swap-button" onClick={() => replaceVisual(index)}>Swap</button>
                       <strong aria-label={`Visual prompt ${index + 1}`}>{prompt.symbol}</strong>
+                      <small className="picture-keyword">Keyword: {prompt.keyword}</small>
+                      <small className="picture-topic">{prompt.topicName}</small>
                       <div className="picture-lines"><i /><i /></div>
                       {showAnswers && <em>Suggested link: {prompt.answer}</em>}
                     </div>
@@ -1416,7 +1636,18 @@ export default function Home() {
 
               {(activity === "brain-dump" || activity === "cops-robbers") && (
                 <div className={activity === "cops-robbers" ? "robbers-grid" : "brain-grid"}>
-                  {selectedTopics.map((topic) => (
+                  {knowledgeFocus === "focused" ? generated.map((question, index) => (
+                    <section key={question.q} className="focused-knowledge-prompt">
+                      <span>{topics.find((topic) => topic.id === question.topicId)?.name ?? "Science"}</span>
+                      <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                      <h3>{question.q}</h3>
+                      {activity === "brain-dump" ? (
+                        <><p>Terms</p><p>Ideas</p><p>Examples</p><p>Links</p></>
+                      ) : (
+                        <div className="knowledge-columns"><div><strong>My knowledge</strong></div><div><strong>Stolen knowledge</strong></div></div>
+                      )}
+                    </section>
+                  )) : selectedTopics.map((topic) => (
                     <section key={topic.id}>
                       <h3>{topic.name}</h3>
                       {activity === "brain-dump" ? (
@@ -1442,15 +1673,12 @@ export default function Home() {
 
               {activity === "list-it" && (
                 <div className="list-grid">
-                  {selectedTopics.map((topic) => (
-                    <section key={topic.id}>
-                      <h3>{topic.name}</h3>
-                      <ol>
-                        <li>List four key terms.</li>
-                        <li>List three accurate facts.</li>
-                        <li>List two examples or applications.</li>
-                        <li>List one link to another topic.</li>
-                      </ol>
+                  {listPromptSet.map((item, index) => (
+                    <section key={`${item.topicId}-${index}`}>
+                      <span className="list-number">List {index + 1}</span>
+                      <h3>{item.topicName}</h3>
+                      <p>{item.prompt}</p>
+                      <div className="list-writing-lines"><i /><i /><i /></div>
                     </section>
                   ))}
                 </div>
@@ -1487,11 +1715,11 @@ export default function Home() {
 
               {activity === "question-chain" && (
                 <div className="question-chain">
-                  {[...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question) => {
+                  {[...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]).map((question, chainIndex, chain) => {
                     const originalIndex = generated.findIndex((item) => item.q === question.q);
                     return (
                       <div className={`chain-card chain-${question.difficulty}`} key={question.q}>
-                        <span>{chainLabel(question.difficulty)}</span>
+                        <span>{chainLabel(chainIndex, chain.length)}</span>
                         <button className="swap-button" onClick={() => replaceQuestion(originalIndex)}>Swap</button>
                         <p>{question.q}</p>
                         {showAnswers && <em>{question.a}</em>}
@@ -1531,7 +1759,8 @@ export default function Home() {
                       <div key={item.q}>
                         <span>{index + 1}</span>
                         <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
-                        <p>{item.text}</p>
+                        <strong className="cloze-context">{item.q}</strong>
+                        <p><small>Incomplete answer</small>{item.text}</p>
                         {showAnswers && <em>Full answer: {item.a}</em>}
                       </div>
                     ))}
@@ -1544,7 +1773,7 @@ export default function Home() {
                   {generated.map((question, index) => (
                     <div className="flashcard" key={question.q}>
                       <section><span>Card {index + 1} • Question</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p></section>
-                      <section className="flashcard-answer"><span>Fold • Answer</span><p>{showAnswers ? question.a : "Reveal answers before printing or downloading."}</p><small>□ Again &nbsp; □ Nearly &nbsp; □ Secure</small></section>
+                      <section className="flashcard-answer"><span>Fold • Answer</span><p>{question.a}</p><small>□ Again &nbsp; □ Nearly &nbsp; □ Secure</small></section>
                     </div>
                   ))}
                 </div>
@@ -1602,7 +1831,7 @@ export default function Home() {
               {activity === "retrieval-roulette" && (
                 <div className="roulette-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><b>{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><b>{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p><button className="roulette-answer-button" onClick={() => toggleRouletteAnswer(index)}>{revealedRoulette.has(index) ? "Hide answer" : "Reveal answer"}</button>{revealedRoulette.has(index) && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -1610,7 +1839,7 @@ export default function Home() {
               {activity === "answer-first" && (
                 <ol className="answer-first-list">
                   {generated.map((question, index) => (
-                    <li key={question.q}><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><strong>{question.a}</strong>{showAnswers && <em>Model question: {question.q}</em>}</li>
+                    <li key={question.q}><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><strong>{question.a}</strong>{level === "foundation" && <small className="answer-scaffold">Question starter: {questionScaffold(question.q)}</small>}{showAnswers && <em>Model question: {question.q}</em>}</li>
                   ))}
                 </ol>
               )}
@@ -1621,11 +1850,22 @@ export default function Home() {
                 </ol>
               )}
 
-              {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things"].includes(activity) && (
+              <div className="export-answer-bank" aria-hidden="true">
+                {generated.map((question, index) => (
+                  <span
+                    key={`${question.q}-${index}`}
+                    data-export-prompt={activity === "answer-first" ? question.a : question.q}
+                    data-export-answer={activity === "answer-first" ? question.q : question.a}
+                  />
+                ))}
+              </div>
+
+              {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things", "flashcard-sprint", "retrieval-roulette"].includes(activity) && (
                 <button className="answer-toggle" onClick={() => setShowAnswers((value) => !value)}>{showAnswers ? "Hide answers" : "Show answers"}</button>
               )}
               <footer><span>From memory first</span><span>Check • Correct • Improve</span></footer>
             </article>
+            </div>
             <details className="teacher-guide" open>
               <summary>
                 <span><strong>Teacher guide</strong><small>For the current activity</small></span>
@@ -1647,6 +1887,35 @@ export default function Home() {
         <p>Built for St Peter&apos;s Cambridge Junior Science. Retrieval practice works best when it is low-stakes, appropriately challenging and followed by feedback.</p>
         <div className="legend"><span><i className="biology" /> Biology</span><span><i className="chemistry" /> Chemistry</span><span><i className="physics" /> Physics</span></div>
       </footer>
+
+      {customQuestionOpen && (
+        <div className="custom-question-backdrop" role="dialog" aria-modal="true" aria-label="Write your own question">
+          <form className="custom-question-dialog" onSubmit={(event) => { event.preventDefault(); saveCustomQuestion(); }}>
+            <div className="custom-question-heading">
+              <div><p className="eyebrow">Teacher choice</p><h2>Write your own question</h2></div>
+              <button type="button" onClick={() => setCustomQuestionOpen(false)} aria-label="Close custom question">×</button>
+            </div>
+            <label>
+              <span>Question to replace</span>
+              <select value={customQuestionIndex} onChange={(event) => selectCustomQuestion(Number(event.target.value))}>
+                {generated.map((question, index) => <option key={`${question.q}-${index}`} value={index}>Question {index + 1}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Your question or prompt</span>
+              <textarea value={customQuestion} onChange={(event) => setCustomQuestion(event.target.value)} rows={3} />
+            </label>
+            <label>
+              <span>Accurate answer</span>
+              <textarea value={customAnswer} onChange={(event) => setCustomAnswer(event.target.value)} rows={3} />
+            </label>
+            <div className="custom-question-actions">
+              <button type="button" onClick={() => setCustomQuestionOpen(false)}>Cancel</button>
+              <button type="submit" disabled={!customQuestion.trim() || !customAnswer.trim()}>Use my question</button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {wheelOpen && (
         <div className="wheel-backdrop" role="dialog" aria-modal="true" aria-label="Surprise activity wheel" onMouseDown={(event) => { if (event.currentTarget === event.target && !wheelSpinning) setWheelOpen(false); }}>

@@ -105,7 +105,7 @@
 }
 
 .starter-sheet .topic-chips span {
-  border: 1px solid color-mix(in srgb, var(--activity-accent) 28%, #dfe5ec) !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 999px !important;
   background: var(--activity-soft-2) !important;
   color: var(--activity-ink) !important;
@@ -117,7 +117,7 @@
   position: relative;
   margin: 16px 0 18px !important;
   padding: 14px 16px 14px 20px !important;
-  border: 1px solid color-mix(in srgb, var(--activity-accent) 35%, #dbe2ea) !important;
+  border: 1px solid #c7d2df !important;
   border-left: 6px solid var(--activity-accent) !important;
   border-radius: 12px !important;
   background: var(--activity-soft-2) !important;
@@ -185,7 +185,7 @@
   .flashcard
 ):nth-child(4n + 1) {
   background: var(--activity-soft-2) !important;
-  border-color: color-mix(in srgb, var(--activity-accent) 30%, #dce2ea) !important;
+  border-color: #cbd5e1 !important;
 }
 
 .starter-sheet :is(
@@ -313,7 +313,7 @@
 .starter-sheet .concept-terms span,
 .starter-sheet .cloze-word-bank b {
   border-radius: 999px !important;
-  border: 1px solid color-mix(in srgb, var(--activity-accent) 30%, #d9dfe8) !important;
+  border: 1px solid #cbd5e1 !important;
   background: var(--activity-soft) !important;
   color: var(--activity-ink) !important;
   box-shadow: 0 2px 6px rgba(23, 32, 51, 0.045) !important;
