@@ -23,18 +23,23 @@ export type SeniorTopic = {
   strand: "Biology" | "Chemistry" | "Physics" | "Agriculture";
   keywords: string[];
   questions: SeniorQuestion[];
+  oneWordQuestions?: SeniorQuestion[];
 };
 
 type QuestionRow = readonly [string, string, Difficulty, QuestionKind];
 
 function makeTopic(
-  details: Omit<SeniorTopic, "year" | "questions">,
+  details: Omit<SeniorTopic, "year" | "questions" | "oneWordQuestions">,
   rows: QuestionRow[],
+  oneWordRows: QuestionRow[] = [],
 ): SeniorTopic {
   return {
     ...details,
     year: 12,
     questions: rows.map(([q, a, difficulty, kind]) => ({ q, a, difficulty, kind })),
+    ...(oneWordRows.length
+      ? { oneWordQuestions: oneWordRows.map(([q, a, difficulty, kind]) => ({ q, a, difficulty, kind })) }
+      : {}),
   };
 }
 
@@ -624,6 +629,46 @@ export const seniorTopics: SeniorTopic[] = [
       ["Compare the effects of nutrition and disease control on growth.", "Nutrition supplies materials and energy for growth; disease control prevents nutrients and energy being diverted from growth and reduces tissue damage or lost intake.", "stretch", "explain"],
       ["Explain how monitoring, feeding, and health management can work together to meet a market target.", "Monitoring identifies animals below target; feed quality or allocation can then be adjusted and health causes treated, improving growth rate, product quality, timing, and economic return.", "stretch", "explain"],
     ],
+    [
+      ["What term means an increase in an animal's measurable size or mass?", "Growth", "foundation", "short"],
+      ["What term describes changes in body form and function as an animal matures?", "Development", "foundation", "short"],
+      ["What scoring method estimates an animal's fat reserves?", "Body-condition scoring", "foundation", "short"],
+      ["What is the antibody-rich first milk produced after birth called?", "Colostrum", "foundation", "short"],
+      ["What practice protects livestock by stimulating immunity before disease exposure?", "Vaccination", "foundation", "short"],
+      ["What is extra feed supplied when pasture does not meet animal needs called?", "Supplementary feed", "foundation", "short"],
+      ["What is the separation of young livestock from their mother's milk called?", "Weaning", "foundation", "short"],
+      ["What term means the number of animals grazing a given area?", "Stocking rate", "foundation", "short"],
+      ["What grazing system moves stock between paddocks and allows pasture recovery?", "Rotational grazing", "foundation", "short"],
+      ["What type of parasite lives inside an animal's body?", "Internal parasite", "foundation", "short"],
+      ["Which nutrient supplies amino acids for muscle and tissue growth?", "Protein", "foundation", "short"],
+      ["What measurement is commonly used to track progress towards target sale weights?", "Live weight", "foundation", "short"],
+
+      ["What term describes improved offspring performance produced by crossbreeding?", "Hybrid vigour", "core", "short"],
+      ["What production outcome refers to how much saleable product is produced?", "Quantity", "core", "short"],
+      ["What production outcome refers to the characteristics or grade of the product?", "Quality", "core", "short"],
+      ["What production outcome refers to reaching a target at the required date?", "Timing", "core", "short"],
+      ["What farm measure compares financial return with production costs?", "Profit", "core", "short"],
+      ["What term describes feed energy used simply to keep an animal alive?", "Maintenance energy", "core", "short"],
+      ["What pasture characteristic usually rises as pasture becomes older and less digestible?", "Fibre", "core", "short"],
+      ["What usually decreases when excessive stocking creates strong competition for pasture?", "Feed intake", "core", "short"],
+      ["What environmental protection reduces wind chill for exposed young stock?", "Shelter", "core", "short"],
+      ["What behaviour commonly decreases first when livestock experience heat stress?", "Feed intake", "core", "short"],
+      ["What practice sorts animals so feeding and care can match their needs?", "Management grouping", "core", "short"],
+      ["What term describes how efficiently feed is converted into live-weight gain?", "Feed efficiency", "core", "short"],
+
+      ["What term describes a compromise in which improving one trait can worsen another?", "Trade-off", "stretch", "short"],
+      ["What can develop when the same parasite treatment is overused repeatedly?", "Drench resistance", "stretch", "short"],
+      ["What male-management practice changes hormone-driven growth and behaviour?", "Castration", "stretch", "short"],
+      ["What term describes the genetically influenced age or stage at which an animal becomes fully developed?", "Maturity", "stretch", "short"],
+      ["What body response diverts nutrients and energy away from growth during illness?", "Immune response", "stretch", "short"],
+      ["What energy requirement increases when livestock experience cold stress?", "Maintenance requirement", "stretch", "short"],
+      ["What reproductive state sharply increases a female's nutrient needs before birth?", "Pregnancy", "stretch", "short"],
+      ["What production stage sharply increases a female's nutrient needs after birth?", "Lactation", "stretch", "short"],
+      ["What process uses repeated measurements to identify animals falling behind target growth?", "Monitoring", "stretch", "short"],
+      ["What term describes choosing breeding animals for desired inherited traits?", "Selective breeding", "stretch", "short"],
+      ["What market feature may reward animals that reach target weight at a particular time?", "Price premium", "stretch", "short"],
+      ["What term describes how well a breed matches local climate, terrain and feed conditions?", "Breed suitability", "stretch", "short"],
+    ],
   ),
 ];
 
@@ -635,5 +680,23 @@ for (const topic of seniorTopics) {
   const uniqueQuestions = new Set(topic.questions.map((question) => question.q.trim().toLowerCase()));
   if (uniqueQuestions.size !== topic.questions.length) {
     throw new Error(`${topic.id} contains duplicate question wording.`);
+  }
+
+  if (topic.oneWordQuestions) {
+    for (const difficulty of ["foundation", "core", "stretch"] as const) {
+      const questionsAtLevel = topic.oneWordQuestions.filter((question) => question.difficulty === difficulty);
+      if (questionsAtLevel.length < 12) {
+        throw new Error(`${topic.id} must contain at least 12 ${difficulty} one-word questions.`);
+      }
+    }
+
+    if (topic.oneWordQuestions.some((question) => question.kind !== "short")) {
+      throw new Error(`${topic.id} one-word bank contains a non-short question.`);
+    }
+
+    const uniqueOneWordQuestions = new Set(topic.oneWordQuestions.map((question) => question.q.trim().toLowerCase()));
+    if (uniqueOneWordQuestions.size !== topic.oneWordQuestions.length) {
+      throw new Error(`${topic.id} contains duplicate one-word question wording.`);
+    }
   }
 }
