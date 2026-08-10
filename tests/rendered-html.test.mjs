@@ -34,6 +34,7 @@ test("renders development preview metadata", async () => {
   assert.match(html, developmentPreviewMeta);
   assert.match(html, /4,776(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
+  assert.match(html, /Year (?:<!-- -->)?13/i);
   assert.match(html, /IB Sciences/i);
   assert.doesNotMatch(html, /topic-option selected/i);
 });
@@ -61,8 +62,30 @@ test("includes the ten Year 12 NCEA external assessment units", async () => {
 
   assert.equal(standardCodes.length, 10);
   assert.equal(new Set(standardCodes).size, 10);
+  assert.deepEqual(
+    [...standardCodes].sort(),
+    ["91156", "91157", "91159", "91164", "91165", "91166", "91170", "91171", "91173", "91294"].sort(),
+  );
   assert.match(bank, /Agricultural & Horticultural Science/);
   assert.match(page, /seniorTopics/);
+});
+
+test("includes the eight Year 13 NCEA Level 3 external assessment units", async () => {
+  const bank = await readFile(new URL("../app/year13-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const topicIds = [...bank.matchAll(/id: "(y13-[a-z-]+)"/g)].map((match) => match[1]);
+  const standardCodes = [...bank.matchAll(/standard: "AS (\d{5})"/g)].map((match) => match[1]);
+
+  assert.equal(topicIds.length, 8);
+  assert.equal(new Set(topicIds).size, 8);
+  assert.deepEqual(
+    [...standardCodes].sort(),
+    ["91390", "91391", "91392", "91524", "91526", "91531", "91603", "91606"].sort(),
+  );
+  assert.match(bank, /year: 13/);
+  assert.match(bank, /oneWordQuestions/);
+  assert.match(page, /year13Topics/);
+  assert.match(page, /Year \$\{year\} NCEA science course/);
 });
 
 test("includes the expanded 24-activity catalogue", async () => {
