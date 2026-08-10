@@ -3,9 +3,11 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { conceptsForTopic } from "./focused-concepts";
 import { extraQuestions } from "./question-bank";
+import { seniorCourses, seniorTopics, type SeniorCourse } from "./year12-question-bank";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
+type YearGroup = 7 | 8 | 9 | 12;
 type Question = {
   q: string;
   a: string;
@@ -33,9 +35,11 @@ type ListPrompt = {
 
 type Topic = {
   id: string;
-  year: 7 | 8 | 9;
+  year: YearGroup;
   name: string;
-  strand: "Biology" | "Chemistry" | "Physics";
+  strand: "Biology" | "Chemistry" | "Physics" | "Agriculture";
+  course?: SeniorCourse;
+  standard?: string;
   keywords: string[];
   questions: Question[];
 };
@@ -477,10 +481,13 @@ const topicVisuals: Record<string, Pick<VisualPrompt, "symbol" | "answer">[]> = 
   ],
 };
 
-const topics: Topic[] = baseTopics.map((topic) => ({
-  ...topic,
-  questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
-}));
+const topics: Topic[] = [
+  ...baseTopics.map((topic) => ({
+    ...topic,
+    questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
+  })),
+  ...seniorTopics,
+];
 
 const activities: { id: ActivityId; name: string; description: string; tag: string }[] = [
   { id: "quick-quiz", name: "Quick Quiz", description: "A balanced mix of short and explanation questions.", tag: "Flexible" },
@@ -743,6 +750,23 @@ function visualKeyword(answer: string, topic: Topic) {
     .join(" ");
 }
 
+function visualsForTopic(topic: Topic): Pick<VisualPrompt, "symbol" | "answer">[] {
+  const configured = topicVisuals[topic.id];
+  if (configured?.length) return configured;
+
+  const symbols: Record<Topic["strand"], string[]> = {
+    Biology: ["🧬", "🔬", "🧫", "🌱", "🧪", "🧠"],
+    Chemistry: ["⚗️", "🧪", "🔥", "❄️", "⚛️", "🔗"],
+    Physics: ["⚡", "🌊", "🧲", "💡", "📐", "⏱️"],
+    Agriculture: ["🐑", "🌿", "🌦️", "⚖️", "🩺", "📈"],
+  };
+
+  return topic.keywords.slice(0, 12).map((keyword, index) => ({
+    symbol: symbols[topic.strand][index % symbols[topic.strand].length],
+    answer: keyword,
+  }));
+}
+
 function lowerCaseFirst(value: string) {
   return value ? `${value[0].toLowerCase()}${value.slice(1)}` : value;
 }
@@ -857,7 +881,8 @@ const nonQuestionActivities: ActivityId[] = [
 ];
 
 export default function Home() {
-  const [year, setYear] = useState<7 | 8 | 9>(9);
+  const [year, setYear] = useState<YearGroup>(9);
+  const [course, setCourse] = useState<SeniorCourse>("Biology");
   const [selected, setSelected] = useState<string[]>([]);
   const [activity, setActivity] = useState<ActivityId>("quick-quiz");
   const [count, setCount] = useState(8);
@@ -887,7 +912,12 @@ export default function Home() {
   const sheetRef = useRef<HTMLElement | null>(null);
   const presentationRef = useRef<HTMLDivElement | null>(null);
 
-  const yearTopics = useMemo(() => topics.filter((topic) => topic.year === year), [year]);
+  const yearTopics = useMemo(
+    () => topics.filter((topic) => topic.year === year && (year !== 12 || topic.course === course)),
+    [year, course],
+  );
+  const courseLabel = year === 12 ? `Year 12 ${course}` : `Year ${year} Science`;
+  const fileCourseLabel = courseLabel.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
   const selectedTopics = topics.filter((topic) => selected.includes(topic.id));
   const displayTopics = activity === "question-chain" && generated.length
     ? selectedTopics.filter((topic) => generated.some((question) => question.topicId === topic.id))
@@ -952,8 +982,19 @@ export default function Home() {
     };
   }, [presentationMode, activity, generated, keywordSet, visualSet, listPromptSet, selected.length, showAnswers, revealedRoulette, knowledgeFocus]);
 
-  function chooseYear(nextYear: 7 | 8 | 9) {
+  function chooseYear(nextYear: YearGroup) {
     setYear(nextYear);
+    setSelected([]);
+    setGenerated([]);
+    setKeywordSet([]);
+    setVisualSet([]);
+    setListPromptSet([]);
+    setShowAnswers(false);
+    setRevealedRoulette(new Set());
+  }
+
+  function chooseCourse(nextCourse: SeniorCourse) {
+    setCourse(nextCourse);
     setSelected([]);
     setGenerated([]);
     setKeywordSet([]);
@@ -1061,7 +1102,7 @@ export default function Home() {
     }
     finalResult = finalResult.map(addYesNoExplanation);
     const visuals = shuffled(selectedTopics.flatMap((topic) =>
-      (topicVisuals[topic.id] ?? []).map((prompt) => ({
+      visualsForTopic(topic).map((prompt) => ({
         ...prompt,
         topicId: topic.id,
         topicName: topic.name,
@@ -1115,7 +1156,7 @@ export default function Home() {
     if (!currentPrompt) return;
     const used = new Set(visualSet.map((prompt) => `${prompt.symbol}-${prompt.answer}`));
     const pool = selectedTopics.flatMap((topic) =>
-      (topicVisuals[topic.id] ?? []).map((prompt) => ({
+      visualsForTopic(topic).map((prompt) => ({
         ...prompt,
         topicId: topic.id,
         topicName: topic.name,
@@ -1183,7 +1224,7 @@ export default function Home() {
   }
 
   function outputAsText() {
-    const heading = `${titleForActivity(activity)} — Year ${year} Science`;
+    const heading = `${titleForActivity(activity)} — ${courseLabel}`;
     const topicLine = `Topics: ${displayTopics.map((topic) => topic.name).join(", ")}`;
     if (activity === "thinking-linking" || activity === "concept-map" || activity === "back-to-back") {
       return [heading, topicLine, activityInstructions[activity], "", ...keywordSet.map((word, index) => `${index + 1}. ${word}`)].join("\n");
@@ -1363,7 +1404,7 @@ export default function Home() {
           "FAST",
         );
         const activityName = titleForActivity(activity).replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-        savePdf(`Year-${year}-${activityName}.pdf`);
+        savePdf(`${fileCourseLabel}-${activityName}.pdf`);
         return;
       }
 
@@ -1398,7 +1439,7 @@ export default function Home() {
       }
 
       const activityName = titleForActivity(activity).replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-      savePdf(`Year-${year}-${activityName}.pdf`);
+      savePdf(`${fileCourseLabel}-${activityName}.pdf`);
     } catch (error) {
       console.error("PDF download failed", error);
       setDownloadError(true);
@@ -1480,7 +1521,7 @@ export default function Home() {
           spacing: { after: 90 },
           children: [new TextRun({ text: titleForActivity(activity), bold: true, color: "171B22" })],
         }),
-        para(`Year ${year} Science  •  ${displayTopics.map((topic) => topic.name).join("  •  ")}`, { center: true, color: "5D6C7B", size: 18, after: 150 }),
+        para(`${courseLabel}  •  ${displayTopics.map((topic) => topic.name).join("  •  ")}`, { center: true, color: "5D6C7B", size: 18, after: 150 }),
         new Table({
           rows: [new TableRow({ children: [cell([para(activityInstructions[activity], { color: "515966", size: 19, after: 0 })], "FDF1F3")] })],
           width: { size: 100, type: WidthType.PERCENTAGE },
@@ -1492,7 +1533,7 @@ export default function Home() {
       if (activity === "thinking-linking") {
         content.push(grid(keywordSet.slice(0, 16).map((word, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 16 }), para(word, { bold: true, center: true, size: 20 })] })), 4));
       } else if (activity === "concept-map") {
-        const centralTopic = selectedTopics.length === 1 ? selectedTopics[0].name : `Year ${year} Science`;
+        const centralTopic = selectedTopics.length === 1 ? selectedTopics[0].name : courseLabel;
         content.push(
           grid([{ children: [para("CENTRAL CONCEPT", { bold: true, center: true, color: "FFFFFF", size: 16 }), para(centralTopic, { bold: true, center: true, color: "FFFFFF", size: 22, after: 0 })], fill: "171B22" }], 1),
           para("Draw labelled lines from the central concept to the keyword boxes, then add cross-links between keywords.", { center: true, italic: true, color: "5D6C7B", size: 17, after: 110 }),
@@ -1629,7 +1670,7 @@ export default function Home() {
       const link = document.createElement("a");
       const activityName = titleForActivity(activity).replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
       link.href = url;
-      link.download = `Year-${year}-${activityName}.docx`;
+      link.download = `${fileCourseLabel}-${activityName}.docx`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -1682,14 +1723,14 @@ export default function Home() {
             <small>Retrieval Starter Builder</small>
           </span>
         </a>
-        <span className="beta-pill">600-question bank</span>
+        <span className="beta-pill">{topics.reduce((sum, topic) => sum + topic.questions.length, 0).toLocaleString()}-question bank</span>
       </header>
 
       <section className="hero" id="top">
         <div>
-          <p className="eyebrow">St Peter&apos;s Junior Science</p>
+          <p className="eyebrow">St Peter&apos;s Science</p>
           <h1>Build a purposeful starter<br />in under a minute.</h1>
-          <p className="hero-copy">Choose what pupils have learned. We’ll select, balance and format the questions—no AI or sign-in needed.</p>
+          <p className="hero-copy">Choose the course content students have learned. We’ll select, balance and format the questions—no AI or sign-in needed.</p>
         </div>
         <div className="hero-stat" aria-label="Question bank size">
           <strong>{topics.reduce((sum, topic) => sum + topic.questions.length, 0)}</strong>
@@ -1701,14 +1742,25 @@ export default function Home() {
         <section className="builder-panel" aria-label="Starter builder">
           <div className="step-heading">
             <span className="step-number">1</span>
-            <div><h2>Choose the learning</h2><p>Select a year group and everything pupils have been taught.</p></div>
+            <div><h2>Choose the learning</h2><p>Select a year group, course and the content pupils have been taught.</p></div>
           </div>
 
           <div className="year-tabs" role="group" aria-label="Year group">
-            {[7, 8, 9].map((item) => (
-              <button key={item} className={year === item ? "active" : ""} onClick={() => chooseYear(item as 7 | 8 | 9)}>Year {item}</button>
+            {([7, 8, 9, 12] as YearGroup[]).map((item) => (
+              <button key={item} className={year === item ? "active" : ""} onClick={() => chooseYear(item)}>Year {item}</button>
             ))}
           </div>
+
+          {year === 12 && (
+            <div className="course-picker">
+              <span>Senior course</span>
+              <div className="course-tabs" role="group" aria-label="Year 12 senior science course">
+                {seniorCourses.map((item) => (
+                  <button key={item} className={course === item ? "active" : ""} onClick={() => chooseCourse(item)}>{item}</button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="topic-toolbar">
             <span>{selected.length} of {yearTopics.length} topics selected</span>
@@ -1720,12 +1772,12 @@ export default function Home() {
 
           {activity === "concept-map" && <p className="selection-note">Concept Map uses one topic so its keywords form meaningful scientific links.</p>}
 
-          <div className="topic-list">
+          <div className={`topic-list ${year === 12 ? "senior-topic-list" : ""}`}>
             {yearTopics.map((topic) => (
               <label key={topic.id} className={`topic-option ${selected.includes(topic.id) ? "selected" : ""}`}>
                 <input type="checkbox" checked={selected.includes(topic.id)} onChange={() => toggleTopic(topic.id)} />
                 <span className={`strand-dot ${topic.strand.toLowerCase()}`} />
-                <span className="topic-name">{topic.name}</span>
+                <span className="topic-name">{topic.name}{topic.standard && <small>{topic.standard} • External</small>}</span>
                 <span className="question-count">{topic.questions.length} starter prompts</span>
                 <span className="checkmark">✓</span>
               </label>
@@ -1833,7 +1885,7 @@ export default function Home() {
               ref={sheetRef}
               style={{ "--presentation-scale": presentationScale } as CSSProperties}
             >
-              <div className="sheet-kicker"><span>St Peter&apos;s • Do Now</span><span>Year {year} Science</span></div>
+              <div className="sheet-kicker"><span>St Peter&apos;s • Do Now</span><span>{courseLabel}</span></div>
               <h2>{titleForActivity(activity)}</h2>
               <div className="topic-chips">
                 {displayTopics.map((topic) => <span key={topic.id}>{topic.name}</span>)}
@@ -1854,7 +1906,7 @@ export default function Home() {
                 <div className="concept-map">
                   <div className="concept-core">
                     <span>Central concept</span>
-                    <strong>{selectedTopics.length === 1 ? selectedTopics[0].name : `Year ${year} Science`}</strong>
+                    <strong>{selectedTopics.length === 1 ? selectedTopics[0].name : courseLabel}</strong>
                   </div>
                   <div className="concept-terms">
                     {keywordSet.slice(0, 12).map((word, index) => <span key={`${word}-${index}`}>{word}</span>)}
@@ -2138,8 +2190,8 @@ export default function Home() {
       </div>
 
       <footer className="site-footer">
-        <p>Built for St Peter&apos;s Cambridge Junior Science. Retrieval practice works best when it is low-stakes, appropriately challenging and followed by feedback.</p>
-        <div className="legend"><span><i className="biology" /> Biology</span><span><i className="chemistry" /> Chemistry</span><span><i className="physics" /> Physics</span></div>
+        <p>Built for St Peter&apos;s Cambridge Science. Retrieval practice works best when it is low-stakes, appropriately challenging and followed by feedback.</p>
+        <div className="legend"><span><i className="biology" /> Biology</span><span><i className="chemistry" /> Chemistry</span><span><i className="physics" /> Physics</span><span><i className="agriculture" /> Agriculture &amp; Horticulture</span></div>
       </footer>
 
       {customQuestionOpen && (
