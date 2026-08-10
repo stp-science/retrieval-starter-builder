@@ -32,9 +32,26 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /1,640(?:<!-- -->)?-question bank/i);
+  assert.match(html, /4,776(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
+  assert.match(html, /IB Sciences/i);
   assert.doesNotMatch(html, /topic-option selected/i);
+});
+
+test("includes every IB Biology, Chemistry and Physics syllabus topic", async () => {
+  const biology = await readFile(new URL("../app/ib-biology-data.ts", import.meta.url), "utf8");
+  const chemistry = await readFile(new URL("../app/ib-chemistry-data.ts", import.meta.url), "utf8");
+  const physics = await readFile(new URL("../app/ib-physics-data.ts", import.meta.url), "utf8");
+  const bank = await readFile(new URL("../app/ib-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+
+  assert.equal((biology.match(/^  b\(/gm) ?? []).length, 40);
+  assert.equal((chemistry.match(/^  c\(/gm) ?? []).length, 22);
+  assert.equal((physics.match(/^  p\(/gm) ?? []).length, 24);
+  assert.match(bank, /year: "IB"/);
+  assert.match(bank, /oneWordQuestions: buildOneWordQuestions/);
+  assert.match(page, /ibSubjects/);
+  assert.match(page, /IB Sciences/);
 });
 
 test("includes the ten Year 12 NCEA external assessment units", async () => {

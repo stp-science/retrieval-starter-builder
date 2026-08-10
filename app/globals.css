@@ -65,7 +65,7 @@ button { color: inherit; }
 .step-heading h2 { margin: 1px 0 5px; font-size: 20px; letter-spacing: -.02em; }
 .step-heading p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
 
-.year-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 5px; margin: 24px 0 18px; border-radius: 12px; background: #e4e0dc; }
+.year-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 5px; margin: 24px 0 18px; border-radius: 12px; background: #e4e0dc; }
 .year-tabs button { min-height: 40px; border: 0; border-radius: 8px; background: transparent; font-weight: 800; font-size: 13px; cursor: pointer; }
 .year-tabs button.active { background: var(--paper); box-shadow: 0 2px 8px rgba(36,52,48,.12); }
 .course-picker { margin: -7px 0 18px; }
@@ -520,6 +520,7 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
 }
 
 @media (max-width: 650px) {
+  .year-tabs { grid-template-columns: repeat(2, 1fr); }
   .topbar { height: 76px; padding-left: 14px; padding-right: 14px; }
   .brand { gap: 9px; }
   .brand-crest { width: 42px; height: 46px; }

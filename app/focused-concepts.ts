@@ -192,9 +192,29 @@ export const focusedConcepts: Record<string, FocusedConcept[]> = {
   ],
 };
 
-export function conceptsForTopic(topic: { id: string; keywords: string[] }): FocusedConcept[] {
+export function conceptsForTopic(topic: { id: string; name?: string; keywords: string[] }): FocusedConcept[] {
   const configured = focusedConcepts[topic.id];
   if (configured?.length) return configured;
+
+  if (topic.id.startsWith("ib-") && topic.keywords.length >= 6) {
+    const [first, second, third, fourth, fifth, sixth] = topic.keywords;
+    const groups = [
+      [first, second],
+      [third, fourth],
+      [fifth, sixth],
+    ];
+    const paired = groups.map((group) => ({
+      title: group.map((word) => word.replace(/\b\w/g, (letter) => letter.toUpperCase())).join(" and "),
+      cues: group.join(", "),
+    }));
+    return [
+      ...paired,
+      {
+        title: `Connections across ${topic.name ?? first}`,
+        cues: [first, fourth, sixth].join(", "),
+      },
+    ];
+  }
 
   const groups = Array.from({ length: 4 }, (_, index) => topic.keywords.slice(index * 4, index * 4 + 4)).filter((group) => group.length);
   return groups.map((group) => ({

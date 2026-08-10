@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { conceptsForTopic } from "./focused-concepts";
+import { ibSubjects, ibTopics } from "./ib-question-bank";
 import { extraQuestions } from "./question-bank";
 import { seniorCourses, seniorTopics, type SeniorCourse } from "./year12-question-bank";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
-type YearGroup = 7 | 8 | 9 | 12;
+type YearGroup = 7 | 8 | 9 | 12 | "IB";
 type Question = {
   q: string;
   a: string;
@@ -40,6 +41,8 @@ type Topic = {
   strand: "Biology" | "Chemistry" | "Physics" | "Agriculture";
   course?: SeniorCourse;
   standard?: string;
+  level?: "SL & HL" | "HL only";
+  programme?: "IB";
   keywords: string[];
   questions: Question[];
   oneWordQuestions?: Question[];
@@ -488,6 +491,7 @@ const topics: Topic[] = [
     questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
   })),
   ...seniorTopics,
+  ...ibTopics,
 ];
 
 const activities: { id: ActivityId; name: string; description: string; tag: string }[] = [
@@ -914,10 +918,10 @@ export default function Home() {
   const presentationRef = useRef<HTMLDivElement | null>(null);
 
   const yearTopics = useMemo(
-    () => topics.filter((topic) => topic.year === year && (year !== 12 || topic.course === course)),
+    () => topics.filter((topic) => topic.year === year && (![12, "IB"].includes(year) || topic.course === course)),
     [year, course],
   );
-  const courseLabel = year === 12 ? `Year 12 ${course}` : `Year ${year} Science`;
+  const courseLabel = year === 12 ? `Year 12 ${course}` : year === "IB" ? `IB ${course}` : `Year ${year} Science`;
   const fileCourseLabel = courseLabel.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
   const selectedTopics = topics.filter((topic) => selected.includes(topic.id));
   const displayTopics = activity === "question-chain" && generated.length
@@ -985,6 +989,7 @@ export default function Home() {
 
   function chooseYear(nextYear: YearGroup) {
     setYear(nextYear);
+    if (nextYear === "IB" && course === "Agricultural & Horticultural Science") setCourse("Biology");
     setSelected([]);
     setGenerated([]);
     setKeywordSet([]);
@@ -1757,16 +1762,16 @@ export default function Home() {
           </div>
 
           <div className="year-tabs" role="group" aria-label="Year group">
-            {([7, 8, 9, 12] as YearGroup[]).map((item) => (
-              <button key={item} className={year === item ? "active" : ""} onClick={() => chooseYear(item)}>Year {item}</button>
+            {([7, 8, 9, 12, "IB"] as YearGroup[]).map((item) => (
+              <button key={item} className={year === item ? "active" : ""} onClick={() => chooseYear(item)}>{item === "IB" ? "IB Sciences" : `Year ${item}`}</button>
             ))}
           </div>
 
-          {year === 12 && (
+          {(year === 12 || year === "IB") && (
             <div className="course-picker">
-              <span>Senior course</span>
-              <div className="course-tabs" role="group" aria-label="Year 12 senior science course">
-                {seniorCourses.map((item) => (
+              <span>{year === "IB" ? "IB subject" : "Senior course"}</span>
+              <div className="course-tabs" role="group" aria-label={year === "IB" ? "IB science subject" : "Year 12 senior science course"}>
+                {(year === "IB" ? ibSubjects : seniorCourses).map((item) => (
                   <button key={item} className={course === item ? "active" : ""} onClick={() => chooseCourse(item)}>{item}</button>
                 ))}
               </div>
@@ -1783,18 +1788,18 @@ export default function Home() {
 
           {activity === "concept-map" && <p className="selection-note">Concept Map uses one topic so its keywords form meaningful scientific links.</p>}
 
-          <div className={`topic-list ${year === 12 ? "senior-topic-list" : ""}`}>
+          <div className={`topic-list ${year === 12 || year === "IB" ? "senior-topic-list" : ""}`}>
             {yearTopics.map((topic) => (
               <label key={topic.id} className={`topic-option ${selected.includes(topic.id) ? "selected" : ""}`}>
                 <input type="checkbox" checked={selected.includes(topic.id)} onChange={() => toggleTopic(topic.id)} />
                 <span className={`strand-dot ${topic.strand.toLowerCase()}`} />
-                <span className="topic-name">{topic.name}{topic.standard && <small>{topic.standard} • External</small>}</span>
+                <span className="topic-name">{topic.name}{topic.standard && <small>{topic.programme === "IB" ? `${topic.standard} • ${topic.level}` : `${topic.standard} • External`}</small>}</span>
                 <span className="question-count">{topic.questions.length + (topic.oneWordQuestions?.length ?? 0)} starter prompts</span>
                 <span className="checkmark">✓</span>
               </label>
             ))}
           </div>
-          <p className="bank-note"><strong>Large checked bank:</strong> every topic contains at least 40 prompts. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
+          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : "every topic contains at least 40 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
 
           <div className="divider" />
           <div className="step-heading">
