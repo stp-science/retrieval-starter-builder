@@ -65,14 +65,21 @@ button { color: inherit; }
 .step-heading h2 { margin: 1px 0 5px; font-size: 20px; letter-spacing: -.02em; }
 .step-heading p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
 
-.year-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; margin: 24px 0 18px; border-radius: 12px; background: #e4e0dc; }
+.year-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 5px; margin: 24px 0 18px; border-radius: 12px; background: #e4e0dc; }
 .year-tabs button { min-height: 40px; border: 0; border-radius: 8px; background: transparent; font-weight: 800; font-size: 13px; cursor: pointer; }
 .year-tabs button.active { background: var(--paper); box-shadow: 0 2px 8px rgba(36,52,48,.12); }
+.course-picker { margin: -7px 0 18px; }
+.course-picker > span { display: block; margin: 0 0 7px 2px; color: var(--muted); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+.course-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.course-tabs button { min-height: 42px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--muted); font-size: 11px; font-weight: 800; cursor: pointer; }
+.course-tabs button:hover { border-color: var(--sax); }
+.course-tabs button.active { border-color: var(--mint-dark); background: #eef4f7; color: var(--ink); box-shadow: inset 0 0 0 1px var(--mint-dark); }
 .topic-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: var(--muted); font-size: 12px; }
 .text-button { border: 0; background: transparent; color: var(--mint-dark); font-weight: 800; font-size: 12px; cursor: pointer; padding: 5px; }
 .text-button.muted { color: var(--muted); }
 .selection-note { margin: -2px 0 10px; padding: 8px 10px; border-left: 3px solid var(--purple); background: #f1eefb; color: #4b3e78; font-size: 10px; line-height: 1.45; }
 .topic-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.topic-list.senior-topic-list { grid-template-columns: 1fr; }
 .topic-option { min-height: 54px; padding: 10px 11px; border: 1px solid var(--line); border-radius: 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; background: white; transition: .15s ease; }
 .topic-option:hover { border-color: var(--sax); transform: translateY(-1px); }
 .topic-option.selected { border-color: var(--mint-dark); background: #eef4f7; }
@@ -81,7 +88,9 @@ button { color: inherit; }
 .strand-dot.biology, .legend i.biology { background: #78ae78; }
 .strand-dot.chemistry, .legend i.chemistry { background: var(--yellow); }
 .strand-dot.physics, .legend i.physics { background: var(--purple); }
+.strand-dot.agriculture, .legend i.agriculture { background: #947148; }
 .topic-name { font-size: 12px; line-height: 1.25; font-weight: 700; flex: 1; }
+.topic-name small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .03em; }
 .question-count { white-space: nowrap; color: var(--muted); font-size: 10px; }
 .checkmark { display: none; width: 18px; height: 18px; border-radius: 50%; background: var(--mint-dark); color: white; font-size: 11px; font-weight: 900; place-items: center; }
 .topic-option.selected .checkmark { display: grid; }
@@ -522,7 +531,7 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
   .hero-copy { font-size: 15px; }
   .workspace { padding-left: 12px; padding-right: 12px; }
   .builder-panel { border-radius: 18px; padding: 20px 14px; }
-  .topic-list, .activity-grid, .options-row { grid-template-columns: 1fr; }
+  .topic-list, .activity-grid, .options-row, .course-tabs { grid-template-columns: 1fr; }
   .question-count { font-size: 9px; }
   .activity-card { min-height: 108px; }
   .preview-shell { border-radius: 18px; }
