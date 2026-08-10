@@ -228,29 +228,37 @@
 .starter-sheet .question-list li {
   position: relative;
   padding: 16px 16px 16px 50px !important;
-  counter-increment: polished-question;
 }
 
 .starter-sheet .question-list {
-  counter-reset: polished-question;
   list-style: none !important;
   padding-left: 0 !important;
 }
 
-.starter-sheet .question-list li::before {
-  content: counter(polished-question);
+.starter-sheet .question-number {
   position: absolute;
   left: 14px;
   top: 14px;
   width: 26px;
   height: 26px;
-  display: grid;
-  place-items: center;
   border-radius: 50%;
   background: var(--activity-accent);
   color: #fff;
   font-size: 12px;
   font-weight: 900;
+}
+
+.starter-sheet .number-badge {
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  font-family: Arial, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  text-indent: 0 !important;
 }
 
 .starter-sheet :is(
@@ -337,12 +345,19 @@
 }
 
 .starter-sheet .placemat-grid > div {
+  min-height: 180px !important;
   border-color: #dce2ea !important;
   background: #fff !important;
 }
 
 .starter-sheet .placemat-grid > div:nth-child(odd) {
+  padding-right: 82px !important;
   background: var(--activity-soft-2) !important;
+}
+
+.starter-sheet .placemat-grid > div:nth-child(even) {
+  padding-right: 13px !important;
+  padding-left: 82px !important;
 }
 
 .starter-sheet .placemat-centre,
@@ -390,4 +405,141 @@
   .starter-sheet {
     box-shadow: none !important;
   }
+
+  .print-placemat .starter-sheet.activity-retrieval-placemat {
+    box-sizing: border-box !important;
+    width: 277mm !important;
+    height: 190mm !important;
+    min-height: 190mm !important;
+    padding: 8mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .print-placemat .activity-retrieval-placemat .placemat-grid {
+    min-height: 0 !important;
+    flex: 1 1 auto !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* html2canvas uses a desktop-sized clone. These export rules deliberately
+   neutralise the enlarged classroom-preview styles so A4 files remain tidy. */
+.pdf-export .starter-sheet {
+  overflow: hidden !important;
+  padding: 30px 36px !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.pdf-export .starter-sheet > h2 {
+  margin-top: 12px !important;
+  margin-bottom: 9px !important;
+  font-size: 40px !important;
+  line-height: 1.05 !important;
+}
+
+.pdf-export .starter-sheet > h2::after {
+  height: 4px !important;
+  margin-top: 7px !important;
+}
+
+.pdf-export .starter-sheet .instructions {
+  margin: 12px 0 14px !important;
+  padding: 10px 13px 10px 16px !important;
+  font-size: 13px !important;
+  line-height: 1.42 !important;
+}
+
+.pdf-export body .preview-shell .starter-sheet :is(
+  .question-list li,
+  .retrieval-grid p,
+  .challenge-grid p,
+  .trade-card strong,
+  .bingo-grid p,
+  .roulette-grid p,
+  .placemat-grid > div p,
+  .clock-card p,
+  .chain-card p,
+  .match-item p,
+  .match-answer p,
+  .cloze-grid p,
+  .flashcard p,
+  .connect-four-grid p,
+  .list-grid li,
+  .brain-grid p,
+  .concept-map p,
+  .knowledge-columns strong
+) {
+  font-size: 14px !important;
+  line-height: 1.42 !important;
+}
+
+.pdf-export body .preview-shell .starter-sheet :is(
+  em,
+  .card-answer,
+  .flashcard-answer p,
+  .answer-first-list strong
+) {
+  font-size: 12px !important;
+  line-height: 1.38 !important;
+}
+
+.pdf-export .starter-sheet :is(
+  .retrieval-grid,
+  .challenge-grid,
+  .trade-grid,
+  .roulette-grid,
+  .cloze-grid,
+  .flashcard-grid,
+  .keyword-card-grid,
+  .picture-prompt-grid,
+  .brain-grid,
+  .list-grid,
+  .two-things-grid,
+  .placemat-grid
+) {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.pdf-export .starter-sheet .bingo-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.pdf-export .starter-sheet .connect-four-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.pdf-export .starter-sheet .question-list {
+  columns: 2 !important;
+  column-gap: 24px !important;
+}
+
+.pdf-export .starter-sheet .number-badge {
+  transform: none !important;
+  line-height: 1 !important;
+}
+
+.pdf-export .starter-sheet footer {
+  margin-top: 16px !important;
+  padding: 10px 12px !important;
+}
+
+.pdf-export .starter-sheet.activity-retrieval-placemat {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 28px 34px !important;
+}
+
+.pdf-export .activity-retrieval-placemat .placemat-grid {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.pdf-export body .preview-shell .activity-retrieval-placemat .placemat-grid > div p {
+  font-size: 18px !important;
+  line-height: 1.5 !important;
 }
