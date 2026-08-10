@@ -655,6 +655,10 @@ export const seniorTopics: SeniorTopic[] = [
       ["What behaviour commonly decreases first when livestock experience heat stress?", "Feed intake", "core", "short"],
       ["What practice sorts animals so feeding and care can match their needs?", "Management grouping", "core", "short"],
       ["What term describes how efficiently feed is converted into live-weight gain?", "Feed efficiency", "core", "short"],
+      ["What term means the increase in live weight per unit of time?", "Growth rate", "core", "short"],
+      ["What name is given to the dressed body of an animal after slaughter?", "Carcass", "core", "short"],
+      ["What saleable fibre is produced by sheep?", "Wool", "core", "short"],
+      ["What type of medicine is used to control internal parasites?", "Anthelmintic", "core", "short"],
 
       ["What term describes a compromise in which improving one trait can worsen another?", "Trade-off", "stretch", "short"],
       ["What can develop when the same parasite treatment is overused repeatedly?", "Drench resistance", "stretch", "short"],
@@ -685,8 +689,9 @@ for (const topic of seniorTopics) {
   if (topic.oneWordQuestions) {
     for (const difficulty of ["foundation", "core", "stretch"] as const) {
       const questionsAtLevel = topic.oneWordQuestions.filter((question) => question.difficulty === difficulty);
-      if (questionsAtLevel.length < 12) {
-        throw new Error(`${topic.id} must contain at least 12 ${difficulty} one-word questions.`);
+      const minimum = difficulty === "core" ? 16 : 12;
+      if (questionsAtLevel.length < minimum) {
+        throw new Error(`${topic.id} must contain at least ${minimum} ${difficulty} one-word questions.`);
       }
     }
 
