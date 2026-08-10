@@ -1,5 +1,6 @@
 import { extraQuestions as legacyExtraQuestions } from "./question-bank-legacy";
 import { curriculumTopics, curriculumVisuals } from "./curriculum-topics";
+import { seniorTopics } from "./year12-question-bank";
 
 export type BankQuestion = {
   q: string;
@@ -63,11 +64,13 @@ Array.prototype.map = function patchedMap<T, U>(
 };
 
 if (typeof window !== "undefined") {
-  const totalQuestions = curriculumTopics.reduce(
+  const juniorQuestions = curriculumTopics.reduce(
     (total, topic) =>
       total + topic.questions.length + (extraQuestions[topic.id]?.length ?? 0),
     0,
   );
+  const seniorQuestions = seniorTopics.reduce((total, topic) => total + topic.questions.length, 0);
+  const totalQuestions = juniorQuestions + seniorQuestions;
 
   const updateQuestionCount = () => {
     const pill = document.querySelector<HTMLElement>(".beta-pill");
