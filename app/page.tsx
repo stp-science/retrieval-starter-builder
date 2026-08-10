@@ -1256,7 +1256,7 @@ export default function Home() {
         import("jspdf"),
       ]);
       const isLandscapePlacemat = activity === "retrieval-placemat";
-      let flashcardBreakRatios: number[] = [];
+      let safeBreakRatios: number[] = [];
       const canvas = await html2canvas(sheet, {
         scale: 2,
         useCORS: true,
@@ -1273,18 +1273,52 @@ export default function Home() {
             clonedSheet.style.margin = "0";
             clonedSheet.style.boxShadow = "none";
             clonedSheet.style.boxSizing = "border-box";
+            clonedSheet.style.transform = "none";
             clonedSheet.style.width = isLandscapePlacemat ? "1123px" : "794px";
             clonedSheet.style.maxWidth = isLandscapePlacemat ? "1123px" : "794px";
             clonedSheet.style.minHeight = isLandscapePlacemat ? "760px" : "0";
             if (isLandscapePlacemat) clonedSheet.style.height = "760px";
-            if (activity === "flashcard-sprint") {
-              const sheetRect = clonedSheet.getBoundingClientRect();
-              const sheetHeight = Math.max(clonedSheet.scrollHeight, sheetRect.height);
-              const cardBottoms = Array.from(clonedSheet.querySelectorAll<HTMLElement>(".flashcard"))
-                .map((card) => (card.getBoundingClientRect().bottom - sheetRect.top) / sheetHeight)
-                .filter((ratio) => ratio > 0 && ratio < 1);
-              flashcardBreakRatios = [...new Set(cardBottoms.map((ratio) => Number(ratio.toFixed(4))))].sort((left, right) => left - right);
-            }
+            const sheetRect = clonedSheet.getBoundingClientRect();
+            const sheetHeight = Math.max(clonedSheet.scrollHeight, sheetRect.height);
+            const breakElements = Array.from(clonedSheet.querySelectorAll<HTMLElement>([
+              ".question-list > li",
+              ".answer-first-list > li",
+              ".linking-grid > div",
+              ".concept-terms > span",
+              ".keyword-card-grid > *",
+              ".picture-prompt-grid > *",
+              ".brain-grid > *",
+              ".robbers-grid > *",
+              ".relay-grid > *",
+              ".list-grid > *",
+              ".two-things-grid > *",
+              ".clock-card",
+              ".question-chain > *",
+              ".match-item",
+              ".match-answer",
+              ".cloze-grid > *",
+              ".flashcard-grid > *",
+              ".connect-four-grid > *",
+              ".challenge-grid > *",
+              ".trade-grid > *",
+              ".retrieval-grid > *",
+              ".bingo-grid > *",
+              ".roulette-grid > *",
+              ".placemat-grid > div",
+            ].join(",")));
+            const intervals = breakElements
+              .map((element) => {
+                const rect = element.getBoundingClientRect();
+                return { top: rect.top - sheetRect.top, bottom: rect.bottom - sheetRect.top };
+              })
+              .filter(({ top, bottom }) => bottom > top && bottom > 0 && top < sheetHeight);
+            const safeBottoms = intervals
+              .map(({ bottom }) => bottom)
+              .filter((candidate) => !intervals.some(({ top, bottom }) => top + 2 < candidate && bottom - 2 > candidate));
+            safeBreakRatios = [...new Set(safeBottoms
+              .map((bottom) => Number((bottom / sheetHeight).toFixed(4)))
+              .filter((ratio) => ratio > 0 && ratio < 1))]
+              .sort((left, right) => left - right);
           }
         },
       });
@@ -1327,15 +1361,15 @@ export default function Home() {
       }
 
       const pageHeightPx = Math.floor(canvas.width * (usableHeight / usableWidth));
-      const safeFlashcardBreaks = flashcardBreakRatios.map((ratio) => Math.floor(ratio * canvas.height));
+      const safeBreaks = safeBreakRatios.map((ratio) => Math.floor(ratio * canvas.height));
       let sourceY = 0;
       let pageNumber = 0;
 
       while (sourceY < canvas.height) {
         let sliceHeight = Math.min(pageHeightPx, canvas.height - sourceY);
-        if (activity === "flashcard-sprint" && canvas.height - sourceY > pageHeightPx) {
+        if (canvas.height - sourceY > pageHeightPx) {
           const targetY = sourceY + pageHeightPx;
-          const safeBreak = safeFlashcardBreaks
+          const safeBreak = safeBreaks
             .filter((breakY) => breakY > sourceY + pageHeightPx * 0.35 && breakY <= targetY)
             .at(-1);
           if (safeBreak) sliceHeight = safeBreak - sourceY;
@@ -1402,6 +1436,11 @@ export default function Home() {
         children,
         shading: fill ? { fill, color: "auto", type: ShadingType.CLEAR } : undefined,
         margins: { top: 120, bottom: 120, left: 140, right: 140 },
+      });
+      const compactCell = (children: InstanceType<typeof Paragraph>[], fill?: string) => new TableCell({
+        children,
+        shading: fill ? { fill, color: "auto", type: ShadingType.CLEAR } : undefined,
+        margins: { top: 70, bottom: 70, left: 110, right: 110 },
       });
       const grid = (items: { children: InstanceType<typeof Paragraph>[]; fill?: string }[], columns: number, rowHeight?: number) => {
         const padded = [...items];
@@ -1510,10 +1549,10 @@ export default function Home() {
       } else if (activity === "match-up") {
         content.push(new Table({
           rows: [
-            new TableRow({ children: [cell([para("Questions", { bold: true, center: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("Answer bank", { bold: true, center: true, color: "FFFFFF", after: 0 })], "171B22")] }),
-            ...generated.map((question, index) => new TableRow({ children: [
-              cell([para(`${index + 1}. ${question.q}`, { size: 18 }), ...(showAnswers ? [para(`Match: ${String.fromCharCode(65 + matchAnswerBank.findIndex((item) => item.key === question.q))}`, { color: "365F72", bold: true, size: 15 })] : [])]),
-              cell(matchAnswerBank[index] ? [para(`${String.fromCharCode(65 + index)}. ${matchAnswerBank[index].answer}`, { size: 18 })] : [para("")]),
+            new TableRow({ tableHeader: true, children: [compactCell([para("Questions", { bold: true, center: true, color: "FFFFFF", after: 0 })], "171B22"), compactCell([para("Answer bank", { bold: true, center: true, color: "FFFFFF", after: 0 })], "171B22")] }),
+            ...generated.map((question, index) => new TableRow({ cantSplit: true, children: [
+              compactCell([para(`${index + 1}. ${question.q}`, { size: 17, after: 35 }), ...(showAnswers ? [para(`Match: ${String.fromCharCode(65 + matchAnswerBank.findIndex((item) => item.key === question.q))}`, { color: "365F72", bold: true, size: 14, after: 0 })] : [])]),
+              compactCell(matchAnswerBank[index] ? [para(`${String.fromCharCode(65 + index)}. ${matchAnswerBank[index].answer}`, { size: 17, after: 0 })] : [para("")]),
             ] })),
           ],
           width: { size: 100, type: WidthType.PERCENTAGE },
