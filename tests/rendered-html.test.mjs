@@ -149,3 +149,17 @@ test("keeps Answer First free from starter-word scaffolds", async () => {
   assert.doesNotMatch(powerpoint, /answer-scaffold|Question starter:/, "PowerPoint still includes a starter-word scaffold");
   assert.doesNotMatch(styles, /\.answer-scaffold/, "unused Answer First scaffold styling remains");
 });
+
+test("keeps PDF dividers and PowerPoint headers safely inset", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const powerpoint = await readFile(new URL("../app/PowerPointDownloadEnhancer.tsx", import.meta.url), "utf8");
+  const polish = await readFile(new URL("../app/activity-polish.css", import.meta.url), "utf8");
+
+  assert.match(page, /divider\.className = "pdf-title-divider"/, "PDF export does not create a dedicated title divider");
+  assert.match(polish, /> h2::after \{\s*display: none !important;/, "fragile PDF title pseudo-divider is still visible");
+  assert.match(polish, /> \.pdf-title-divider \{[\s\S]*margin: 12px 0 12px !important;/, "PDF title divider spacing is missing");
+  assert.match(powerpoint, /const HEADER_TEXT_MARGIN = \{ left: 0\.32/, "PowerPoint banner text is not inset");
+  assert.match(powerpoint, /const INSTRUCTION_TEXT_MARGIN = \{ left: 0\.24, right: 0\.2/, "PowerPoint instructions lack internal padding");
+  assert.equal((powerpoint.match(/margin: HEADER_TEXT_MARGIN/g) ?? []).length, 2, "PowerPoint banner inset is not applied to both slides");
+  assert.equal((powerpoint.match(/margin: INSTRUCTION_TEXT_MARGIN/g) ?? []).length, 2, "PowerPoint instruction padding is not applied to both slides");
+});

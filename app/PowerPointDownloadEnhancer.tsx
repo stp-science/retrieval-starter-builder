@@ -41,6 +41,10 @@ const SLIDE_HEIGHT = 7.5;
 const READING_BACKGROUND = "FFF6D6";
 const READING_PANEL = "FFFBEA";
 const READING_PANEL_ALT = "FFF0B8";
+const SLIDE_SIDE_INSET = 0.52;
+const SLIDE_CONTENT_WIDTH = SLIDE_WIDTH - (SLIDE_SIDE_INSET * 2);
+const HEADER_TEXT_MARGIN = { left: 0.32, right: 0.16, top: 0.08, bottom: 0.08 };
+const INSTRUCTION_TEXT_MARGIN = { left: 0.24, right: 0.2, top: 0.1, bottom: 0.1 };
 let loader: Promise<PptxConstructor> | null = null;
 
 const activityPalettes: Record<string, { accent: string; soft: string }> = {
@@ -290,14 +294,14 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
     fontSize: 11,
     bold: true,
     color: "FFFFFF",
-    margin: 0.08,
+    margin: HEADER_TEXT_MARGIN,
     fill: { color: palette.accent },
     line: { color: palette.accent, width: 0 },
     valign: "mid",
   });
 
   slide.addText(title, {
-    x: 0.42,
+    x: SLIDE_SIDE_INSET,
     y: 0.48,
     w: 8.8,
     h: 0.55,
@@ -313,7 +317,7 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
   });
 
   slide.addText(yearLabel, {
-    x: 9.55,
+    x: 9.45,
     y: 0.5,
     w: 3.35,
     h: 0.42,
@@ -328,9 +332,9 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
 
   if (topicLine) {
     slide.addText(topicLine, {
-      x: 0.42,
+      x: SLIDE_SIDE_INSET,
       y: 1.08,
-      w: 12.48,
+      w: SLIDE_CONTENT_WIDTH,
       h: 0.3,
       fontFace: "Aptos",
       fontSize: 10.5,
@@ -342,15 +346,15 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
   }
 
   slide.addText(wordBank ? `${instructions}  Word bank: ${wordBank}` : instructions, {
-    x: 0.42,
+    x: SLIDE_SIDE_INSET,
     y: 1.43,
-    w: 12.48,
+    w: SLIDE_CONTENT_WIDTH,
     h: 0.46,
     fontFace: "Aptos",
     fontSize: 12.5,
     bold: true,
     color: "263244",
-    margin: 0.1,
+    margin: INSTRUCTION_TEXT_MARGIN,
     fit: "shrink",
     valign: "mid",
     line: { color: palette.accent, width: 1.3 },
@@ -415,13 +419,13 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
       fontSize: 11,
       bold: true,
       color: "FFFFFF",
-      margin: 0.08,
+      margin: HEADER_TEXT_MARGIN,
       fill: { color: palette.accent },
       line: { color: palette.accent, width: 0 },
       valign: "mid",
     });
     answerSlide.addText(`${title} — Answers`, {
-      x: 0.42,
+      x: SLIDE_SIDE_INSET,
       y: 0.48,
       w: 9.1,
       h: 0.55,
@@ -434,7 +438,7 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
       valign: "mid",
     });
     answerSlide.addText(yearLabel, {
-      x: 9.55,
+      x: 9.45,
       y: 0.5,
       w: 3.35,
       h: 0.42,
@@ -448,9 +452,9 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
     });
     if (topicLine) {
       answerSlide.addText(topicLine, {
-        x: 0.42,
+        x: SLIDE_SIDE_INSET,
         y: 1.08,
-        w: 12.48,
+        w: SLIDE_CONTENT_WIDTH,
         h: 0.3,
         fontFace: "Aptos",
         fontSize: 10.5,
@@ -461,15 +465,15 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
       });
     }
     answerSlide.addText("Reveal after pupils have committed to an answer. Correct and improve in a different colour.", {
-      x: 0.42,
+      x: SLIDE_SIDE_INSET,
       y: 1.43,
-      w: 12.48,
+      w: SLIDE_CONTENT_WIDTH,
       h: 0.46,
       fontFace: "Aptos",
       fontSize: 12.5,
       bold: true,
       color: "263244",
-      margin: 0.1,
+      margin: INSTRUCTION_TEXT_MARGIN,
       fit: "shrink",
       valign: "mid",
       line: { color: palette.accent, width: 1.3 },

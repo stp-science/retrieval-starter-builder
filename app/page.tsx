@@ -1274,6 +1274,13 @@ export default function Home() {
             clonedSheet.style.boxShadow = "none";
             clonedSheet.style.boxSizing = "border-box";
             clonedSheet.style.transform = "none";
+            const title = clonedSheet.querySelector(":scope > h2");
+            if (title && !clonedSheet.querySelector(":scope > .pdf-title-divider")) {
+              const divider = clonedDocument.createElement("div");
+              divider.className = "pdf-title-divider";
+              divider.setAttribute("aria-hidden", "true");
+              title.insertAdjacentElement("afterend", divider);
+            }
             clonedSheet.style.width = isLandscapePlacemat ? "1123px" : "794px";
             clonedSheet.style.maxWidth = isLandscapePlacemat ? "1123px" : "794px";
             clonedSheet.style.minHeight = isLandscapePlacemat ? "760px" : "0";
