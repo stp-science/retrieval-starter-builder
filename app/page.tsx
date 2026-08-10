@@ -42,6 +42,7 @@ type Topic = {
   standard?: string;
   keywords: string[];
   questions: Question[];
+  oneWordQuestions?: Question[];
 };
 
 type ActivityId =
@@ -1032,7 +1033,12 @@ export default function Home() {
 
   function generate() {
     if (!selectedTopics.length) return;
-    const pool = selectedTopics.flatMap((topic) => topic.questions.map((question) => ({ ...question, topicId: topic.id })));
+    const pool = selectedTopics.flatMap((topic) => {
+      const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
+        ? topic.oneWordQuestions
+        : topic.questions;
+      return activityQuestions.map((question) => ({ ...question, topicId: topic.id }));
+    });
     const suitable = pool.filter((question) => matchesLevel(question, activity === "question-chain" ? "balanced" : level));
     const nonYesNoSuitable = suitable.filter((question) => !isYesNoQuestion(question.q));
     const oneWordPool = suitable.filter((question) => question.kind === "short" && !isYesNoQuestion(question.q));
@@ -1126,12 +1132,17 @@ export default function Home() {
     const isFocusedKnowledge = (activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "focused";
     const pool = (isFocusedKnowledge
       ? focusedKnowledgePool(selectedTopics)
-      : selectedTopics.flatMap((topic) => topic.questions
-        .filter((question) => matchesLevel(question, level))
-        .filter((question) => activity !== "one-worders" || (question.kind === "short" && !isYesNoQuestion(question.q)))
-        .filter((question) => activity !== "retrieval-placemat" || question.kind === "explain")
-        .map((question) => ({ ...question, topicId: topic.id }))
-        .map((question) => activity === "retrieval-placemat" ? openEndedPlacematQuestion(question) : question)))
+      : selectedTopics.flatMap((topic) => {
+        const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
+          ? topic.oneWordQuestions
+          : topic.questions;
+        return activityQuestions
+          .filter((question) => matchesLevel(question, level))
+          .filter((question) => activity !== "one-worders" || (question.kind === "short" && !isYesNoQuestion(question.q)))
+          .filter((question) => activity !== "retrieval-placemat" || question.kind === "explain")
+          .map((question) => ({ ...question, topicId: topic.id }))
+          .map((question) => activity === "retrieval-placemat" ? openEndedPlacematQuestion(question) : question);
+      }))
       .map(addYesNoExplanation);
     const canUse = (question: GeneratedQuestion) => !used.has(question.q)
       && (activity !== "match-up" || !usedAnswers.has(question.a.trim().toLowerCase()));
@@ -1723,7 +1734,7 @@ export default function Home() {
             <small>Retrieval Starter Builder</small>
           </span>
         </a>
-        <span className="beta-pill">{topics.reduce((sum, topic) => sum + topic.questions.length, 0).toLocaleString()}-question bank</span>
+        <span className="beta-pill">{topics.reduce((sum, topic) => sum + topic.questions.length + (topic.oneWordQuestions?.length ?? 0), 0).toLocaleString()}-question bank</span>
       </header>
 
       <section className="hero" id="top">
@@ -1733,7 +1744,7 @@ export default function Home() {
           <p className="hero-copy">Choose the course content students have learned. We’ll select, balance and format the questions—no AI or sign-in needed.</p>
         </div>
         <div className="hero-stat" aria-label="Question bank size">
-          <strong>{topics.reduce((sum, topic) => sum + topic.questions.length, 0)}</strong>
+          <strong>{topics.reduce((sum, topic) => sum + topic.questions.length + (topic.oneWordQuestions?.length ?? 0), 0)}</strong>
           <span>checked prompts</span>
         </div>
       </section>
@@ -1778,12 +1789,12 @@ export default function Home() {
                 <input type="checkbox" checked={selected.includes(topic.id)} onChange={() => toggleTopic(topic.id)} />
                 <span className={`strand-dot ${topic.strand.toLowerCase()}`} />
                 <span className="topic-name">{topic.name}{topic.standard && <small>{topic.standard} • External</small>}</span>
-                <span className="question-count">{topic.questions.length} starter prompts</span>
+                <span className="question-count">{topic.questions.length + (topic.oneWordQuestions?.length ?? 0)} starter prompts</span>
                 <span className="checkmark">✓</span>
               </label>
             ))}
           </div>
-          <p className="bank-note"><strong>Large checked bank:</strong> every topic contains 40 prompts. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
+          <p className="bank-note"><strong>Large checked bank:</strong> every topic contains at least 40 prompts. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
 
           <div className="divider" />
           <div className="step-heading">
