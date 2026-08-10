@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
-import PowerPointDownloadEnhancer from "./PowerPointDownloadEnhancer";
-import SiteExperienceEnhancer from "./SiteExperienceEnhancer";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "./preview-wide.css";
-import "./activity-polish.css";
-import "./site-science.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Retrieval Starter Builder",
-  description:
-    "Create ready-to-use Junior Science retrieval starters from a checked question bank.",
+  description: "Create ready-to-use junior and senior Science retrieval starters from a checked question bank.",
   other: {
     "codex-preview": "development",
   },
   icons: {
-    icon: "./favicon.svg",
-    shortcut: "./favicon.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
   },
 };
 
@@ -26,10 +31,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {children}
-        <PowerPointDownloadEnhancer />
-        <SiteExperienceEnhancer />
       </body>
     </html>
   );
