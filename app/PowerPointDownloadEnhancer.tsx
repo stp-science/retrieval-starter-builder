@@ -161,10 +161,18 @@ function extractTeachingContent() {
       });
       break;
     case "brain-dump":
-      prompts = texts(sheet, ".brain-grid h3").map((topic) => `${topic}: recall key terms, ideas, examples and connections.`);
+      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".brain-grid section")).map((section) => {
+        const topic = cleanText(section.querySelector(":scope > span")?.textContent);
+        const concept = cleanText(section.querySelector("h3")?.textContent);
+        return topic ? `${topic}: ${concept}` : `${concept}: recall key terms, ideas, examples and connections.`;
+      });
       break;
     case "cops-robbers":
-      prompts = texts(sheet, ".robbers-grid h3").map((topic) => `${topic}: my knowledge / stolen knowledge`);
+      prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".robbers-grid section")).map((section) => {
+        const topic = cleanText(section.querySelector(":scope > span")?.textContent);
+        const concept = cleanText(section.querySelector("h3")?.textContent);
+        return `${topic ? `${topic}: ${concept}` : concept} — my knowledge / stolen knowledge`;
+      });
       break;
     case "retrieval-relay":
       prompts = texts(sheet, ".relay-grid h3").map((topic) => `${topic}: build the answer one turn at a time.`);
@@ -201,8 +209,7 @@ function extractTeachingContent() {
     case "answer-first":
       prompts = Array.from(sheet.querySelectorAll<HTMLElement>(".answer-first-list li")).map((item) => {
         const answer = cleanText(item.querySelector("strong")?.textContent);
-        const scaffold = cleanText(item.querySelector(".answer-scaffold")?.textContent);
-        return `Write a question whose answer is: ${answer}${scaffold ? `  •  ${scaffold}` : ""}`;
+        return `Write a question whose answer is: ${answer}`;
       });
       break;
     default:
@@ -348,18 +355,21 @@ async function downloadPowerPoint() {
     const x = layout.left + column * (layout.boxWidth + layout.gapX);
     const y = layout.top + row * (layout.boxHeight + layout.gapY);
 
-    slide.addText(`${index + 1}`, {
+    const isPlacemat = activity === "retrieval-placemat";
+    slide.addText(isPlacemat ? `ZONE ${String.fromCharCode(65 + index)}` : `${index + 1}`, {
       x: x + 0.08,
       y: y + 0.08,
-      w: 0.34,
-      h: 0.28,
+      w: isPlacemat ? 0.72 : 0.3,
+      h: 0.3,
       fontFace: "Aptos",
-      fontSize: 10.5,
+      fontSize: isPlacemat ? 8.5 : 9.5,
       bold: true,
       color: "FFFFFF",
       align: "center",
       valign: "mid",
       margin: 0,
+      shape: isPlacemat ? "roundRect" : "ellipse",
+      fit: "shrink",
       fill: { color: palette.accent },
       line: { color: palette.accent, width: 0 },
     });
@@ -370,7 +380,7 @@ async function downloadPowerPoint() {
       w: layout.boxWidth,
       h: layout.boxHeight,
       fontFace: "Aptos",
-      fontSize,
+      fontSize: isPlacemat ? 18 : fontSize,
       bold: false,
       color: "172033",
       margin: { left: 0.14, right: 0.12, top: 0.42, bottom: 0.12 },
