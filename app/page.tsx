@@ -5,10 +5,11 @@ import { conceptsForTopic } from "./focused-concepts";
 import { ibSubjects, ibTopics } from "./ib-question-bank";
 import { extraQuestions } from "./question-bank";
 import { seniorCourses, seniorTopics, type SeniorCourse } from "./year12-question-bank";
+import { year13Topics } from "./year13-question-bank";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
-type YearGroup = 7 | 8 | 9 | 12 | "IB";
+type YearGroup = 7 | 8 | 9 | 12 | 13 | "IB";
 type Question = {
   q: string;
   a: string;
@@ -491,6 +492,7 @@ const topics: Topic[] = [
     questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
   })),
   ...seniorTopics,
+  ...year13Topics,
   ...ibTopics,
 ];
 
@@ -918,10 +920,10 @@ export default function Home() {
   const presentationRef = useRef<HTMLDivElement | null>(null);
 
   const yearTopics = useMemo(
-    () => topics.filter((topic) => topic.year === year && (![12, "IB"].includes(year) || topic.course === course)),
+    () => topics.filter((topic) => topic.year === year && (![12, 13, "IB"].includes(year) || topic.course === course)),
     [year, course],
   );
-  const courseLabel = year === 12 ? `Year 12 ${course}` : year === "IB" ? `IB ${course}` : `Year ${year} Science`;
+  const courseLabel = year === 12 || year === 13 ? `Year ${year} ${course}` : year === "IB" ? `IB ${course}` : `Year ${year} Science`;
   const fileCourseLabel = courseLabel.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
   const selectedTopics = topics.filter((topic) => selected.includes(topic.id));
   const displayTopics = activity === "question-chain" && generated.length
@@ -1762,15 +1764,15 @@ export default function Home() {
           </div>
 
           <div className="year-tabs" role="group" aria-label="Year group">
-            {([7, 8, 9, 12, "IB"] as YearGroup[]).map((item) => (
+            {([7, 8, 9, 12, 13, "IB"] as YearGroup[]).map((item) => (
               <button key={item} className={year === item ? "active" : ""} onClick={() => chooseYear(item)}>{item === "IB" ? "IB Sciences" : `Year ${item}`}</button>
             ))}
           </div>
 
-          {(year === 12 || year === "IB") && (
+          {(year === 12 || year === 13 || year === "IB") && (
             <div className="course-picker">
-              <span>{year === "IB" ? "IB subject" : "Senior course"}</span>
-              <div className="course-tabs" role="group" aria-label={year === "IB" ? "IB science subject" : "Year 12 senior science course"}>
+              <span>{year === "IB" ? "IB subject" : "NCEA course"}</span>
+              <div className="course-tabs" role="group" aria-label={year === "IB" ? "IB science subject" : `Year ${year} NCEA science course`}>
                 {(year === "IB" ? ibSubjects : seniorCourses).map((item) => (
                   <button key={item} className={course === item ? "active" : ""} onClick={() => chooseCourse(item)}>{item}</button>
                 ))}
@@ -1788,7 +1790,7 @@ export default function Home() {
 
           {activity === "concept-map" && <p className="selection-note">Concept Map uses one topic so its keywords form meaningful scientific links.</p>}
 
-          <div className={`topic-list ${year === 12 || year === "IB" ? "senior-topic-list" : ""}`}>
+          <div className={`topic-list ${year === 12 || year === 13 || year === "IB" ? "senior-topic-list" : ""}`}>
             {yearTopics.map((topic) => (
               <label key={topic.id} className={`topic-option ${selected.includes(topic.id) ? "selected" : ""}`}>
                 <input type="checkbox" checked={selected.includes(topic.id)} onChange={() => toggleTopic(topic.id)} />
