@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { conceptsForTopic } from "./focused-concepts";
 import { extraQuestions } from "./question-bank";
 
 type Difficulty = "foundation" | "core" | "stretch";
@@ -742,21 +743,85 @@ function visualKeyword(answer: string, topic: Topic) {
     .join(" ");
 }
 
-function questionScaffold(question: string) {
-  const words = question.replace(/[?!.]+$/, "").split(/\s+/).filter(Boolean);
-  const starterLength = words[0]?.toLowerCase() === "how" && words[1]?.toLowerCase() === "does" ? 2 : 1;
-  return `${words.slice(0, starterLength).join(" ")} …?`;
+function lowerCaseFirst(value: string) {
+  return value ? `${value[0].toLowerCase()}${value.slice(1)}` : value;
 }
 
-function buildListPrompts(selectedTopics: Topic[]): ListPrompt[] {
+function openEndedPlacematQuestion(question: GeneratedQuestion): GeneratedQuestion {
+  const original = question.q.trim();
+  const stem = original.replace(/[?!.]+$/, "");
+  if (/^(explain|describe|compare|discuss|justify|evaluate|why|how)\b/i.test(stem)) return question;
+
+  const whatDefinition = stem.match(/^what (?:is|are) (.+)$/i);
+  if (whatDefinition) return { ...question, q: `Describe ${lowerCaseFirst(whatDefinition[1])}.` };
+
+  const whatMeaning = stem.match(/^what does (.+) mean$/i);
+  if (whatMeaning) return { ...question, q: `Explain what ${lowerCaseFirst(whatMeaning[1])} means.` };
+
+  const whatHappens = stem.match(/^what happens (.+)$/i);
+  if (whatHappens) return { ...question, q: `Describe what happens ${lowerCaseFirst(whatHappens[1])}.` };
+
+  const yesNo = stem.match(/^(?:can|could|does|do|is|are|would|will) (.+)$/i);
+  if (yesNo) return { ...question, q: `Explain whether ${lowerCaseFirst(yesNo[1])}.` };
+
+  const giveExample = stem.match(/^give (.+)$/i);
+  if (giveExample) return { ...question, q: `Describe ${lowerCaseFirst(giveExample[1])} and explain why it fits.` };
+
+  const choice = stem.match(/^which (.+)$/i);
+  if (choice) return { ...question, q: `Identify which ${lowerCaseFirst(choice[1])} and explain your reasoning.` };
+
+  return { ...question, q: `Explain your answer to this question: ${stem}?` };
+}
+
+function isYesNoQuestion(question: string) {
+  return /^(?:is|are|am|can|could|do|does|did|will|would|should|has|have|had)\b/i.test(question.trim());
+}
+
+function addYesNoExplanation(question: GeneratedQuestion): GeneratedQuestion {
+  const prompt = question.q.trim();
+  if (!isYesNoQuestion(prompt) || /\b(?:explain|justify|give a reason|say why)\b/i.test(prompt)) return question;
+  const punctuated = /[?!.]$/.test(prompt) ? prompt : `${prompt}?`;
+  return { ...question, q: `${punctuated} Explain why.` };
+}
+
+function focusedKnowledgePool(selectedTopics: Topic[]): GeneratedQuestion[] {
+  return selectedTopics.flatMap((topic) => conceptsForTopic(topic).map((concept) => ({
+    q: concept.title,
+    a: `Key ideas: ${concept.cues}.`,
+    difficulty: "core" as const,
+    kind: "explain" as const,
+    topicId: topic.id,
+  })));
+}
+
+function buildListPrompts(selectedTopics: Topic[], previous: ListPrompt[] = []): ListPrompt[] {
   const prompts = [
     "List four key terms and define one of them.",
     "List three accurate scientific facts.",
     "List two examples, uses or applications.",
     "List one clear link to another idea or topic.",
   ];
+  let topicOrder = shuffled(selectedTopics);
+  const previousIds = previous.map((item) => item.topicId).join("|");
+  const previousTopicSet = new Set(previous.map((item) => item.topicId));
+  const nextTopicSet = new Set(topicOrder.slice(0, prompts.length).map((topic) => topic.id));
+  if (
+    topicOrder.length > prompts.length
+    && previousTopicSet.size
+    && nextTopicSet.size === previousTopicSet.size
+    && [...nextTopicSet].every((id) => previousTopicSet.has(id))
+  ) {
+    const freshTopicIndex = topicOrder.findIndex((topic) => !previousTopicSet.has(topic.id));
+    if (freshTopicIndex >= 0) {
+      [topicOrder[prompts.length - 1], topicOrder[freshTopicIndex]] = [topicOrder[freshTopicIndex], topicOrder[prompts.length - 1]];
+    }
+  }
+  const nextIds = prompts.map((_, index) => topicOrder[index % topicOrder.length]?.id).join("|");
+  if (topicOrder.length > 1 && previousIds && nextIds === previousIds) {
+    topicOrder = [...topicOrder.slice(1), topicOrder[0]];
+  }
   return prompts.map((prompt, index) => {
-    const topic = selectedTopics[index % selectedTopics.length];
+    const topic = topicOrder[index % topicOrder.length];
     return { topicId: topic.id, topicName: topic.name, prompt };
   });
 }
@@ -773,6 +838,7 @@ function relatedness(question: GeneratedQuestion, context: GeneratedQuestion[]) 
 }
 
 const fixedPromptCounts: Partial<Record<ActivityId, number>> = {
+  "retrieval-placemat": 4,
   "retrieval-clock": 12,
   "picture-prompts": 6,
   "connect-four": 16,
@@ -804,6 +870,7 @@ export default function Home() {
   const [showAnswers, setShowAnswers] = useState(false);
   const [revealedRoulette, setRevealedRoulette] = useState<Set<number>>(new Set());
   const [presentationMode, setPresentationMode] = useState(false);
+  const [presentationScale, setPresentationScale] = useState(1);
   const [customQuestionOpen, setCustomQuestionOpen] = useState(false);
   const [customQuestionIndex, setCustomQuestionIndex] = useState(0);
   const [customQuestion, setCustomQuestion] = useState("");
@@ -840,10 +907,16 @@ export default function Home() {
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (!document.fullscreenElement) setPresentationMode(false);
+      if (!document.fullscreenElement) {
+        setPresentationScale(1);
+        setPresentationMode(false);
+      }
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPresentationMode(false);
+      if (event.key === "Escape") {
+        setPresentationScale(1);
+        setPresentationMode(false);
+      }
     };
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     document.addEventListener("keydown", handleKeyDown);
@@ -852,6 +925,32 @@ export default function Home() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (!presentationMode) return;
+
+    let frame = 0;
+    const fitPresentation = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const sheet = sheetRef.current;
+        if (!sheet) return;
+        const availableHeight = Math.max(360, window.innerHeight - 88);
+        const requiredHeight = sheet.scrollHeight;
+        const nextScale = requiredHeight > availableHeight
+          ? Math.max(0.5, availableHeight / requiredHeight)
+          : 1;
+        setPresentationScale(Number(nextScale.toFixed(3)));
+      });
+    };
+
+    fitPresentation();
+    window.addEventListener("resize", fitPresentation);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", fitPresentation);
+    };
+  }, [presentationMode, activity, generated, keywordSet, visualSet, listPromptSet, selected.length, showAnswers, revealedRoulette, knowledgeFocus]);
 
   function chooseYear(nextYear: 7 | 8 | 9) {
     setYear(nextYear);
@@ -894,13 +993,26 @@ export default function Home() {
     if (!selectedTopics.length) return;
     const pool = selectedTopics.flatMap((topic) => topic.questions.map((question) => ({ ...question, topicId: topic.id })));
     const suitable = pool.filter((question) => matchesLevel(question, activity === "question-chain" ? "balanced" : level));
-    const oneWordPool = suitable.filter((question) => question.kind === "short");
-    const source = activity === "one-worders" ? (oneWordPool.length ? oneWordPool : suitable) : suitable;
+    const nonYesNoSuitable = suitable.filter((question) => !isYesNoQuestion(question.q));
+    const oneWordPool = suitable.filter((question) => question.kind === "short" && !isYesNoQuestion(question.q));
+    const placematPool = suitable
+      .filter((question) => question.kind === "explain")
+      .map(openEndedPlacematQuestion);
+    const isKnowledgeActivity = activity === "brain-dump" || activity === "cops-robbers";
+    const isFocusedKnowledge = isKnowledgeActivity && knowledgeFocus === "focused";
+    const isWholeTopicKnowledge = isKnowledgeActivity && knowledgeFocus === "whole-topic";
+    const source = isWholeTopicKnowledge
+      ? []
+      : isFocusedKnowledge
+      ? focusedKnowledgePool(selectedTopics)
+      : activity === "one-worders"
+      ? (oneWordPool.length ? oneWordPool : nonYesNoSuitable)
+      : activity === "retrieval-placemat"
+        ? (placematPool.length ? placematPool : suitable.map(openEndedPlacematQuestion))
+        : suitable;
     const requested = fixedPromptCounts[activity] ?? (activity === "quiz-quiz-trade"
       ? Math.min(count, 12)
-      : activity === "retrieval-placemat"
-        ? Math.min(count, 8)
-        : count);
+      : count);
     const result: GeneratedQuestion[] = [];
     const byTopic = selectedTopics.map((topic) => shuffled(source.filter((question) => question.topicId === topic.id)));
     let round = 0;
@@ -947,6 +1059,7 @@ export default function Home() {
         return true;
       }).slice(0, requested);
     }
+    finalResult = finalResult.map(addYesNoExplanation);
     const visuals = shuffled(selectedTopics.flatMap((topic) =>
       (topicVisuals[topic.id] ?? []).map((prompt) => ({
         ...prompt,
@@ -958,7 +1071,7 @@ export default function Home() {
     setGenerated(finalResult);
     setKeywordSet(keywords.slice(0, 16));
     setVisualSet(visuals.slice(0, fixedPromptCounts["picture-prompts"]));
-    setListPromptSet(buildListPrompts(selectedTopics));
+    setListPromptSet(buildListPrompts(selectedTopics, listPromptSet));
     setShowAnswers(activity === "flashcard-sprint");
     setRevealedRoulette(new Set());
     setCopied(false);
@@ -969,10 +1082,16 @@ export default function Home() {
     if (!currentQuestion) return;
     const used = new Set(generated.map((question) => question.q));
     const usedAnswers = new Set(generated.map((question) => question.a.trim().toLowerCase()));
-    const pool = selectedTopics.flatMap((topic) => topic.questions
-      .filter((question) => matchesLevel(question, level))
-      .filter((question) => activity !== "one-worders" || question.kind === "short")
-      .map((question) => ({ ...question, topicId: topic.id })));
+    const isFocusedKnowledge = (activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "focused";
+    const pool = (isFocusedKnowledge
+      ? focusedKnowledgePool(selectedTopics)
+      : selectedTopics.flatMap((topic) => topic.questions
+        .filter((question) => matchesLevel(question, level))
+        .filter((question) => activity !== "one-worders" || (question.kind === "short" && !isYesNoQuestion(question.q)))
+        .filter((question) => activity !== "retrieval-placemat" || question.kind === "explain")
+        .map((question) => ({ ...question, topicId: topic.id }))
+        .map((question) => activity === "retrieval-placemat" ? openEndedPlacematQuestion(question) : question)))
+      .map(addYesNoExplanation);
     const canUse = (question: GeneratedQuestion) => !used.has(question.q)
       && (activity !== "match-up" || !usedAnswers.has(question.a.trim().toLowerCase()));
     const sameTopic = pool.filter((question) => question.topicId === currentQuestion.topicId && canUse(question));
@@ -1033,7 +1152,7 @@ export default function Home() {
     const q = customQuestion.trim();
     const a = customAnswer.trim();
     if (!q || !a) return;
-    setGenerated((current) => current.map((question, index) => index === customQuestionIndex ? { ...question, q, a } : question));
+    setGenerated((current) => current.map((question, index) => index === customQuestionIndex ? addYesNoExplanation({ ...question, q, a }) : question));
     setShowAnswers(activity === "flashcard-sprint");
     setRevealedRoulette((current) => {
       const next = new Set(current);
@@ -1054,10 +1173,12 @@ export default function Home() {
 
   function enterPresentationMode() {
     if (!presentationRef.current) return;
+    setPresentationScale(1);
     setPresentationMode(true);
   }
 
   function exitPresentationMode() {
+    setPresentationScale(1);
     setPresentationMode(false);
   }
 
@@ -1068,7 +1189,7 @@ export default function Home() {
       return [heading, topicLine, activityInstructions[activity], "", ...keywordSet.map((word, index) => `${index + 1}. ${word}`)].join("\n");
     }
     if ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "focused") {
-      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. ${topics.find((topic) => topic.id === question.topicId)?.name ?? "Science"}\nFocus prompt: ${question.q}\n• Recall\n• Check\n• Improve`)].join("\n");
+      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. ${topics.find((topic) => topic.id === question.topicId)?.name ?? "Science"}\nFocused concept: ${question.q}\n• Recall\n• Check\n• Improve`)].join("\n");
     }
     if (activity === "brain-dump" || activity === "cops-robbers" || activity === "retrieval-relay") {
       return [heading, topicLine, activityInstructions[activity], "", ...selectedTopics.map((topic) => `${topic.name}:\n• Key terms\n• Important ideas\n• Examples\n• Connections`)].join("\n");
@@ -1095,7 +1216,7 @@ export default function Home() {
       return [heading, topicLine, activityInstructions[activity], "", ...chain.map((question, index) => `${index + 1}. ${chainLabel(index, chain.length)}\n${question.q}\nAnswer: ${question.a}`)].join("\n");
     }
     if (activity === "answer-first") {
-      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. Answer: ${question.a}${level === "foundation" ? `\nQuestion starter: ${questionScaffold(question.q)}` : ""}\nModel question: ${question.q}`)].join("\n");
+      return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. Answer: ${question.a}\nModel question: ${question.q}`)].join("\n");
     }
     return [heading, topicLine, activityInstructions[activity], "", ...generated.map((question, index) => `${index + 1}. ${question.q}\nAnswer: ${question.a}`)].join("\n");
   }
@@ -1104,6 +1225,22 @@ export default function Home() {
     await navigator.clipboard.writeText(outputAsText());
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
+  }
+
+  function printOutput() {
+    const landscape = activity === "retrieval-placemat";
+    const pageStyle = document.createElement("style");
+    pageStyle.dataset.activityPrintStyle = "true";
+    pageStyle.textContent = `@page { size: A4 ${landscape ? "landscape" : "portrait"}; margin: 10mm; }`;
+    document.head.appendChild(pageStyle);
+    document.documentElement.classList.toggle("print-placemat", landscape);
+    const cleanUp = () => {
+      pageStyle.remove();
+      document.documentElement.classList.remove("print-placemat");
+    };
+    window.addEventListener("afterprint", cleanUp, { once: true });
+    window.print();
+    window.setTimeout(cleanUp, 30000);
   }
 
   async function downloadPdf() {
@@ -1118,6 +1255,8 @@ export default function Home() {
         import("html2canvas"),
         import("jspdf"),
       ]);
+      const isLandscapePlacemat = activity === "retrieval-placemat";
+      let flashcardBreakRatios: number[] = [];
       const canvas = await html2canvas(sheet, {
         scale: 2,
         useCORS: true,
@@ -1125,20 +1264,32 @@ export default function Home() {
         logging: false,
         windowWidth: 1200,
         onclone: (clonedDocument) => {
+          clonedDocument.documentElement.classList.add("pdf-export");
+          clonedDocument.querySelectorAll(".swap-help, .swap-button, .answer-toggle, .roulette-answer-button, .presentation-controls, .export-answer-bank").forEach((element) => {
+            (element as HTMLElement).style.display = "none";
+          });
           const clonedSheet = clonedDocument.querySelector(".starter-sheet") as HTMLElement | null;
           if (clonedSheet) {
             clonedSheet.style.margin = "0";
             clonedSheet.style.boxShadow = "none";
-            clonedSheet.style.width = "794px";
-            clonedSheet.style.maxWidth = "794px";
+            clonedSheet.style.boxSizing = "border-box";
+            clonedSheet.style.width = isLandscapePlacemat ? "1123px" : "794px";
+            clonedSheet.style.maxWidth = isLandscapePlacemat ? "1123px" : "794px";
+            clonedSheet.style.minHeight = isLandscapePlacemat ? "760px" : "0";
+            if (isLandscapePlacemat) clonedSheet.style.height = "760px";
+            if (activity === "flashcard-sprint") {
+              const sheetRect = clonedSheet.getBoundingClientRect();
+              const sheetHeight = Math.max(clonedSheet.scrollHeight, sheetRect.height);
+              const cardBottoms = Array.from(clonedSheet.querySelectorAll<HTMLElement>(".flashcard"))
+                .map((card) => (card.getBoundingClientRect().bottom - sheetRect.top) / sheetHeight)
+                .filter((ratio) => ratio > 0 && ratio < 1);
+              flashcardBreakRatios = [...new Set(cardBottoms.map((ratio) => Number(ratio.toFixed(4))))].sort((left, right) => left - right);
+            }
           }
-          clonedDocument.querySelectorAll(".swap-help, .swap-button, .answer-toggle, .roulette-answer-button, .presentation-controls, .export-answer-bank").forEach((element) => {
-            (element as HTMLElement).style.display = "none";
-          });
         },
       });
 
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+      const pdf = new jsPDF({ orientation: isLandscapePlacemat ? "landscape" : "portrait", unit: "mm", format: "a4", compress: true });
       const savePdf = (fileName: string) => {
         const blob = pdf.output("blob");
         const url = URL.createObjectURL(blob);
@@ -1156,7 +1307,7 @@ export default function Home() {
       const usableWidth = pageWidth - margin * 2;
       const usableHeight = pageHeight - margin * 2;
 
-      if (activity === "walkabout-bingo") {
+      if (activity === "walkabout-bingo" || isLandscapePlacemat) {
         const scale = Math.min(usableWidth / canvas.width, usableHeight / canvas.height);
         const imageWidth = canvas.width * scale;
         const imageHeight = canvas.height * scale;
@@ -1176,11 +1327,19 @@ export default function Home() {
       }
 
       const pageHeightPx = Math.floor(canvas.width * (usableHeight / usableWidth));
+      const safeFlashcardBreaks = flashcardBreakRatios.map((ratio) => Math.floor(ratio * canvas.height));
       let sourceY = 0;
       let pageNumber = 0;
 
       while (sourceY < canvas.height) {
-        const sliceHeight = Math.min(pageHeightPx, canvas.height - sourceY);
+        let sliceHeight = Math.min(pageHeightPx, canvas.height - sourceY);
+        if (activity === "flashcard-sprint" && canvas.height - sourceY > pageHeightPx) {
+          const targetY = sourceY + pageHeightPx;
+          const safeBreak = safeFlashcardBreaks
+            .filter((breakY) => breakY > sourceY + pageHeightPx * 0.35 && breakY <= targetY)
+            .at(-1);
+          if (safeBreak) sliceHeight = safeBreak - sourceY;
+        }
         const pageCanvas = document.createElement("canvas");
         pageCanvas.width = canvas.width;
         pageCanvas.height = sliceHeight;
@@ -1218,6 +1377,8 @@ export default function Home() {
         BorderStyle,
         Document,
         HeadingLevel,
+        HeightRule,
+        PageOrientation,
         Packer,
         Paragraph,
         ShadingType,
@@ -1242,12 +1403,16 @@ export default function Home() {
         shading: fill ? { fill, color: "auto", type: ShadingType.CLEAR } : undefined,
         margins: { top: 120, bottom: 120, left: 140, right: 140 },
       });
-      const grid = (items: { children: InstanceType<typeof Paragraph>[]; fill?: string }[], columns: number) => {
+      const grid = (items: { children: InstanceType<typeof Paragraph>[]; fill?: string }[], columns: number, rowHeight?: number) => {
         const padded = [...items];
         while (padded.length % columns !== 0) padded.push({ children: [para("")] });
         const rows: InstanceType<typeof TableRow>[] = [];
         for (let index = 0; index < padded.length; index += columns) {
-          rows.push(new TableRow({ children: padded.slice(index, index + columns).map((item) => cell(item.children, item.fill)) }));
+          rows.push(new TableRow({
+            cantSplit: true,
+            height: rowHeight ? { value: rowHeight, rule: HeightRule.ATLEAST } : undefined,
+            children: padded.slice(index, index + columns).map((item) => cell(item.children, item.fill)),
+          }));
         }
         return new Table({
           rows,
@@ -1297,12 +1462,12 @@ export default function Home() {
         }
       } else if (activity === "cops-robbers") {
         const robberPrompts = knowledgeFocus === "focused"
-          ? generated.map((question) => ({ name: topics.find((topic) => topic.id === question.topicId)?.name ?? "Science", prompt: question.q }))
-          : selectedTopics.map((topic) => ({ name: topic.name, prompt: "Whole-topic recall" }));
+          ? generated.map((question) => ({ name: topics.find((topic) => topic.id === question.topicId)?.name ?? "Science", prompt: question.q, answer: question.a }))
+          : selectedTopics.map((topic) => ({ name: topic.name, prompt: "Whole-topic recall", answer: "" }));
         content.push(new Table({
           rows: [
-            new TableRow({ children: [cell([para("Focus prompt", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("My knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("Stolen knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22")] }),
-            ...robberPrompts.map((item) => new TableRow({ children: [cell([para(item.name, { bold: true, color: "CF082B", size: 15 }), para(item.prompt, { bold: true, size: 17 })], "F1F2ED"), cell(blankLines(4)), cell(blankLines(4))] })),
+            new TableRow({ children: [cell([para("Focused concept", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("My knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22"), cell([para("Stolen knowledge", { bold: true, color: "FFFFFF", after: 0 })], "171B22")] }),
+            ...robberPrompts.map((item) => new TableRow({ cantSplit: true, children: [cell([para(item.name, { bold: true, color: "CF082B", size: 15 }), para(item.prompt, { bold: true, size: 17 }), ...(showAnswers && item.answer ? [para(`Model answer: ${item.answer}`, { color: "365F72", bold: true, size: 15 })] : [])], "F1F2ED"), cell(blankLines(4)), cell(blankLines(4))] })),
           ],
           width: { size: 100, type: WidthType.PERCENTAGE },
           layout: TableLayoutType.FIXED,
@@ -1322,6 +1487,19 @@ export default function Home() {
         content.push(grid(listPromptSet.map((item, index) => ({ children: [para(`${index + 1}. ${item.topicName}`, { bold: true, color: "CF082B", size: 18 }), para(item.prompt, { bold: true, size: 20 }), ...blankLines(4)] })), 2));
       } else if (activity === "two-things") {
         content.push(grid(selectedTopics.map((topic) => ({ children: [para(topic.name, { bold: true, size: 21 }), para("1.", { bold: true, color: "CF082B" }), ...blankLines(2), para("2.", { bold: true, color: "CF082B" }), ...blankLines(2)] })), 2));
+      } else if (activity === "retrieval-placemat") {
+        const zones = generated.slice(0, 4).map((question, index) => ({
+          children: [
+            para(`ZONE ${String.fromCharCode(65 + index)}`, { bold: true, color: "CF082B", size: 16 }),
+            para(question.q, { bold: true, size: 20 }),
+            ...blankLines(8),
+          ],
+          fill: index % 2 === 0 ? "F8FAFC" : "FFFFFF",
+        }));
+        content.push(
+          grid(zones, 2),
+          para("CHECK  •  DISCUSS  •  IMPROVE", { center: true, bold: true, color: "334155", size: 17, after: 0 }),
+        );
       } else if (activity === "picture-prompts") {
         content.push(grid(visualSet.map((prompt, index) => ({ children: [para(`PICTURE ${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(prompt.symbol, { bold: true, center: true, size: 44 }), para(`Keyword: ${prompt.keyword}`, { bold: true, center: true, color: "365F72", size: 16 }), para(`Topic: ${prompt.topicName}`, { center: true, color: "5D6C7B", size: 14 }), ...blankLines(2), ...(showAnswers ? [para(`Suggested link: ${prompt.answer}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2));
       } else if (activity === "retrieval-clock") {
@@ -1349,11 +1527,18 @@ export default function Home() {
           grid(clozeItems.map((item, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(item.q, { bold: true, size: 17 }), para(`Incomplete answer: ${item.text}`, { size: 19 }), ...(showAnswers ? [para(`Full answer: ${item.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2),
         );
       } else if (activity === "flashcard-sprint") {
-        content.push(grid(generated.map((question, index) => ({ children: [para(`CARD ${index + 1}  •  QUESTION`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 19 }), para("- - - - - - - - - - - - - - - - -  FOLD  - - - - - - - - - - - - - - - - -", { center: true, color: "B7B0AA", size: 13 }), para("ANSWER", { bold: true, color: "365F72", size: 15 }), para(question.a, { size: 17 }), para("□ Again    □ Nearly    □ Secure", { color: "5D6C7B", size: 14, after: 0 })] })), 2));
+        content.push(grid(generated.map((question, index) => ({ children: [
+          para(`CARD ${index + 1}  •  QUESTION`, { bold: true, color: "CF082B", size: 18 }),
+          para(question.q, { bold: true, size: 28, after: 150 }),
+          para("- - - - - - - - - - - -  FOLD  - - - - - - - - - - - -", { center: true, color: "B7B0AA", size: 15, after: 150 }),
+          para("ANSWER", { bold: true, color: "365F72", size: 18 }),
+          para(question.a, { size: 24, after: 160 }),
+          para("□ Again      □ Nearly      □ Secure", { color: "5D6C7B", size: 17, after: 0 }),
+        ] })), 2, 5200));
       } else if (activity === "connect-four") {
         content.push(grid(generated.slice(0, 16).map((question, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(question.q, { size: 16 }), ...(showAnswers ? [para(`Answer: ${question.a}`, { color: "365F72", bold: true, size: 14 })] : [])] })), 4));
       } else if (activity === "answer-first") {
-        content.push(grid(generated.map((question, index) => ({ children: [para(`${index + 1}. ANSWER`, { bold: true, color: "CF082B", size: 16 }), para(question.a, { bold: true, size: 21 }), ...(level === "foundation" ? [para(`Question starter: ${questionScaffold(question.q)}`, { color: "5D6C7B", italic: true, size: 15 })] : []), para("Your question:", { color: "5D6C7B", size: 16 }), ...blankLines(2), ...(showAnswers ? [para(`Model question: ${question.q}`, { color: "365F72", italic: true, size: 16 })] : [])] })), 2));
+        content.push(grid(generated.map((question, index) => ({ children: [para(`${index + 1}. ANSWER`, { bold: true, color: "CF082B", size: 16 }), para(question.a, { bold: true, size: 21 }), para("Your question:", { color: "5D6C7B", size: 16 }), ...blankLines(2), ...(showAnswers ? [para(`Model question: ${question.q}`, { color: "365F72", italic: true, size: 16 })] : [])] })), 2));
       } else {
         const columns = activity === "walkabout-bingo" ? 3 : activity === "quick-quiz" || activity === "one-worders" ? 1 : 2;
         const items = generated.map((question, index) => {
@@ -1384,7 +1569,12 @@ export default function Home() {
 
       const wordDocument = new Document({
         sections: [{
-          properties: { page: { margin: { top: 540, right: 540, bottom: 540, left: 540 } } },
+          properties: {
+            page: {
+              size: activity === "retrieval-placemat" ? { orientation: PageOrientation.LANDSCAPE } : undefined,
+              margin: { top: 540, right: 540, bottom: 540, left: 540 },
+            },
+          },
           children: content,
         }],
       });
@@ -1422,6 +1612,19 @@ export default function Home() {
   }
 
   const hasOutput = generated.length > 0 || keywordSet.length > 0 || visualSet.length > 0;
+  const presentationItemCount = activity === "thinking-linking" || activity === "concept-map" || activity === "back-to-back"
+    ? keywordSet.length
+    : activity === "picture-prompts"
+      ? visualSet.length
+      : activity === "list-it"
+        ? listPromptSet.length
+        : activity === "brain-dump" || activity === "cops-robbers"
+          ? (knowledgeFocus === "focused" ? generated.length : selectedTopics.length)
+          : activity === "retrieval-relay" || activity === "two-things"
+            ? selectedTopics.length
+            : generated.length;
+  const canShowAnswers = !["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things", "flashcard-sprint", "retrieval-roulette"].includes(activity)
+    || (activity === "cops-robbers" && knowledgeFocus === "focused");
 
   return (
     <main>
@@ -1520,7 +1723,7 @@ export default function Home() {
           <div className="options-row">
             <label>
               <span>Number of prompts</span>
-              <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "retrieval-relay", "list-it", "concept-map", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "whole-topic")}>
+              <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "retrieval-relay", "list-it", "concept-map", "retrieval-placemat", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "whole-topic")}>
                 {[4, 6, 8, 10, 12, 16].map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </label>
@@ -1550,7 +1753,7 @@ export default function Home() {
                 <button onClick={copyOutput}>{copied ? "Copied!" : "Copy text"}</button>
                 {generated.length > 0 && <button onClick={openCustomQuestion}>Write your own question</button>}
                 <button className="fullscreen-button" onClick={enterPresentationMode}>Full screen</button>
-                <button onClick={() => window.print()}>Print</button>
+                <button onClick={printOutput}>Print</button>
                 <button className="word-button" onClick={downloadWord} disabled={downloadingWord}>
                   {downloadingWord ? "Preparing Word…" : wordDownloadError ? "Try Word again" : "Download Word"}
                 </button>
@@ -1574,12 +1777,16 @@ export default function Home() {
               <div className="presentation-controls">
                 <strong>{titleForActivity(activity)}</strong>
                 <span>{activity === "retrieval-roulette" ? "Reveal each answer beside its question." : "Use Show answers when pupils are ready to check."}</span>
-                {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things", "flashcard-sprint", "retrieval-roulette"].includes(activity) && (
+                {canShowAnswers && (
                   <button onClick={() => setShowAnswers((value) => !value)}>{showAnswers ? "Hide answers" : "Show answers"}</button>
                 )}
                 <button onClick={exitPresentationMode}>Exit full screen</button>
               </div>
-            <article className={`starter-sheet activity-${activity}`} ref={sheetRef}>
+            <article
+              className={`starter-sheet activity-${activity} ${presentationItemCount > 8 ? "many-prompts" : ""}`}
+              ref={sheetRef}
+              style={{ "--presentation-scale": presentationScale } as CSSProperties}
+            >
               <div className="sheet-kicker"><span>St Peter&apos;s • Do Now</span><span>Year {year} Science</span></div>
               <h2>{titleForActivity(activity)}</h2>
               <div className="topic-chips">
@@ -1646,6 +1853,7 @@ export default function Home() {
                       ) : (
                         <div className="knowledge-columns"><div><strong>My knowledge</strong></div><div><strong>Stolen knowledge</strong></div></div>
                       )}
+                      {activity === "cops-robbers" && showAnswers && <em className="knowledge-answer">Model answer: {question.a}</em>}
                     </section>
                   )) : selectedTopics.map((topic) => (
                     <section key={topic.id}>
@@ -1689,8 +1897,8 @@ export default function Home() {
                   {selectedTopics.map((topic) => (
                     <section key={topic.id}>
                       <h3>{topic.name}</h3>
-                      <div><b>1</b><span /></div>
-                      <div><b>2</b><span /></div>
+                      <div><b className="number-badge">1</b><span /></div>
+                      <div><b className="number-badge">2</b><span /></div>
                     </section>
                   ))}
                 </div>
@@ -1703,7 +1911,7 @@ export default function Home() {
                     const clockNumber = index === 0 ? 12 : index;
                     return (
                       <div className={`clock-card clock-${clockNumber}`} key={question.q}>
-                        <b>{clockNumber}</b>
+                        <b className="number-badge">{clockNumber}</b>
                         <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
                         <p>{question.q}</p>
                         {showAnswers && <em>{question.a}</em>}
@@ -1735,7 +1943,7 @@ export default function Home() {
                     <h3>Questions</h3>
                     {generated.map((question, index) => (
                       <div className="match-item" key={question.q}>
-                        <b>{index + 1}</b>
+                        <b className="number-badge">{index + 1}</b>
                         <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
                         <p>{question.q}</p>
                         {showAnswers && <em>Match: {String.fromCharCode(65 + matchAnswerBank.findIndex((item) => item.key === question.q))}</em>}
@@ -1745,7 +1953,7 @@ export default function Home() {
                   <section>
                     <h3>Answer bank</h3>
                     {matchAnswerBank.map((item, index) => (
-                      <div className="match-answer" key={item.key}><b>{String.fromCharCode(65 + index)}</b><p>{item.answer}</p></div>
+                      <div className="match-answer" key={item.key}><b className="number-badge">{String.fromCharCode(65 + index)}</b><p>{item.answer}</p></div>
                     ))}
                   </section>
                 </div>
@@ -1782,7 +1990,7 @@ export default function Home() {
               {activity === "connect-four" && (
                 <div className="connect-four-grid">
                   {generated.slice(0, 16).map((question, index) => (
-                    <div key={question.q}><b>{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><b className="number-badge">{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -1831,7 +2039,7 @@ export default function Home() {
               {activity === "retrieval-roulette" && (
                 <div className="roulette-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><b>{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p><button className="roulette-answer-button" onClick={() => toggleRouletteAnswer(index)}>{revealedRoulette.has(index) ? "Hide answer" : "Reveal answer"}</button>{revealedRoulette.has(index) && <em>{question.a}</em>}</div>
+                    <div key={question.q}><b className="number-badge">{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p><button className="roulette-answer-button" onClick={() => toggleRouletteAnswer(index)}>{revealedRoulette.has(index) ? "Hide answer" : "Reveal answer"}</button>{revealedRoulette.has(index) && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -1839,14 +2047,14 @@ export default function Home() {
               {activity === "answer-first" && (
                 <ol className="answer-first-list">
                   {generated.map((question, index) => (
-                    <li key={question.q}><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><strong>{question.a}</strong>{level === "foundation" && <small className="answer-scaffold">Question starter: {questionScaffold(question.q)}</small>}{showAnswers && <em>Model question: {question.q}</em>}</li>
+                    <li key={question.q}><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><strong>{question.a}</strong>{showAnswers && <em>Model question: {question.q}</em>}</li>
                   ))}
                 </ol>
               )}
 
               {(activity === "quick-quiz" || activity === "one-worders") && (
                 <ol className="question-list">
-                  {generated.map((question, index) => <li key={question.q}><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><span>{question.q}</span>{showAnswers && <em>{question.a}</em>}</li>)}
+                  {generated.map((question, index) => <li key={question.q}><span className="question-number number-badge">{index + 1}</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><span>{question.q}</span>{showAnswers && <em>{question.a}</em>}</li>)}
                 </ol>
               )}
 
@@ -1860,7 +2068,7 @@ export default function Home() {
                 ))}
               </div>
 
-              {!["thinking-linking", "brain-dump", "cops-robbers", "retrieval-relay", "list-it", "back-to-back", "concept-map", "two-things", "flashcard-sprint", "retrieval-roulette"].includes(activity) && (
+              {canShowAnswers && (
                 <button className="answer-toggle" onClick={() => setShowAnswers((value) => !value)}>{showAnswers ? "Hide answers" : "Show answers"}</button>
               )}
               <footer><span>From memory first</span><span>Check • Correct • Improve</span></footer>
