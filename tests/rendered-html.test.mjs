@@ -90,6 +90,16 @@ test("keeps every activity covered by the export system", async () => {
   assert.doesNotMatch(polish, /\.question-list li::before/, "Quick Quiz still relies on a fragile CSS-only number badge");
   assert.match(polish, /\.pdf-export[\s\S]*grid-template-columns/, "PDF-safe grid overrides are missing");
   assert.match(powerpoint, /shape: isPlacemat \? "roundRect" : "ellipse"/, "PowerPoint number shapes are missing");
+  assert.match(
+    powerpoint,
+    /\.question-list li > span:not\(\.question-number\)/,
+    "PowerPoint still extracts Quick Quiz number badges as separate prompts",
+  );
+  assert.match(
+    powerpoint,
+    /activity === "quick-quiz" \|\| activity === "one-worders" \? 2 : undefined/,
+    "Numbered PowerPoint activities are not fixed to a readable two-column layout",
+  );
 });
 
 test("builds a fresh four-person Retrieval Placemat and reshuffles List It", async () => {
@@ -116,13 +126,18 @@ test("uses subtopics for focused knowledge activities and strengthens yes-no que
   assert.match(page, /question\.kind === "short" && !isYesNoQuestion/, "One Worders still permits yes-no questions");
 });
 
-test("keeps Flashcard Sprint cards intact and printable", async () => {
+test("keeps activity blocks intact across PDF and Word pages", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
-  assert.match(page, /flashcardBreakRatios/, "Flashcard PDF safe page breaks are missing");
-  assert.match(page, /activity === "flashcard-sprint" && canvas\.height - sourceY > pageHeightPx/, "Flashcard PDF still uses unrestricted page slicing");
+  assert.match(page, /safeBreakRatios/, "PDF safe page breaks are missing");
+  assert.match(page, /\.question-list > li/, "Quick Quiz and One Worders are missing PDF-safe block boundaries");
+  assert.match(page, /\.match-item/, "Match-Up is missing PDF-safe block boundaries");
+  assert.match(page, /if \(canvas\.height - sourceY > pageHeightPx\)/, "PDF exports still use unrestricted page slicing");
+  assert.match(page, /clonedSheet\.style\.transform = "none"/, "Full-screen scaling can still leak into PDF exports");
   assert.match(page, /cantSplit: true/, "Word card rows can still split across pages");
   assert.match(page, /\]\s*\}\)\), 2, 5200\)\);/, "Word flashcards do not use large fixed rows");
+  assert.match(page, /const compactCell =/, "Compact Match-Up Word cells are missing");
+  assert.match(page, /new TableRow\(\{ cantSplit: true, children:/, "Match-Up Word rows can still split across pages");
 });
 
 test("keeps Answer First free from starter-word scaffolds", async () => {
