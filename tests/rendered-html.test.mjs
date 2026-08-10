@@ -30,7 +30,22 @@ test("renders development preview metadata", async () => {
     response.headers.get("content-type") ?? "",
     /^text\/html\b/i,
   );
-  assert.match(await response.text(), developmentPreviewMeta);
+  const html = await response.text();
+  assert.match(html, developmentPreviewMeta);
+  assert.match(html, /1,640(?:<!-- -->)?-question bank/i);
+  assert.match(html, /Year (?:<!-- -->)?12/i);
+  assert.doesNotMatch(html, /topic-option selected/i);
+});
+
+test("includes the ten Year 12 NCEA external assessment units", async () => {
+  const bank = await readFile(new URL("../app/year12-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const standardCodes = [...bank.matchAll(/standard: "AS (\d{5})"/g)].map((match) => match[1]);
+
+  assert.equal(standardCodes.length, 10);
+  assert.equal(new Set(standardCodes).size, 10);
+  assert.match(bank, /Agricultural & Horticultural Science/);
+  assert.match(page, /seniorTopics/);
 });
 
 test("includes the expanded 24-activity catalogue", async () => {
