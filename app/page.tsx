@@ -9,6 +9,8 @@ import { year13Topics } from "./year13-question-bank";
 import { year10Topics } from "./year10-question-bank";
 import { year11Courses, year11Topics } from "./year11-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expansion";
+import { scientificSkillsTopics } from "./scientific-skills-question-bank";
+import { assertSpecificKeywordSets } from "./keyword-quality";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -51,11 +53,11 @@ type Topic = {
   id: string;
   year: YearGroup;
   name: string;
-  strand: "Biology" | "Chemistry" | "Physics" | "Agriculture";
+  strand: "Biology" | "Chemistry" | "Physics" | "Agriculture" | "Skills";
   course?: SeniorCourse;
   standard?: string;
   level?: "SL & HL" | "HL only";
-  programme?: "IB" | "STP Diploma" | "AQA GCSE Physics";
+  programme?: "IB" | "STP Diploma";
   keywords: string[];
   questions: Question[];
   oneWordQuestions?: Question[];
@@ -93,7 +95,7 @@ const baseTopics: Topic[] = [
     year: 7,
     name: "Material Properties",
     strand: "Chemistry",
-    keywords: ["hardness", "density", "conductor", "insulator", "transparent", "soluble", "magnetic", "malleable", "flexible", "brittle", "waterproof", "absorbent", "electrical", "thermal", "strength", "suitability"],
+    keywords: ["hardness", "density", "electrical conductor", "electrical insulator", "transparent material", "soluble material", "magnetic material", "malleability", "flexibility", "brittleness", "water resistance", "absorbency", "electrical conductivity", "thermal conductivity", "material strength", "material suitability"],
     questions: [
       { q: "What property describes how well a material resists scratching?", a: "Hardness", difficulty: "foundation", kind: "short" },
       { q: "What word describes a material that allows electricity to pass through it?", a: "Conductor", difficulty: "foundation", kind: "short" },
@@ -110,7 +112,7 @@ const baseTopics: Topic[] = [
     year: 7,
     name: "States of Matter and the Particle Model",
     strand: "Chemistry",
-    keywords: ["particle", "solid", "liquid", "gas", "melting", "boiling", "condensing", "diffusion", "freezing", "evaporation", "sublimation", "temperature", "vibration", "compressible", "spacing", "arrangement"],
+    keywords: ["particle model", "solid state", "liquid state", "gas state", "melting", "boiling", "condensation", "diffusion", "freezing", "evaporation", "sublimation", "temperature", "particle vibration", "compressibility", "particle spacing", "particle arrangement"],
     questions: [
       { q: "In which state are particles held in fixed positions?", a: "Solid", difficulty: "foundation", kind: "short" },
       { q: "What is the change of state from liquid to gas at the boiling point?", a: "Boiling", difficulty: "foundation", kind: "short" },
@@ -127,7 +129,7 @@ const baseTopics: Topic[] = [
     year: 7,
     name: "Cells and Organisation",
     strand: "Biology",
-    keywords: ["cell", "tissue", "organ", "system", "nucleus", "cytoplasm", "membrane", "chloroplast", "mitochondria", "vacuole", "cell wall", "organism", "specialised", "root hair", "muscle", "digestive"],
+    keywords: ["cell", "tissue", "organ", "organ system", "nucleus", "cytoplasm", "cell membrane", "chloroplast", "mitochondrion", "vacuole", "cell wall", "organism", "specialised cell", "root hair cell", "muscle cell", "digestive system"],
     questions: [
       { q: "What is the basic unit of living organisms?", a: "Cell", difficulty: "foundation", kind: "short" },
       { q: "Which cell structure contains genetic material?", a: "Nucleus", difficulty: "foundation", kind: "short" },
@@ -144,7 +146,7 @@ const baseTopics: Topic[] = [
     year: 7,
     name: "Thermal Energy",
     strand: "Physics",
-    keywords: ["thermal", "temperature", "conduction", "convection", "radiation", "insulator", "equilibrium", "transfer", "particle", "collision", "current", "infrared", "hotter", "cooler", "density", "energy"],
+    keywords: ["thermal energy", "temperature", "thermal conduction", "convection", "thermal radiation", "thermal insulator", "thermal equilibrium", "energy transfer", "particle model", "particle collision", "convection current", "infrared radiation", "temperature gradient", "cooling", "density difference", "energy conservation"],
     questions: [
       { q: "What instrument is used to measure temperature?", a: "Thermometer", difficulty: "foundation", kind: "short" },
       { q: "What is energy transfer through direct particle collisions called?", a: "Conduction", difficulty: "core", kind: "short" },
@@ -161,7 +163,7 @@ const baseTopics: Topic[] = [
     year: 8,
     name: "Mixtures, Solutions and Concentration",
     strand: "Chemistry",
-    keywords: ["mixture", "solution", "solute", "solvent", "concentration", "dilute", "dissolve", "separate", "filtration", "evaporation", "chromatography", "pure", "particle", "volume", "amount", "water"],
+    keywords: ["mixture", "solution", "solute", "solvent", "concentration", "dilute solution", "dissolving", "separation method", "filtration", "evaporation", "chromatography", "pure substance", "solute particle", "solution volume", "solute amount", "aqueous solution"],
     questions: [
       { q: "What is the substance that dissolves called?", a: "Solute", difficulty: "foundation", kind: "short" },
       { q: "What is the liquid in which a solute dissolves called?", a: "Solvent", difficulty: "foundation", kind: "short" },
@@ -178,7 +180,7 @@ const baseTopics: Topic[] = [
     year: 8,
     name: "Solubility",
     strand: "Chemistry",
-    keywords: ["solubility", "saturated", "crystal", "temperature", "dissolve", "solute", "solvent", "filtration", "unsaturated", "soluble", "insoluble", "rate", "stirring", "surface area", "cooling", "evaporate"],
+    keywords: ["solubility", "saturated solution", "crystal", "temperature", "dissolving", "solute", "solvent", "filtration", "unsaturated solution", "soluble substance", "insoluble substance", "dissolving rate", "stirring", "surface area", "cooling crystallisation", "solvent evaporation"],
     questions: [
       { q: "What does solubility describe?", a: "The maximum amount of solute that dissolves in a given amount of solvent at a stated temperature.", difficulty: "core", kind: "explain" },
       { q: "What word describes a solution that cannot dissolve any more solute at that temperature?", a: "Saturated", difficulty: "foundation", kind: "short" },
@@ -195,7 +197,7 @@ const baseTopics: Topic[] = [
     year: 8,
     name: "Reproduction",
     strand: "Biology",
-    keywords: ["gamete", "fertilisation", "sperm", "egg", "zygote", "uterus", "puberty", "placenta", "embryo", "fetus", "ovary", "testes", "reproductive", "menstruation", "implantation", "hormone"],
+    keywords: ["gamete", "fertilisation", "sperm cell", "egg cell", "zygote", "uterus", "puberty", "placenta", "embryo", "fetus", "ovary", "testes", "reproductive system", "menstruation", "implantation", "reproductive hormone"],
     questions: [
       { q: "What is the male gamete called?", a: "Sperm cell", difficulty: "foundation", kind: "short" },
       { q: "What is the female gamete called?", a: "Egg cell", difficulty: "foundation", kind: "short" },
@@ -212,7 +214,7 @@ const baseTopics: Topic[] = [
     year: 8,
     name: "Chemical Changes",
     strand: "Chemistry",
-    keywords: ["reactant", "product", "reaction", "physical", "chemical", "irreversible", "mass", "evidence", "reversible", "gas", "colour", "temperature", "precipitate", "bond", "closed system", "conservation"],
+    keywords: ["reactant", "product", "chemical reaction", "physical change", "chemical change", "irreversible change", "mass conservation", "reaction evidence", "reversible change", "gas formation", "colour change", "temperature change", "precipitate", "chemical bond", "closed system", "conservation of mass"],
     questions: [
       { q: "What are the starting substances in a chemical reaction called?", a: "Reactants", difficulty: "foundation", kind: "short" },
       { q: "What are the new substances formed in a chemical reaction called?", a: "Products", difficulty: "foundation", kind: "short" },
@@ -229,7 +231,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "Elements, Molecules and Compounds",
     strand: "Chemistry",
-    keywords: ["atom", "element", "molecule", "compound", "mixture", "symbol", "formula", "bond", "pure", "particle", "diatomic", "ratio", "chemical", "oxygen", "carbon dioxide", "water"],
+    keywords: ["atom", "element", "molecule", "compound", "mixture", "element symbol", "chemical formula", "chemical bond", "pure substance", "particle diagram", "diatomic molecule", "atomic ratio", "element particle", "oxygen molecule", "carbon dioxide", "water molecule"],
     questions: [
       { q: "What is the smallest particle of an element?", a: "Atom", difficulty: "foundation", kind: "short" },
       { q: "What is a substance made from only one type of atom called?", a: "Element", difficulty: "foundation", kind: "short" },
@@ -246,7 +248,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "The Periodic Table",
     strand: "Chemistry",
-    keywords: ["period", "group", "metal", "non-metal", "proton", "atomic number", "reactivity", "property", "nucleus", "electron", "outer shell", "noble gas", "alkali metal", "halogen", "column", "row"],
+    keywords: ["period", "group", "metal", "non-metal", "proton", "atomic number", "reactivity trend", "periodic trend", "nucleus", "electron", "outer shell", "noble gas", "alkali metal", "halogen", "group number", "period number"],
     questions: [
       { q: "What does the atomic number tell you?", a: "The number of protons in the nucleus.", difficulty: "core", kind: "explain" },
       { q: "What are the horizontal rows of the periodic table called?", a: "Periods", difficulty: "foundation", kind: "short" },
@@ -263,7 +265,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "Determining Traits",
     strand: "Biology",
-    keywords: ["DNA", "gene", "allele", "chromosome", "inherited", "environmental", "variation", "trait", "characteristic", "nucleus", "dominant", "recessive", "offspring", "parent", "genotype", "phenotype"],
+    keywords: ["DNA", "gene", "allele", "chromosome", "inherited characteristic", "environmental influence", "genetic variation", "trait", "continuous variation", "nucleus", "dominant allele", "recessive allele", "offspring", "parent organism", "genotype", "phenotype"],
     questions: [
       { q: "What molecule carries genetic information?", a: "DNA", difficulty: "foundation", kind: "short" },
       { q: "What is a section of DNA that affects a characteristic called?", a: "Gene", difficulty: "foundation", kind: "short" },
@@ -280,7 +282,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "Chemical Reactions",
     strand: "Chemistry",
-    keywords: ["reactant", "product", "equation", "energy", "collision", "rate", "exothermic", "endothermic", "temperature", "concentration", "surface area", "catalyst", "activation energy", "atom", "rearrange", "conservation"],
+    keywords: ["reactant", "product", "word equation", "energy change", "particle collision", "reaction rate", "exothermic reaction", "endothermic reaction", "reaction temperature", "reactant concentration", "surface area", "catalyst", "activation energy", "atom rearrangement", "conservation of mass", "collision theory"],
     questions: [
       { q: "On which side of a word equation are the reactants written?", a: "Left", difficulty: "foundation", kind: "short" },
       { q: "What name is given to a reaction that transfers energy to the surroundings?", a: "Exothermic", difficulty: "core", kind: "short" },
@@ -297,7 +299,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "Acids and Bases",
     strand: "Chemistry",
-    keywords: ["acid", "base", "alkali", "pH", "indicator", "neutral", "salt", "neutralisation", "hydrogen ion", "alkaline", "universal indicator", "strong", "weak", "concentrated", "dilute", "metal carbonate"],
+    keywords: ["acid", "base", "alkali", "pH", "indicator", "neutral solution", "salt", "neutralisation", "hydrogen ion", "alkaline solution", "universal indicator", "strong acid", "weak acid", "concentrated acid", "dilute acid", "metal carbonate"],
     questions: [
       { q: "What pH value is neutral?", a: "7", difficulty: "foundation", kind: "short" },
       { q: "What pH values show that a solution is acidic?", a: "Below 7", difficulty: "foundation", kind: "short" },
@@ -314,7 +316,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "Effects of Forces",
     strand: "Physics",
-    keywords: ["force", "newton", "resultant", "friction", "mass", "weight", "acceleration", "deformation", "balanced", "unbalanced", "speed", "direction", "gravity", "contact", "elastic", "spring"],
+    keywords: ["force", "newton", "resultant force", "friction", "mass", "weight", "acceleration", "deformation", "balanced forces", "unbalanced forces", "speed", "force direction", "gravity", "contact force", "elastic deformation", "spring"],
     questions: [
       { q: "What is the SI unit of force?", a: "Newton", difficulty: "foundation", kind: "short" },
       { q: "What is the overall force acting on an object called?", a: "Resultant force", difficulty: "core", kind: "short" },
@@ -331,7 +333,7 @@ const baseTopics: Topic[] = [
     year: 9,
     name: "Pressure and Fluids",
     strand: "Physics",
-    keywords: ["pressure", "force", "area", "pascal", "fluid", "depth", "upthrust", "floating", "weight", "density", "atmosphere", "liquid", "gas", "surface", "volume", "balance"],
+    keywords: ["pressure", "force", "contact area", "pascal", "fluid", "fluid depth", "upthrust", "floating equilibrium", "weight", "density", "atmospheric pressure", "liquid pressure", "gas pressure", "fluid surface", "displaced volume", "force balance"],
     questions: [
       { q: "What is the SI unit of pressure?", a: "Pascal", difficulty: "foundation", kind: "short" },
       { q: "What equation links pressure, force and area?", a: "Pressure = force ÷ area", difficulty: "core", kind: "short" },
@@ -533,6 +535,7 @@ const yearGroupTopics: Topic[] = [
   ...year11Topics,
   ...seniorTopics,
   ...year13Topics,
+  ...scientificSkillsTopics,
 ];
 
 const topics: Topic[] = [
@@ -545,6 +548,8 @@ const topics: Topic[] = [
   })),
   ...ibTopics,
 ];
+
+assertSpecificKeywordSets(topics);
 
 const activities: { id: ActivityId; name: string; description: string; tag: string }[] = [
   { id: "quick-quiz", name: "Quick Quiz", description: "A balanced mix of short and explanation questions.", tag: "Flexible" },
@@ -816,6 +821,7 @@ function visualsForTopic(topic: Topic): Pick<VisualPrompt, "symbol" | "answer">[
     Chemistry: ["⚗️", "🧪", "🔥", "❄️", "⚛️", "🔗"],
     Physics: ["⚡", "🌊", "🧲", "💡", "📐", "⏱️"],
     Agriculture: ["🐑", "🌿", "🌦️", "⚖️", "🩺", "📈"],
+    Skills: ["📏", "📊", "🔬", "🧪", "🧭", "📝"],
   };
 
   return topic.keywords.slice(0, 12).map((keyword, index) => ({
