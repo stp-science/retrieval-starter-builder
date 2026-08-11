@@ -32,8 +32,9 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /7,690(?:<!-- -->)?-question bank/i);
+  assert.match(html, /8,900(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
+  assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
   assert.match(html, /Year (?:<!-- -->)?13/i);
   assert.match(html, /IB Sciences/i);
@@ -91,7 +92,41 @@ test("includes exactly the seven requested Year 10 topics in teaching order", as
   assert.match(bank, /questions\.length < 40/);
   assert.match(bank, /oneWordQuestions\.length < 40/);
   assert.match(page, /year10Topics/);
-  assert.match(page, /\[7, 8, 9, 10, 12, 13, "IB"\]/);
+  assert.match(page, /\[7, 8, 9, 10, 11, 12, 13, "IB"\]/);
+});
+
+test("includes the requested Year 11 Biology, Chemistry and Physics courses", async () => {
+  const bank = await readFile(new URL("../app/year11-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const topicIds = [...bank.matchAll(/^    id: "(y11-[a-z-]+)",$/gm)].map((match) => match[1]);
+  const topicNames = [...bank.matchAll(/^    name: "([^"]+)",$/gm)].map((match) => match[1]);
+
+  assert.equal(topicIds.length, 12);
+  assert.equal(new Set(topicIds).size, 12);
+  assert.deepEqual(topicNames, [
+    "Cells and Cell Processes",
+    "Genetics",
+    "Human Responses",
+    "Immunity",
+    "Atomic Structure, Bonding, Acids and Bases",
+    "Rates of Reaction",
+    "Organic Chemistry",
+    "Mechanics",
+    "Waves",
+    "Electricity",
+    "Magnetism and Electromagnetism",
+    "Particle Physics",
+  ]);
+  assert.equal((bank.match(/^    course: "Biology",$/gm) ?? []).length, 4);
+  assert.equal((bank.match(/^    course: "Chemistry",$/gm) ?? []).length, 3);
+  assert.equal((bank.match(/^    course: "Physics",$/gm) ?? []).length, 5);
+  assert.equal((bank.match(/^    programme: "STP Diploma",$/gm) ?? []).length, 7);
+  assert.equal((bank.match(/^    programme: "AQA GCSE Physics",$/gm) ?? []).length, 5);
+  assert.match(bank, /questions\.length < 60/);
+  assert.match(bank, /oneWordQuestions\.length < 40/);
+  assert.match(page, /year11Topics/);
+  assert.match(page, /year11Courses/);
+  assert.match(page, /Year 11 course/);
 });
 
 test("includes the eight Year 13 NCEA Level 3 external assessment units", async () => {
@@ -123,8 +158,8 @@ test("expands every non-IB year-group topic with varied new questions", async ()
   assert.match(expansion, /topicConcepts\.length !== 6 && topicConcepts\.length !== 14/);
   assert.match(expansion, /expandedOneWordQuestions/);
   assert.match(expansion, /contains a Yes\/No One Worders prompt/);
-  assert.match(page, /questions: uniqueQuestionWording\(\[\.\.\.topic\.questions, \.\.\.expandedQuestions\[topic\.id\]\]\)/);
-  assert.match(page, /\.\.\.expandedOneWordQuestions\[topic\.id\]/);
+  assert.match(page, /questions: uniqueQuestionWording\(\[\.\.\.topic\.questions, \.\.\.\(expandedQuestions\[topic\.id\] \?\? \[\]\)\]\)/);
+  assert.match(page, /\.\.\.\(expandedOneWordQuestions\[topic\.id\] \?\? \[\]\)/);
 });
 
 test("includes the expanded 24-activity catalogue", async () => {
