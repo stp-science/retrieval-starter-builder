@@ -131,12 +131,11 @@ function topicKeywords(spec: IbTopicSpec) {
 }
 
 function buildQuestions(topic: IbTopicSpec): IbQuestion[] {
-  return topic.concepts.flatMap((concept: IbConcept, index: number) => {
+  return topic.concepts.flatMap((concept: IbConcept) => {
     const [term, definition, significance] = concept;
-    const next = topic.concepts[(index + 1) % topic.concepts.length];
     return [
       {
-        q: `What is meant by ${term}?`,
+        q: `Define ${term}.`,
         a: capitalise(definition),
         difficulty: "foundation" as const,
         kind: "explain" as const,
@@ -148,14 +147,14 @@ function buildQuestions(topic: IbTopicSpec): IbQuestion[] {
         kind: "explain" as const,
       },
       {
-        q: `A student is revising ${topic.name}. What should they remember about ${term}?`,
+        q: `Define ${term} and explain why it matters in ${topic.name}.`,
         a: `${capitalise(definition)} ${capitalise(significance)}`,
         difficulty: "core" as const,
         kind: "explain" as const,
       },
       {
-        q: `Compare how ${term} and ${next[0]} contribute to ${topic.name}.`,
-        a: `${term}: ${capitalise(significance)} ${next[0]}: ${capitalise(next[2])}`,
+        q: `Complete this explanation: ${term} is important in ${topic.name} because...`,
+        a: capitalise(significance),
         difficulty: "stretch" as const,
         kind: "explain" as const,
       },
@@ -166,13 +165,13 @@ function buildQuestions(topic: IbTopicSpec): IbQuestion[] {
 function buildOneWordQuestions(topic: IbTopicSpec): IbQuestion[] {
   return topic.concepts.flatMap(([term, definition]) => [
     {
-      q: `Which key term matches this description: ${definition}?`,
+      q: `Name the ${topic.subject} term described here: ${definition}.`,
       a: term,
       difficulty: "core" as const,
       kind: "short" as const,
     },
     {
-      q: `Name the concept described as ${definition}.`,
+      q: `Which ${topic.subject} term means “${definition}”?`,
       a: term,
       difficulty: "core" as const,
       kind: "short" as const,
