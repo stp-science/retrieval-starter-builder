@@ -225,6 +225,12 @@ export const year11PhysicsTopics: Year11PhysicsTopic[] = [
       ["electron", "What particle has charge -1, very small relative mass and occupies the space around the nucleus?", "Which subatomic particle is transferred during electrical charging?", "How do electron mass and location compare with a proton?", "An electron has much smaller mass and is outside the nucleus, whereas a proton is in the nucleus.", "core"],
       ["neutron number", "What value is calculated as mass number minus atomic number?", "Which count equals total nucleons minus protons?", "Carbon-14 has mass number 14 and atomic number 6. Calculate its neutron number.", "The neutron number is 14 - 6 = 8.", "core"],
       ["natural radioactivity", "What spontaneous nuclear change occurs without human initiation?", "Which process includes naturally occurring alpha and beta decay?", "What makes radioactive decay a nuclear process?", "The unstable nucleus changes and emits particles or energy; chemical conditions do not cause the change.", "core"],
+      ["background radiation", "What low-level ionising radiation is always present in the environment?", "Which radiation must be measured before investigating a radioactive source?", "Name two sources of background radiation.", "Examples include cosmic rays, radon gas from rocks, radioactive materials in the ground and buildings, medical sources and nuclear-industry fallout.", "core"],
+      ["background count correction", "What calculation subtracts the background count rate from the measured count rate?", "Which correction gives the count rate caused by a radioactive source alone?", "A detector measures 68 counts per minute near a source and 18 counts per minute without it. Calculate the corrected count rate.", "The corrected count rate is 68 - 18 = 50 counts per minute.", "core"],
+      ["count rate", "What quantity gives the number of radiation detections per unit time?", "Which detector reading is commonly recorded in counts per second or counts per minute?", "Why do repeated count-rate readings vary even when the source and detector stay fixed?", "Radioactive decay is random, so the number of nuclei decaying in each time interval fluctuates.", "core"],
+      ["half-life", "What time is taken for a radioactive sample's activity or number of undecayed nuclei to fall to half?", "Which decay property is constant for a particular radioactive isotope?", "A source falls from 800 counts per minute to 100 counts per minute. How many half-lives have passed?", "Three half-lives have passed: 800 to 400, 400 to 200 and 200 to 100 counts per minute.", "core"],
+      ["half-life calculation", "What repeated-halving method finds the remaining activity after several half-lives?", "Which calculation changes 640 counts per minute to 80 counts per minute in three equal decay intervals?", "A radioactive isotope has a half-life of 6 hours. What fraction remains after 18 hours?", "Eighteen hours is three half-lives, so (1/2)^3 = 1/8 of the original amount remains.", "core"],
+      ["decay curve", "What graph shows activity or count rate decreasing exponentially with time?", "Which graph can be used to find the time for a count rate to halve?", "How can half-life be estimated reliably from a decay curve?", "Read several halving intervals from different parts of the curve and calculate their mean.", "stretch"],
       ["alpha decay", "What decay emits two protons and two neutrons?", "Which decay lowers mass number by 4 and atomic number by 2?", "How does uranium-238 change during alpha decay?", "It becomes thorium-234 because the mass number falls by 4 and atomic number falls by 2.", "core"],
       ["beta decay", "What decay emits an electron when a neutron changes into a proton?", "Which decay keeps mass number unchanged but raises atomic number by 1?", "How does carbon-14 change during beta-minus decay?", "It becomes nitrogen-14: atomic number rises from 6 to 7 while mass number stays 14.", "core"],
       ["nuclear fission", "What process splits a heavy nucleus and releases energy and neutrons?", "Which nuclear process can start a chain reaction?", "How can one fission event lead to more fission events?", "Released neutrons can strike other fissile nuclei, causing them to split and release further neutrons.", "core"],
@@ -246,7 +252,6 @@ export const year11PhysicsTopics: Year11PhysicsTopic[] = [
 const expectedTopicNames = ["Mechanics", "Electricity & Magnetism", "Waves", "Particle Physics"];
 const bannedLegacyKeywords = new Set([
   "black body",
-  "background radiation",
   "contamination",
   "density",
   "earth wire",
@@ -257,7 +262,6 @@ const bannedLegacyKeywords = new Set([
   "fuse",
   "gas pressure",
   "generator",
-  "half-life",
   "irradiation",
   "Lenz's law",
   "limit of proportionality",
