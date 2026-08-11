@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /10,970(?:<!-- -->)?-question bank/i);
+  assert.match(html, /11,010(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
@@ -133,8 +133,12 @@ test("matches Year 11 Physics to the St Peter's Diploma course overview", async 
   assert.match(bank, /distance-time gradient/);
   assert.match(bank, /velocity-time area/);
   assert.match(bank, /Kirchhoff's current law/);
+  assert.match(bank, /electrostatic potential energy/);
+  assert.match(bank, /electric shock/);
+  assert.match(bank, /fixed resistor/);
   assert.match(bank, /right-hand grip rule/);
   assert.match(bank, /plane-mirror image/);
+  assert.match(bank, /wave units/);
   assert.match(bank, /total internal reflection/);
   assert.match(bank, /Brownian motion/);
   assert.match(bank, /mass-energy equivalence/);
