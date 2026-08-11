@@ -46,6 +46,7 @@ button { color: inherit; }
 .brand-wordmark { display: flex; flex-direction: column; gap: 2px; }
 .brand-wordmark strong { color: var(--coral); font-family: Georgia, 'Times New Roman', serif; font-size: 20px; line-height: 1; letter-spacing: -.02em; }
 .brand-wordmark small { color: var(--ink); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; }
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
 .beta-pill { padding: 7px 11px; background: #f8e4e4; color: var(--scarlet-dark); border: 1px solid #e3bac1; border-radius: 999px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 
 .hero { max-width: 1440px; margin: 0 auto; padding: 62px clamp(20px, 5vw, 76px) 48px; display: flex; align-items: end; justify-content: space-between; gap: 40px; }
@@ -562,10 +563,13 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
 .question-report-success p { margin: 0 auto 20px; max-width: 430px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .flag-toolbar-button { border-color: #e1adb7 !important; background: #fff5f6 !important; color: var(--scarlet-dark) !important; }
 
-.general-feedback-button { position: fixed; right: 20px; bottom: 20px; z-index: 190; min-height: 44px; padding: 0 16px; border: 1px solid #b4545d; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; background: var(--scarlet-dark); color: white; box-shadow: 0 8px 24px rgba(91,24,34,.24); font-size: 11px; font-weight: 900; cursor: pointer; }
-.general-feedback-button:hover { transform: translateY(-1px); background: #721e2a; box-shadow: 0 10px 28px rgba(91,24,34,.3); }
+.general-feedback-button { min-height: 54px; padding: 7px 16px 7px 9px; border: 2px solid #fff; border-radius: 15px; display: inline-flex; align-items: center; gap: 10px; background: var(--scarlet-dark); color: white; box-shadow: 0 8px 24px rgba(91,24,34,.32), 0 0 0 2px rgba(157,6,33,.18); text-align: left; cursor: pointer; }
+.general-feedback-button:hover { transform: translateY(-1px); background: #721e2a; box-shadow: 0 11px 28px rgba(91,24,34,.38), 0 0 0 2px rgba(157,6,33,.22); }
 .general-feedback-button:focus-visible { outline: 3px solid rgba(130,173,191,.5); outline-offset: 3px; }
-.general-feedback-button > span { font-size: 15px; line-height: 1; }
+.feedback-button-icon { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 10px; display: grid; place-items: center; background: white; color: var(--scarlet-dark); font-size: 21px; font-weight: 900; line-height: 1; }
+.feedback-button-copy { display: flex; flex-direction: column; gap: 2px; }
+.feedback-button-copy strong { font-size: 13px; line-height: 1.1; }
+.feedback-button-copy small { max-width: 205px; color: #ffe9ed; font-size: 9px; font-weight: 700; line-height: 1.2; }
 .feedback-category-options { margin: 16px 0 0; padding: 0; border: 0; }
 .feedback-category-options legend { margin-bottom: 7px; color: var(--muted); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; }
 .question-report-dialog .feedback-category-options label { margin-top: 7px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; display: flex; align-items: flex-start; gap: 9px; background: white; cursor: pointer; }
@@ -583,6 +587,7 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
   .workspace { grid-template-columns: 1fr; }
   .preview-shell { position: static; min-height: 620px; }
   .hero-stat { display: none; }
+  .beta-pill { display: none; }
 }
 
 @media (max-width: 650px) {
@@ -592,7 +597,8 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
   .brand-crest { width: 42px; height: 46px; }
   .brand-wordmark strong { font-size: 16px; }
   .brand-wordmark small { font-size: 8px; letter-spacing: .08em; }
-  .beta-pill { max-width: 108px; padding: 6px 8px; text-align: center; font-size: 8px; }
+  .topbar-actions { gap: 0; }
+  .beta-pill { display: none; }
   .hero { padding-top: 42px; }
   .hero h1 br { display: none; }
   .hero-copy { font-size: 15px; }
@@ -632,7 +638,10 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
   .question-report-backdrop { padding: 10px; }
   .question-report-dialog { max-height: calc(100vh - 20px); padding: 20px 16px; border-radius: 16px; }
   .question-report-person { grid-template-columns: 1fr; gap: 0; }
-  .general-feedback-button { right: 12px; bottom: 12px; min-height: 42px; padding: 0 13px; }
+  .general-feedback-button { min-height: 46px; padding: 5px 10px 5px 6px; gap: 7px; border-radius: 12px; }
+  .feedback-button-icon { width: 30px; height: 30px; flex-basis: 30px; border-radius: 8px; font-size: 18px; }
+  .feedback-button-copy strong { font-size: 10px; }
+  .feedback-button-copy small { display: none; }
 }
 
 @media print {
