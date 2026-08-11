@@ -270,6 +270,10 @@ test("lets teachers flag generated questions for review", async () => {
   assert.match(page, /Question ID/, "question IDs are not included in reports");
   assert.match(page, /Teacher comment/, "teacher comments are not included in reports");
   assert.match(page, /https:\/\/formsubmit\.co\/ajax\//, "question reports are not sent through the form service");
+  assert.match(page, /formSubmitAccepted/, "the form service response is not checked before claiming success");
+  assert.match(page, /payload\?\.success === true \|\| payload\?\.success === "true"/, "successful delivery is not verified from the response body");
+  assert.match(page, /questionReportMailto/, "question reports do not have an email fallback");
+  assert.match(page, /Open email report/, "the email fallback is not offered when automatic delivery fails");
   assert.match(page, /\.question-controls, \.swap-button, \.flag-button/, "PDF cleanup does not remove question controls");
   assert.match(styles, /\.question-report-backdrop/, "question report dialog styling is missing");
   assert.match(styles, /@media print[\s\S]*\.flag-button/, "flag controls can leak into printed activities");
