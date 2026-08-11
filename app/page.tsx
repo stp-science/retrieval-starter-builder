@@ -23,6 +23,8 @@ type GeneratedQuestion = Question & { topicId: string };
 
 type QuestionReportStatus = "idle" | "sending" | "sent" | "fallback";
 
+type GeneralFeedbackCategory = "problem" | "suggestion" | "other";
+
 type FormSubmitResponse = {
   success?: boolean | string;
   message?: string;
@@ -965,6 +967,13 @@ export default function Home() {
   const [flagTeacherEmail, setFlagTeacherEmail] = useState("");
   const [flagHoneypot, setFlagHoneypot] = useState("");
   const [flagStatus, setFlagStatus] = useState<QuestionReportStatus>("idle");
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackCategory, setFeedbackCategory] = useState<GeneralFeedbackCategory>("problem");
+  const [feedbackDetails, setFeedbackDetails] = useState("");
+  const [feedbackTeacherName, setFeedbackTeacherName] = useState("");
+  const [feedbackTeacherEmail, setFeedbackTeacherEmail] = useState("");
+  const [feedbackHoneypot, setFeedbackHoneypot] = useState("");
+  const [feedbackStatus, setFeedbackStatus] = useState<QuestionReportStatus>("idle");
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState(false);
@@ -1366,6 +1375,88 @@ export default function Home() {
       `Teacher comment: ${flagComment.trim() || "No comment supplied"}`,
       `Teacher name: ${flagTeacherName.trim() || "Not supplied"}`,
       `Teacher email: ${flagTeacherEmail.trim() || "Not supplied"}`,
+      `Page URL: ${window.location.href}`,
+    ].join("\n");
+    return `mailto:${questionReportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  function openGeneralFeedback() {
+    setFeedbackOpen(true);
+    setFeedbackStatus("idle");
+    setFeedbackHoneypot("");
+  }
+
+  function closeGeneralFeedback() {
+    if (feedbackStatus === "sending") return;
+    setFeedbackOpen(false);
+    setFeedbackDetails("");
+    setFeedbackHoneypot("");
+    setFeedbackStatus("idle");
+  }
+
+  function feedbackCategoryLabel(category: GeneralFeedbackCategory) {
+    if (category === "problem") return "Something is not working";
+    if (category === "suggestion") return "Suggestion for improvement";
+    return "Other feedback";
+  }
+
+  async function submitGeneralFeedback(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!feedbackDetails.trim() || feedbackStatus === "sending") return;
+    if (feedbackHoneypot.trim()) {
+      setFeedbackStatus("sent");
+      return;
+    }
+
+    const categoryLabel = feedbackCategoryLabel(feedbackCategory);
+    const topicContext = selectedTopics.map((topic) => topic.name).join(", ") || "No topic selected";
+    const formData = new FormData();
+    formData.append("_subject", `Retrieval App feedback: ${categoryLabel}`);
+    formData.append("_template", "table");
+    formData.append("_captcha", "false");
+    formData.append("_honey", feedbackHoneypot);
+    formData.append("Feedback type", categoryLabel);
+    formData.append("Feedback", feedbackDetails.trim());
+    formData.append("Course", courseLabel);
+    formData.append("Selected topics", topicContext);
+    formData.append("Current activity", titleForActivity(activity));
+    formData.append("Teacher name", feedbackTeacherName.trim() || "Not supplied");
+    formData.append("Teacher email", feedbackTeacherEmail.trim() || "Not supplied");
+    formData.append("Page URL", window.location.href);
+    formData.append("Browser", window.navigator.userAgent);
+    if (feedbackTeacherEmail.trim()) formData.append("email", feedbackTeacherEmail.trim());
+
+    setFeedbackStatus("sending");
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${questionReportEmail}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: formData,
+      });
+      const payload = await response.json().catch(() => null) as FormSubmitResponse | null;
+      if (!response.ok || !formSubmitAccepted(payload)) {
+        throw new Error(payload?.message || `General feedback failed with status ${response.status}`);
+      }
+      setFeedbackStatus("sent");
+    } catch (error) {
+      console.error("General feedback failed", error);
+      setFeedbackStatus("fallback");
+    }
+  }
+
+  function generalFeedbackMailto() {
+    const categoryLabel = feedbackCategoryLabel(feedbackCategory);
+    const subject = `Retrieval App feedback: ${categoryLabel}`;
+    const body = [
+      `Feedback type: ${categoryLabel}`,
+      `Course: ${courseLabel}`,
+      `Selected topics: ${selectedTopics.map((topic) => topic.name).join(", ") || "No topic selected"}`,
+      `Current activity: ${titleForActivity(activity)}`,
+      "",
+      feedbackDetails.trim(),
+      "",
+      `Teacher name: ${feedbackTeacherName.trim() || "Not supplied"}`,
+      `Teacher email: ${feedbackTeacherEmail.trim() || "Not supplied"}`,
       `Page URL: ${window.location.href}`,
     ].join("\n");
     return `mailto:${questionReportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -2372,6 +2463,10 @@ export default function Home() {
         <div className="legend"><span><i className="biology" /> Biology</span><span><i className="chemistry" /> Chemistry</span><span><i className="physics" /> Physics</span><span><i className="agriculture" /> Agriculture &amp; Horticulture</span></div>
       </footer>
 
+      <button type="button" className="general-feedback-button" onClick={openGeneralFeedback} aria-haspopup="dialog">
+        <span aria-hidden="true">✦</span> Site feedback
+      </button>
+
       {customQuestionOpen && (
         <div className="custom-question-backdrop" role="dialog" aria-modal="true" aria-label="Write your own question">
           <form className="custom-question-dialog" onSubmit={(event) => { event.preventDefault(); saveCustomQuestion(); }}>
@@ -2469,6 +2564,81 @@ export default function Home() {
                     <a className="question-report-email-button" href={questionReportMailto()}>Open email report</a>
                   ) : (
                     <button type="submit" disabled={flagStatus === "sending"}>{flagStatus === "sending" ? "Sending…" : "Send report"}</button>
+                  )}
+                </div>
+              </>
+            )}
+          </form>
+        </div>
+      )}
+
+      {feedbackOpen && (
+        <div className="question-report-backdrop general-feedback-backdrop" role="dialog" aria-modal="true" aria-label="Send general site feedback" onMouseDown={(event) => { if (event.currentTarget === event.target) closeGeneralFeedback(); }}>
+          <form className="question-report-dialog general-feedback-dialog" onSubmit={submitGeneralFeedback}>
+            <div className="question-report-heading">
+              <div><p className="eyebrow">Help improve the app</p><h2>Site feedback</h2></div>
+              <button type="button" onClick={closeGeneralFeedback} aria-label="Close site feedback" disabled={feedbackStatus === "sending"}>×</button>
+            </div>
+
+            {feedbackStatus === "sent" ? (
+              <div className="question-report-success" role="status">
+                <span aria-hidden="true">✓</span>
+                <h3>Feedback sent</h3>
+                <p>Thanks. Gary has received your feedback and the relevant page details.</p>
+                <button type="button" onClick={closeGeneralFeedback}>Done</button>
+              </div>
+            ) : (
+              <>
+                <p className="question-report-intro">Report a problem or suggest an improvement. The current course, topics and activity will be included automatically.</p>
+                <fieldset className="feedback-category-options">
+                  <legend>What would you like to share?</legend>
+                  <label className={feedbackCategory === "problem" ? "selected" : ""}>
+                    <input type="radio" name="feedback-category" value="problem" checked={feedbackCategory === "problem"} onChange={() => { setFeedbackCategory("problem"); setFeedbackStatus("idle"); }} disabled={feedbackStatus === "sending"} />
+                    <span><b>Something isn&apos;t working</b><small>Tell us about an error or broken feature.</small></span>
+                  </label>
+                  <label className={feedbackCategory === "suggestion" ? "selected" : ""}>
+                    <input type="radio" name="feedback-category" value="suggestion" checked={feedbackCategory === "suggestion"} onChange={() => { setFeedbackCategory("suggestion"); setFeedbackStatus("idle"); }} disabled={feedbackStatus === "sending"} />
+                    <span><b>Suggestion for improvement</b><small>Share an idea that would make the app more useful.</small></span>
+                  </label>
+                  <label className={feedbackCategory === "other" ? "selected" : ""}>
+                    <input type="radio" name="feedback-category" value="other" checked={feedbackCategory === "other"} onChange={() => { setFeedbackCategory("other"); setFeedbackStatus("idle"); }} disabled={feedbackStatus === "sending"} />
+                    <span><b>Other feedback</b><small>Send a comment that does not fit the options above.</small></span>
+                  </label>
+                </fieldset>
+                <label>
+                  <span>Tell us more</span>
+                  <textarea value={feedbackDetails} onChange={(event) => { setFeedbackDetails(event.target.value); setFeedbackStatus("idle"); }} rows={5} placeholder={feedbackCategory === "problem" ? "What happened, and what were you trying to do?" : "What would you like the app to do differently?"} required disabled={feedbackStatus === "sending"} />
+                </label>
+                <div className="feedback-context-card">
+                  <span>Included automatically</span>
+                  <p>{courseLabel} • {selectedTopics.map((topic) => topic.name).join(", ") || "No topic selected"} • {titleForActivity(activity)}</p>
+                </div>
+                <div className="question-report-person">
+                  <label>
+                    <span>Your name <small>Optional</small></span>
+                    <input value={feedbackTeacherName} onChange={(event) => setFeedbackTeacherName(event.target.value)} autoComplete="name" disabled={feedbackStatus === "sending"} />
+                  </label>
+                  <label>
+                    <span>Your email <small>Optional</small></span>
+                    <input type="email" value={feedbackTeacherEmail} onChange={(event) => setFeedbackTeacherEmail(event.target.value)} autoComplete="email" disabled={feedbackStatus === "sending"} />
+                  </label>
+                </div>
+                <label className="question-report-honey" aria-hidden="true">
+                  <span>Leave this field empty</span>
+                  <input value={feedbackHoneypot} onChange={(event) => setFeedbackHoneypot(event.target.value)} tabIndex={-1} autoComplete="off" />
+                </label>
+                {feedbackStatus === "fallback" && (
+                  <div className="question-report-error" role="alert">
+                    <strong>Automatic delivery is unavailable.</strong>
+                    <span>Open the pre-addressed email below and press Send so your feedback still reaches Gary.</span>
+                  </div>
+                )}
+                <div className="question-report-actions">
+                  <button type="button" onClick={closeGeneralFeedback} disabled={feedbackStatus === "sending"}>Cancel</button>
+                  {feedbackStatus === "fallback" ? (
+                    <a className="question-report-email-button" href={generalFeedbackMailto()}>Open email feedback</a>
+                  ) : (
+                    <button type="submit" disabled={feedbackStatus === "sending" || !feedbackDetails.trim()}>{feedbackStatus === "sending" ? "Sending…" : "Send feedback"}</button>
                   )}
                 </div>
               </>
