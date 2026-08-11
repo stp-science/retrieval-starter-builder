@@ -7,11 +7,12 @@ import { extraQuestions } from "./question-bank";
 import { seniorCourses, seniorTopics, type SeniorCourse } from "./year12-question-bank";
 import { year13Topics } from "./year13-question-bank";
 import { year10Topics } from "./year10-question-bank";
+import { year11Courses, year11Topics } from "./year11-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expansion";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
-type YearGroup = 7 | 8 | 9 | 10 | 12 | 13 | "IB";
+type YearGroup = 7 | 8 | 9 | 10 | 11 | 12 | 13 | "IB";
 type Question = {
   q: string;
   a: string;
@@ -54,7 +55,7 @@ type Topic = {
   course?: SeniorCourse;
   standard?: string;
   level?: "SL & HL" | "HL only";
-  programme?: "IB";
+  programme?: "IB" | "STP Diploma" | "AQA GCSE Physics";
   keywords: string[];
   questions: Question[];
   oneWordQuestions?: Question[];
@@ -529,22 +530,17 @@ const yearGroupTopics: Topic[] = [
     questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
   })),
   ...year10Topics,
+  ...year11Topics,
   ...seniorTopics,
   ...year13Topics,
 ];
 
-for (const topic of yearGroupTopics) {
-  if (!expandedQuestions[topic.id] || !expandedOneWordQuestions[topic.id]) {
-    throw new Error(`${topic.id} is missing its expanded retrieval bank.`);
-  }
-}
-
 const topics: Topic[] = [
   ...yearGroupTopics.map((topic) => ({
     ...topic,
-    questions: uniqueQuestionWording([...topic.questions, ...expandedQuestions[topic.id]]),
+    questions: uniqueQuestionWording([...topic.questions, ...(expandedQuestions[topic.id] ?? [])]),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? uniqueQuestionWording([...topic.oneWordQuestions, ...expandedOneWordQuestions[topic.id]])
+      ? uniqueQuestionWording([...topic.oneWordQuestions, ...(expandedOneWordQuestions[topic.id] ?? [])])
       : undefined,
   })),
   ...ibTopics,
@@ -987,10 +983,10 @@ export default function Home() {
   const presentationRef = useRef<HTMLDivElement | null>(null);
 
   const yearTopics = useMemo(
-    () => topics.filter((topic) => topic.year === year && (![12, 13, "IB"].includes(year) || topic.course === course)),
+    () => topics.filter((topic) => topic.year === year && (![11, 12, 13, "IB"].includes(year) || topic.course === course)),
     [year, course],
   );
-  const courseLabel = year === 12 || year === 13 ? `Year ${year} ${course}` : year === "IB" ? `IB ${course}` : `Year ${year} Science`;
+  const courseLabel = year === 11 || year === 12 || year === 13 ? `Year ${year} ${course}` : year === "IB" ? `IB ${course}` : `Year ${year} Science`;
   const fileCourseLabel = courseLabel.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
   const selectedTopics = topics.filter((topic) => selected.includes(topic.id));
   const displayTopics = activity === "question-chain" && generated.length
@@ -1060,7 +1056,7 @@ export default function Home() {
 
   function chooseYear(nextYear: YearGroup) {
     setYear(nextYear);
-    if (nextYear === "IB" && course === "Agricultural & Horticultural Science") setCourse("Biology");
+    if ((nextYear === 11 || nextYear === "IB") && course === "Agricultural & Horticultural Science") setCourse("Biology");
     setSelected([]);
     setGenerated([]);
     setKeywordSet([]);
@@ -2020,16 +2016,16 @@ export default function Home() {
           </div>
 
           <div className="year-tabs" role="group" aria-label="Year group">
-            {([7, 8, 9, 10, 12, 13, "IB"] as YearGroup[]).map((item) => (
+            {([7, 8, 9, 10, 11, 12, 13, "IB"] as YearGroup[]).map((item) => (
               <button key={item} className={year === item ? "active" : ""} onClick={() => chooseYear(item)}>{item === "IB" ? "IB Sciences" : `Year ${item}`}</button>
             ))}
           </div>
 
-          {(year === 12 || year === 13 || year === "IB") && (
+          {(year === 11 || year === 12 || year === 13 || year === "IB") && (
             <div className="course-picker">
-              <span>{year === "IB" ? "IB subject" : "NCEA course"}</span>
-              <div className="course-tabs" role="group" aria-label={year === "IB" ? "IB science subject" : `Year ${year} NCEA science course`}>
-                {(year === "IB" ? ibSubjects : seniorCourses).map((item) => (
+              <span>{year === "IB" ? "IB subject" : year === 11 ? "Year 11 course" : "NCEA course"}</span>
+              <div className="course-tabs" role="group" aria-label={year === "IB" ? "IB science subject" : year === 11 ? "Year 11 science course" : `Year ${year} NCEA science course`}>
+                {(year === "IB" ? ibSubjects : year === 11 ? year11Courses : seniorCourses).map((item) => (
                   <button key={item} className={course === item ? "active" : ""} onClick={() => chooseCourse(item)}>{item}</button>
                 ))}
               </div>
@@ -2046,12 +2042,12 @@ export default function Home() {
 
           {activity === "concept-map" && <p className="selection-note">Concept Map uses one topic so its keywords form meaningful scientific links.</p>}
 
-          <div className={`topic-list ${year === 12 || year === 13 || year === "IB" ? "senior-topic-list" : ""}`}>
+          <div className={`topic-list ${year === 11 || year === 12 || year === 13 || year === "IB" ? "senior-topic-list" : ""}`}>
             {yearTopics.map((topic) => (
               <label key={topic.id} className={`topic-option ${selected.includes(topic.id) ? "selected" : ""}`}>
                 <input type="checkbox" checked={selected.includes(topic.id)} onChange={() => toggleTopic(topic.id)} />
                 <span className={`strand-dot ${topic.strand.toLowerCase()}`} />
-                <span className="topic-name">{topic.name}{topic.standard && <small>{topic.programme === "IB" ? `${topic.standard} • ${topic.level}` : `${topic.standard} • External`}</small>}</span>
+                <span className="topic-name">{topic.name}{topic.programme && topic.programme !== "IB" && <small>{topic.programme}</small>}{topic.standard && <small>{topic.programme === "IB" ? `${topic.standard} • ${topic.level}` : `${topic.standard} • External`}</small>}</span>
                 <span className="question-count">{topic.questions.length + (topic.oneWordQuestions?.length ?? 0)} starter prompts</span>
                 <span className="checkmark">✓</span>
               </label>
