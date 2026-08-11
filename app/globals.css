@@ -562,6 +562,23 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
 .question-report-success p { margin: 0 auto 20px; max-width: 430px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .flag-toolbar-button { border-color: #e1adb7 !important; background: #fff5f6 !important; color: var(--scarlet-dark) !important; }
 
+.general-feedback-button { position: fixed; right: 20px; bottom: 20px; z-index: 190; min-height: 44px; padding: 0 16px; border: 1px solid #b4545d; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; background: var(--scarlet-dark); color: white; box-shadow: 0 8px 24px rgba(91,24,34,.24); font-size: 11px; font-weight: 900; cursor: pointer; }
+.general-feedback-button:hover { transform: translateY(-1px); background: #721e2a; box-shadow: 0 10px 28px rgba(91,24,34,.3); }
+.general-feedback-button:focus-visible { outline: 3px solid rgba(130,173,191,.5); outline-offset: 3px; }
+.general-feedback-button > span { font-size: 15px; line-height: 1; }
+.feedback-category-options { margin: 16px 0 0; padding: 0; border: 0; }
+.feedback-category-options legend { margin-bottom: 7px; color: var(--muted); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; }
+.question-report-dialog .feedback-category-options label { margin-top: 7px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; display: flex; align-items: flex-start; gap: 9px; background: white; cursor: pointer; }
+.question-report-dialog .feedback-category-options label.selected { border-color: var(--coral); background: #fdf1f3; box-shadow: inset 0 0 0 1px var(--coral); }
+.question-report-dialog .feedback-category-options input { width: 16px; min-height: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--scarlet-dark); }
+.question-report-dialog .feedback-category-options label > span { margin: 0; color: var(--ink); font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.feedback-category-options b, .feedback-category-options small { display: block; }
+.feedback-category-options b { font-size: 11px; }
+.feedback-category-options small { margin-top: 2px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+.feedback-context-card { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: #eef3f1; }
+.feedback-context-card > span { color: var(--mint-dark); font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; }
+.feedback-context-card p { margin: 4px 0 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+
 @media (max-width: 1060px) {
   .workspace { grid-template-columns: 1fr; }
   .preview-shell { position: static; min-height: 620px; }
@@ -615,11 +632,12 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
   .question-report-backdrop { padding: 10px; }
   .question-report-dialog { max-height: calc(100vh - 20px); padding: 20px 16px; border-radius: 16px; }
   .question-report-person { grid-template-columns: 1fr; gap: 0; }
+  .general-feedback-button { right: 12px; bottom: 12px; min-height: 42px; padding: 0 13px; }
 }
 
 @media print {
   body { background: white; }
-  .topbar, .hero, .builder-panel, .preview-topline, .site-footer, .swap-help, .question-controls, .swap-button, .flag-button, .teacher-guide, .presentation-controls, .roulette-answer-button, .custom-question-backdrop, .question-report-backdrop { display: none !important; }
+  .topbar, .hero, .builder-panel, .preview-topline, .site-footer, .swap-help, .question-controls, .swap-button, .flag-button, .teacher-guide, .presentation-controls, .roulette-answer-button, .custom-question-backdrop, .question-report-backdrop, .general-feedback-button { display: none !important; }
   .workspace { display: block; padding: 0; }
   .preview-shell { border: 0; box-shadow: none; min-height: 0; background: white; }
   .starter-sheet { margin: 0; box-shadow: none; min-height: auto; padding: 12mm; }
