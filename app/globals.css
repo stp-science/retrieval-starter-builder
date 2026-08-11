@@ -550,9 +550,11 @@ body .preview-shell .presentation-stage:fullscreen .many-prompts :is(
 .question-report-person { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .question-report-honey { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
 .question-report-error { margin: 13px 0 0; padding: 10px 12px; border-left: 3px solid var(--coral); background: #fdf1f3; color: var(--scarlet-dark); font-size: 11px; line-height: 1.45; }
+.question-report-error strong, .question-report-error span { display: block; }
+.question-report-error span { margin-top: 3px; }
 .question-report-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px; }
-.question-report-actions button, .question-report-success button { min-height: 42px; padding: 0 15px; border: 1px solid var(--line); border-radius: 9px; background: white; font-size: 11px; font-weight: 900; cursor: pointer; }
-.question-report-actions button[type="submit"], .question-report-success button { border-color: var(--coral); background: var(--coral); color: white; }
+.question-report-actions button, .question-report-actions a, .question-report-success button { min-height: 42px; padding: 0 15px; border: 1px solid var(--line); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; background: white; color: var(--ink); font-size: 11px; font-weight: 900; text-decoration: none; cursor: pointer; }
+.question-report-actions button[type="submit"], .question-report-actions .question-report-email-button, .question-report-success button { border-color: var(--coral); background: var(--coral); color: white; }
 .question-report-actions button:disabled { opacity: .55; cursor: wait; }
 .question-report-success { padding: 30px 8px 8px; text-align: center; }
 .question-report-success > span { width: 54px; height: 54px; margin: 0 auto; border-radius: 50%; display: grid; place-items: center; background: #e1f0e5; color: #2f6c41; font-size: 28px; font-weight: 900; }
