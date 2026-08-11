@@ -1991,7 +1991,13 @@ export default function Home() {
             <small>Retrieval Starter Builder</small>
           </span>
         </a>
-        <span className="beta-pill">{topics.reduce((sum, topic) => sum + topic.questions.length + (topic.oneWordQuestions?.length ?? 0), 0).toLocaleString()}-question bank</span>
+        <div className="topbar-actions">
+          <span className="beta-pill">{topics.reduce((sum, topic) => sum + topic.questions.length + (topic.oneWordQuestions?.length ?? 0), 0).toLocaleString()}-question bank</span>
+          <button type="button" className="general-feedback-button" onClick={openGeneralFeedback} aria-haspopup="dialog" aria-label="Send site feedback or report a problem">
+            <span className="feedback-button-icon" aria-hidden="true">!</span>
+            <span className="feedback-button-copy"><strong>Feedback &amp; help</strong><small>Report a problem or suggest an improvement</small></span>
+          </button>
+        </div>
       </header>
 
       <section className="hero" id="top">
@@ -2462,10 +2468,6 @@ export default function Home() {
         <p>Built for St Peter&apos;s Cambridge Science. Retrieval practice works best when it is low-stakes, appropriately challenging and followed by feedback.</p>
         <div className="legend"><span><i className="biology" /> Biology</span><span><i className="chemistry" /> Chemistry</span><span><i className="physics" /> Physics</span><span><i className="agriculture" /> Agriculture &amp; Horticulture</span></div>
       </footer>
-
-      <button type="button" className="general-feedback-button" onClick={openGeneralFeedback} aria-haspopup="dialog">
-        <span aria-hidden="true">✦</span> Site feedback
-      </button>
 
       {customQuestionOpen && (
         <div className="custom-question-backdrop" role="dialog" aria-modal="true" aria-label="Write your own question">
