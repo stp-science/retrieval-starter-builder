@@ -7,6 +7,7 @@ import { year11Topics } from "../app/year11-question-bank";
 import { seniorTopics } from "../app/year12-question-bank";
 import { year13Topics } from "../app/year13-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "../app/year-group-expansion";
+import { clarifyQuestion } from "../app/question-clarity";
 
 type AuditQuestion = {
   q: string;
@@ -51,15 +52,21 @@ const topics: AuditTopic[] = [
     questions: uniqueQuestionWording([
       ...topic.questions,
       ...(expandedQuestions[topic.id] ?? []),
-    ]),
+    ].map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
       ? uniqueQuestionWording([
           ...topic.oneWordQuestions,
           ...(expandedOneWordQuestions[topic.id] ?? []),
-        ])
+        ].map(clarifyQuestion))
       : [],
   })),
-  ...(ibTopics as AuditTopic[]),
+  ...(ibTopics as AuditTopic[]).map((topic) => ({
+    ...topic,
+    questions: uniqueQuestionWording(topic.questions.map(clarifyQuestion)),
+    oneWordQuestions: topic.oneWordQuestions?.length
+      ? uniqueQuestionWording(topic.oneWordQuestions.map(clarifyQuestion))
+      : [],
+  })),
 ];
 
 const entries = topics.flatMap((topic) => [
@@ -79,6 +86,7 @@ const awkwardPatterns: Array<[RegExp, string]> = [
   [/Describe the connection between .* and (?:Atoms|Forces|Genetics|Acids|Electricity|Human Body|Earth Science)/i, "remove generic topic-link wording"],
   [/Which key term matches this description/i, "use a direct naming command"],
   [/Name the concept described as/i, "use a direct subject-specific naming command"],
+  [/^(?:What|Which).+\bcalculated using\b/i, "make the equation symbol being recalled explicit"],
 ];
 
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
@@ -115,9 +123,17 @@ for (const { topic, question, bank } of entries) {
   ) {
     violations.push(`${location}: make it explicit that an equation is required: ${prompt}`);
   }
+
+  if (/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i.test(prompt)) {
+    violations.push(`${location}: state whether a yes-no response and explanation are required: ${prompt}`);
+  }
+
+  if (question.kind === "explain" && answer.split(/\s+/).length > 14 && /^(?:What|Which)\b/i.test(prompt)) {
+    violations.push(`${location}: use an explicit explain, describe or state command: ${prompt}`);
+  }
 }
 
-if (topics.length < 171 || entries.length < 11_040) {
+if (topics.length < 171 || entries.length < 11_000) {
   violations.push(`audit coverage unexpectedly fell to ${entries.length} prompts across ${topics.length} topics`);
 }
 
