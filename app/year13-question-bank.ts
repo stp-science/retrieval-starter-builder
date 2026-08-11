@@ -691,7 +691,7 @@ export const year13Topics: Year13Topic[] = [
       ["How do capacitor charge and current change during charging?", "Charge and voltage rise exponentially toward maximum, while current falls exponentially toward zero.", "core", "explain"],
       ["What determines the direction of induced current?", "It creates a magnetic effect opposing the change in flux, as required by Lenz's law.", "core", "explain"],
       ["Write the induced-emf relationships for a coil and an inductor.", "ε = −NΔΦ/Δt and εL = −LΔI/Δt.", "core", "short"],
-      ["Write the energy stored in an inductor.", "E = ½LI².", "core", "short"],
+      ["Write the equation for the energy stored in an inductor.", "E = ½LI².", "core", "short"],
       ["How does current change after a DC supply is connected to an LR circuit?", "It rises exponentially toward a steady value with time constant τ = L/R.", "core", "explain"],
       ["How are ideal transformer voltages and turns related?", "Vs/Vp = Ns/Np.", "core", "short"],
       ["How are peak and rms sinusoidal values related?", "Vrms = Vmax/√2 and Irms = Imax/√2.", "core", "short"],
