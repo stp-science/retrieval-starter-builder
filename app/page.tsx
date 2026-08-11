@@ -7,6 +7,7 @@ import { extraQuestions } from "./question-bank";
 import { seniorCourses, seniorTopics, type SeniorCourse } from "./year12-question-bank";
 import { year13Topics } from "./year13-question-bank";
 import { year10Topics } from "./year10-question-bank";
+import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expansion";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -487,7 +488,17 @@ const topicVisuals: Record<string, Pick<VisualPrompt, "symbol" | "answer">[]> = 
   ],
 };
 
-const topics: Topic[] = [
+function uniqueQuestionWording(questions: Question[]) {
+  const seen = new Set<string>();
+  return questions.filter((question) => {
+    const key = question.q.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+const yearGroupTopics: Topic[] = [
   ...baseTopics.map((topic) => ({
     ...topic,
     questions: [...topic.questions, ...(extraQuestions[topic.id] ?? [])],
@@ -495,6 +506,22 @@ const topics: Topic[] = [
   ...year10Topics,
   ...seniorTopics,
   ...year13Topics,
+];
+
+for (const topic of yearGroupTopics) {
+  if (!expandedQuestions[topic.id] || !expandedOneWordQuestions[topic.id]) {
+    throw new Error(`${topic.id} is missing its expanded retrieval bank.`);
+  }
+}
+
+const topics: Topic[] = [
+  ...yearGroupTopics.map((topic) => ({
+    ...topic,
+    questions: uniqueQuestionWording([...topic.questions, ...expandedQuestions[topic.id]]),
+    oneWordQuestions: topic.oneWordQuestions?.length
+      ? uniqueQuestionWording([...topic.oneWordQuestions, ...expandedOneWordQuestions[topic.id]])
+      : undefined,
+  })),
   ...ibTopics,
 ];
 
@@ -1806,7 +1833,7 @@ export default function Home() {
               </label>
             ))}
           </div>
-          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : "every topic contains at least 40 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
+          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : "every topic contains at least 50 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
 
           <div className="divider" />
           <div className="step-heading">
