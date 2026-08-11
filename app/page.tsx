@@ -500,7 +500,7 @@ function uniqueQuestionWording(questions: Question[]) {
   });
 }
 
-const questionReportEmail = "gary.talbot@stpetersschool.nz";
+const questionReportEmail = "gary.talbot@stpeters.school.nz";
 
 function questionReportId(question: GeneratedQuestion) {
   const source = `${question.topicId}|${question.q.trim().toLowerCase()}`;
