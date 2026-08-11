@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /11,040(?:<!-- -->)?-question bank/i);
+  assert.match(html, /11,038(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
@@ -219,6 +219,9 @@ test("uses direct student-friendly wording across generated question banks", asy
   const year11Physics = await readFile(new URL("../app/year11-physics-question-bank.ts", import.meta.url), "utf8");
   const ib = await readFile(new URL("../app/ib-question-bank.ts", import.meta.url), "utf8");
   const skills = await readFile(new URL("../app/scientific-skills-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const clarity = await readFile(new URL("../app/question-clarity.ts", import.meta.url), "utf8");
+  const audit = await readFile(new URL("../scripts/audit-question-language.ts", import.meta.url), "utf8");
 
   assert.match(year11Physics, /Name the method of thermal energy transfer through a solid\./);
   assert.doesNotMatch(year11Physics, /without bulk movement of matter/);
@@ -227,6 +230,10 @@ test("uses direct student-friendly wording across generated question banks", asy
   assert.doesNotMatch(ib, /A student is revising|What should they remember|Compare how .* contribute to/);
   assert.match(ib, /Complete this explanation:/);
   assert.match(skills, /Name the scientific skill used for this purpose/);
+  assert.match(page, /\.map\(clarifyQuestion\)/, "the full question bank does not use the clarity pass");
+  assert.match(clarity, /Answer yes or no/, "yes-no prompts do not tell students how to answer");
+  assert.match(clarity, /what does \$\{symbol\} represent/, "equation prompts do not identify the target symbol");
+  assert.match(audit, /make the equation symbol being recalled explicit/, "the full-bank audit does not reject indirect equation clues");
 });
 
 test("expands every non-IB year-group topic with varied new questions", async () => {
@@ -240,7 +247,7 @@ test("expands every non-IB year-group topic with varied new questions", async ()
   assert.match(expansion, /topicConcepts\.length !== 6 && topicConcepts\.length !== 14/);
   assert.match(expansion, /expandedOneWordQuestions/);
   assert.match(expansion, /contains a Yes\/No One Worders prompt/);
-  assert.match(page, /questions: uniqueQuestionWording\(\[\.\.\.topic\.questions, \.\.\.\(expandedQuestions\[topic\.id\] \?\? \[\]\)\]\)/);
+  assert.match(page, /questions: uniqueQuestionWording\(\[\.\.\.topic\.questions, \.\.\.\(expandedQuestions\[topic\.id\] \?\? \[\]\)\]\.map\(clarifyQuestion\)\)/);
   assert.match(page, /\.\.\.\(expandedOneWordQuestions\[topic\.id\] \?\? \[\]\)/);
 });
 
@@ -300,7 +307,7 @@ test("keeps every activity covered by the export system", async () => {
   assert.match(page, /className="question-number number-badge"/, "real Quick Quiz number badges are missing");
   assert.doesNotMatch(polish, /\.question-list li::before/, "Quick Quiz still relies on a fragile CSS-only number badge");
   assert.match(polish, /\.pdf-export[\s\S]*grid-template-columns/, "PDF-safe grid overrides are missing");
-  assert.match(powerpoint, /shape: isPlacemat \? "roundRect" : "ellipse"/, "PowerPoint number shapes are missing");
+  assert.match(powerpoint, /shape: isPlacemat \|\| isChallengeGrid \? "roundRect" : "ellipse"/, "PowerPoint number shapes are missing");
   assert.match(
     powerpoint,
     /\.question-list li > span:not\(\.question-number\)/,
@@ -373,6 +380,28 @@ test("keeps PDF dividers and PowerPoint headers safely inset", async () => {
   assert.match(powerpoint, /const INSTRUCTION_TEXT_MARGIN = \{ left: 0\.24, right: 0\.2/, "PowerPoint instructions lack internal padding");
   assert.equal((powerpoint.match(/margin: HEADER_TEXT_MARGIN/g) ?? []).length, 2, "PowerPoint banner inset is not applied to both slides");
   assert.equal((powerpoint.match(/margin: INSTRUCTION_TEXT_MARGIN/g) ?? []).length, 2, "PowerPoint instruction padding is not applied to both slides");
+});
+
+test("keeps Challenge Grid points and export cards aligned", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const powerpoint = await readFile(new URL("../app/PowerPointDownloadEnhancer.tsx", import.meta.url), "utf8");
+  const polish = await readFile(new URL("../app/activity-polish.css", import.meta.url), "utf8");
+
+  assert.match(powerpoint, /case "challenge-grid"[\s\S]*promptPoints/, "Challenge Grid point values are not extracted for PowerPoint");
+  assert.match(powerpoint, /promptPoints\[index\]/, "Challenge Grid point values are not drawn on PowerPoint cards");
+  assert.ok((powerpoint.match(/promptPoints\[index\]/g) ?? []).length >= 2, "Challenge Grid points are not shown on both question and answer slides");
+  assert.match(polish, /\.pdf-export \.starter-sheet \.challenge-grid \{[\s\S]*gap: 10px !important;[\s\S]*border: 0 !important;/, "PDF Challenge Grid lacks aligned card spacing");
+  assert.match(polish, /\.pdf-export \.starter-sheet \.challenge-grid > div \{[\s\S]*box-sizing: border-box !important;/, "PDF Challenge Grid cards do not use stable sizing");
+  assert.match(page, /pdf-export-title::after \{ content: none !important; display: none !important; \}/, "PDF clone does not suppress the duplicate title divider");
+});
+
+test("uses the correct Year 11 weight equation and direct equation wording", async () => {
+  const physics = await readFile(new URL("../app/year11-physics-question-bank.ts", import.meta.url), "utf8");
+
+  assert.match(physics, /In W = mg, what does W represent\?/, "Year 11 weight prompt is not student friendly");
+  assert.match(physics, /W = mg = 6 × 9\.8 = 58\.8 N\./, "Year 11 weight worked answer uses the wrong symbol");
+  assert.doesNotMatch(physics, /F = mg/, "Year 11 weight still uses F instead of W");
+  assert.doesNotMatch(physics, /Which (?:motion |circuit )?quantity is calculated using/, "indirect Year 11 equation clues remain");
 });
 
 test("lets teachers flag generated questions for review", async () => {
