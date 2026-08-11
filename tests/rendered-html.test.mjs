@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /8,900(?:<!-- -->)?-question bank/i);
+  assert.match(html, /10,700(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
@@ -120,13 +120,43 @@ test("includes the requested Year 11 Biology, Chemistry and Physics courses", as
   assert.equal((bank.match(/^    course: "Biology",$/gm) ?? []).length, 4);
   assert.equal((bank.match(/^    course: "Chemistry",$/gm) ?? []).length, 3);
   assert.equal((bank.match(/^    course: "Physics",$/gm) ?? []).length, 5);
-  assert.equal((bank.match(/^    programme: "STP Diploma",$/gm) ?? []).length, 7);
-  assert.equal((bank.match(/^    programme: "AQA GCSE Physics",$/gm) ?? []).length, 5);
+  assert.equal((bank.match(/^    programme: "STP Diploma",$/gm) ?? []).length, 12);
+  assert.doesNotMatch(bank, /programme: "AQA GCSE Physics"/);
   assert.match(bank, /questions\.length < 60/);
   assert.match(bank, /oneWordQuestions\.length < 40/);
   assert.match(page, /year11Topics/);
   assert.match(page, /year11Courses/);
   assert.match(page, /Year 11 course/);
+});
+
+test("adds progressive Scientific Skills questions to every year and subject section", async () => {
+  const bank = await readFile(new URL("../app/scientific-skills-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(bank, /scientificSkillsTopics\.length !== 18/);
+  assert.match(bank, /topic\.keywords\.length !== 20/);
+  assert.match(bank, /topic\.questions\.length !== 60/);
+  assert.match(bank, /topic\.oneWordQuestions\.length !== 40/);
+  assert.match(bank, /year11Courses\.map/);
+  assert.match(bank, /nceaCourses\.map/);
+  assert.match(bank, /ibScienceSubjects\.map/);
+  assert.match(bank, /"Agricultural & Horticultural Science"/);
+  assert.match(page, /\.\.\.scientificSkillsTopics/);
+  assert.match(css, /\.strand-dot\.skills/);
+});
+
+test("keeps activity keywords subject-specific across every topic", async () => {
+  const ibBank = await readFile(new URL("../app/ib-question-bank.ts", import.meta.url), "utf8");
+  const curriculum = await readFile(new URL("../app/curriculum-topics.ts", import.meta.url), "utf8");
+  const quality = await readFile(new URL("../app/keyword-quality.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+
+  assert.match(ibBank, /subjectKeywordVocabulary/);
+  assert.match(ibBank, /topic\.keywords\.length !== 16/);
+  assert.match(curriculum, /keywordRefinements/);
+  assert.match(quality, /vagueStandaloneKeywords/);
+  assert.match(page, /assertSpecificKeywordSets\(topics\)/);
 });
 
 test("includes the eight Year 13 NCEA Level 3 external assessment units", async () => {
