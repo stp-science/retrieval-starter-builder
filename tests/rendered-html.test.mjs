@@ -278,3 +278,20 @@ test("lets teachers flag generated questions for review", async () => {
   assert.match(styles, /\.question-report-backdrop/, "question report dialog styling is missing");
   assert.match(styles, /@media print[\s\S]*\.flag-button/, "flag controls can leak into printed activities");
 });
+
+test("lets teachers send general site feedback", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(page, /className="general-feedback-button"/, "general feedback button is missing");
+  assert.match(page, /Something isn&apos;t working/, "problem-report option is missing");
+  assert.match(page, /Suggestion for improvement/, "improvement option is missing");
+  assert.match(page, /submitGeneralFeedback/, "general feedback submission is missing");
+  assert.match(page, /Selected topics/, "general feedback does not include topic context");
+  assert.match(page, /Current activity/, "general feedback does not include activity context");
+  assert.match(page, /window\.navigator\.userAgent/, "general feedback does not include technical context");
+  assert.match(page, /generalFeedbackMailto/, "general feedback email fallback is missing");
+  assert.match(page, /Open email feedback/, "general feedback fallback action is missing");
+  assert.match(styles, /\.general-feedback-button/, "general feedback button styling is missing");
+  assert.match(styles, /@media print[\s\S]*\.general-feedback-button/, "general feedback control can leak into printouts");
+});
