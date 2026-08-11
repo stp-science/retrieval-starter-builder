@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { conceptsForTopic } from "./focused-concepts";
 import { ibSubjects, ibTopics } from "./ib-question-bank";
 import { extraQuestions } from "./question-bank";
@@ -20,6 +20,8 @@ type Question = {
 };
 
 type GeneratedQuestion = Question & { topicId: string };
+
+type QuestionReportStatus = "idle" | "sending" | "sent" | "error";
 
 type VisualPrompt = {
   symbol: string;
@@ -498,6 +500,18 @@ function uniqueQuestionWording(questions: Question[]) {
   });
 }
 
+const questionReportEmail = "gary.talbot@stpetersschool.nz";
+
+function questionReportId(question: GeneratedQuestion) {
+  const source = `${question.topicId}|${question.q.trim().toLowerCase()}`;
+  let hash = 2166136261;
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `${question.topicId}-${(hash >>> 0).toString(36).toUpperCase()}`;
+}
+
 const yearGroupTopics: Topic[] = [
   ...baseTopics.map((topic) => ({
     ...topic,
@@ -936,6 +950,12 @@ export default function Home() {
   const [customQuestionIndex, setCustomQuestionIndex] = useState(0);
   const [customQuestion, setCustomQuestion] = useState("");
   const [customAnswer, setCustomAnswer] = useState("");
+  const [flagQuestionIndex, setFlagQuestionIndex] = useState<number | null>(null);
+  const [flagComment, setFlagComment] = useState("");
+  const [flagTeacherName, setFlagTeacherName] = useState("");
+  const [flagTeacherEmail, setFlagTeacherEmail] = useState("");
+  const [flagHoneypot, setFlagHoneypot] = useState("");
+  const [flagStatus, setFlagStatus] = useState<QuestionReportStatus>("idle");
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState(false);
@@ -970,6 +990,8 @@ export default function Home() {
     () => shuffled([...new Set(clozeItems.map((item) => item.missing))]),
     [clozeItems],
   );
+  const flaggedQuestion = flagQuestionIndex === null ? null : generated[flagQuestionIndex] ?? null;
+  const flaggedTopic = flaggedQuestion ? topics.find((topic) => topic.id === flaggedQuestion.topicId) : null;
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -1253,6 +1275,76 @@ export default function Home() {
     setCustomQuestionOpen(false);
   }
 
+  function openFlagQuestion(index: number) {
+    if (!generated[index]) return;
+    setFlagQuestionIndex(index);
+    setFlagComment("");
+    setFlagHoneypot("");
+    setFlagStatus("idle");
+  }
+
+  function closeFlagQuestion() {
+    if (flagStatus === "sending") return;
+    setFlagQuestionIndex(null);
+    setFlagComment("");
+    setFlagHoneypot("");
+    setFlagStatus("idle");
+  }
+
+  async function submitQuestionReport(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (flagQuestionIndex === null || flagStatus === "sending") return;
+    const question = generated[flagQuestionIndex];
+    if (!question) return;
+    if (flagHoneypot.trim()) {
+      setFlagStatus("sent");
+      return;
+    }
+
+    const topic = topics.find((item) => item.id === question.topicId);
+    const reportId = questionReportId(question);
+    const formData = new FormData();
+    formData.append("_subject", `Retrieval App question flagged: ${reportId}`);
+    formData.append("_template", "table");
+    formData.append("_captcha", "false");
+    formData.append("_honey", flagHoneypot);
+    formData.append("Question ID", reportId);
+    formData.append("Course", courseLabel);
+    formData.append("Topic", topic?.name ?? question.topicId);
+    formData.append("Activity", titleForActivity(activity));
+    formData.append("Difficulty", question.difficulty);
+    formData.append("Question", question.q);
+    formData.append("Answer", question.a);
+    formData.append("Teacher comment", flagComment.trim() || "No comment supplied");
+    formData.append("Teacher name", flagTeacherName.trim() || "Not supplied");
+    formData.append("Teacher email", flagTeacherEmail.trim() || "Not supplied");
+    formData.append("Page URL", window.location.href);
+    if (flagTeacherEmail.trim()) formData.append("email", flagTeacherEmail.trim());
+
+    setFlagStatus("sending");
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${questionReportEmail}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: formData,
+      });
+      if (!response.ok) throw new Error(`Question report failed with status ${response.status}`);
+      setFlagStatus("sent");
+    } catch (error) {
+      console.error("Question report failed", error);
+      setFlagStatus("error");
+    }
+  }
+
+  function questionActions(index: number) {
+    return (
+      <div className="question-controls">
+        <button type="button" className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+        <button type="button" className="flag-button" onClick={() => openFlagQuestion(index)} aria-label={`Flag question ${index + 1} for review`}>Flag</button>
+      </div>
+    );
+  }
+
   function toggleRouletteAnswer(index: number) {
     setRevealedRoulette((current) => {
       const next = new Set(current);
@@ -1356,7 +1448,7 @@ export default function Home() {
         windowWidth: 1200,
         onclone: (clonedDocument) => {
           clonedDocument.documentElement.classList.add("pdf-export");
-          clonedDocument.querySelectorAll(".swap-help, .swap-button, .answer-toggle, .roulette-answer-button, .presentation-controls, .export-answer-bank").forEach((element) => {
+          clonedDocument.querySelectorAll(".swap-help, .question-controls, .swap-button, .flag-button, .answer-toggle, .roulette-answer-button, .presentation-controls, .export-answer-bank").forEach((element) => {
             (element as HTMLElement).style.display = "none";
           });
           const clonedSheet = clonedDocument.querySelector(".starter-sheet") as HTMLElement | null;
@@ -1900,6 +1992,7 @@ export default function Home() {
               <div className="preview-actions">
                 <button onClick={copyOutput}>{copied ? "Copied!" : "Copy text"}</button>
                 {generated.length > 0 && <button onClick={openCustomQuestion}>Write your own question</button>}
+                {generated.length > 0 && <button className="flag-toolbar-button" onClick={() => openFlagQuestion(0)}>Flag a question</button>}
                 <button className="fullscreen-button" onClick={enterPresentationMode}>Full screen</button>
                 <button onClick={printOutput}>Print</button>
                 <button className="word-button" onClick={downloadWord} disabled={downloadingWord}>
@@ -1994,7 +2087,7 @@ export default function Home() {
                   {knowledgeFocus === "focused" ? generated.map((question, index) => (
                     <section key={question.q} className="focused-knowledge-prompt">
                       <span>{topics.find((topic) => topic.id === question.topicId)?.name ?? "Science"}</span>
-                      <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                      {questionActions(index)}
                       <h3>{question.q}</h3>
                       {activity === "brain-dump" ? (
                         <><p>Terms</p><p>Ideas</p><p>Examples</p><p>Links</p></>
@@ -2060,7 +2153,7 @@ export default function Home() {
                     return (
                       <div className={`clock-card clock-${clockNumber}`} key={question.q}>
                         <b className="number-badge">{clockNumber}</b>
-                        <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                        {questionActions(index)}
                         <p>{question.q}</p>
                         {showAnswers && <em>{question.a}</em>}
                       </div>
@@ -2076,7 +2169,7 @@ export default function Home() {
                     return (
                       <div className={`chain-card chain-${question.difficulty}`} key={question.q}>
                         <span>{chainLabel(chainIndex, chain.length)}</span>
-                        <button className="swap-button" onClick={() => replaceQuestion(originalIndex)}>Swap</button>
+                        {questionActions(originalIndex)}
                         <p>{question.q}</p>
                         {showAnswers && <em>{question.a}</em>}
                       </div>
@@ -2092,7 +2185,7 @@ export default function Home() {
                     {generated.map((question, index) => (
                       <div className="match-item" key={question.q}>
                         <b className="number-badge">{index + 1}</b>
-                        <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                        {questionActions(index)}
                         <p>{question.q}</p>
                         {showAnswers && <em>Match: {String.fromCharCode(65 + matchAnswerBank.findIndex((item) => item.key === question.q))}</em>}
                       </div>
@@ -2114,7 +2207,7 @@ export default function Home() {
                     {clozeItems.map((item, index) => (
                       <div key={item.q}>
                         <span>{index + 1}</span>
-                        <button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
+                        {questionActions(index)}
                         <strong className="cloze-context">{item.q}</strong>
                         <p><small>Incomplete answer</small>{item.text}</p>
                         {showAnswers && <em>Full answer: {item.a}</em>}
@@ -2128,7 +2221,7 @@ export default function Home() {
                 <div className="flashcard-grid">
                   {generated.map((question, index) => (
                     <div className="flashcard" key={question.q}>
-                      <section><span>Card {index + 1} • Question</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p></section>
+                      <section><span>Card {index + 1} • Question</span>{questionActions(index)}<p>{question.q}</p></section>
                       <section className="flashcard-answer"><span>Fold • Answer</span><p>{question.a}</p><small>□ Again &nbsp; □ Nearly &nbsp; □ Secure</small></section>
                     </div>
                   ))}
@@ -2138,7 +2231,7 @@ export default function Home() {
               {activity === "connect-four" && (
                 <div className="connect-four-grid">
                   {generated.slice(0, 16).map((question, index) => (
-                    <div key={question.q}><b className="number-badge">{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><b className="number-badge">{index + 1}</b>{questionActions(index)}<p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -2146,7 +2239,7 @@ export default function Home() {
               {activity === "challenge-grid" && (
                 <div className="challenge-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><span className={`points p-${difficultyRank[question.difficulty]}`}>{difficultyRank[question.difficulty] + 1} pts</span><strong>{index + 1}</strong><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><span className={`points p-${difficultyRank[question.difficulty]}`}>{difficultyRank[question.difficulty] + 1} pts</span><strong>{index + 1}</strong>{questionActions(index)}<p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -2154,7 +2247,7 @@ export default function Home() {
               {activity === "quiz-quiz-trade" && (
                 <div className="trade-grid">
                   {generated.map((question, index) => (
-                    <div className="trade-card" key={question.q}><span>Card {index + 1}</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><strong>{question.q}</strong><div className="card-answer">{showAnswers ? question.a : "Answer hidden"}</div></div>
+                    <div className="trade-card" key={question.q}><span>Card {index + 1}</span>{questionActions(index)}<strong>{question.q}</strong><div className="card-answer">{showAnswers ? question.a : "Answer hidden"}</div></div>
                   ))}
                 </div>
               )}
@@ -2162,7 +2255,7 @@ export default function Home() {
               {activity === "retrieval-grid" && (
                 <div className="retrieval-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><span>{index + 1}</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><span>{index + 1}</span>{questionActions(index)}<p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -2170,7 +2263,7 @@ export default function Home() {
               {activity === "walkabout-bingo" && (
                 <div className="bingo-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><span>{index + 1}</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p><small>Classmate: __________________</small>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><span>{index + 1}</span>{questionActions(index)}<p>{question.q}</p><small>Classmate: __________________</small>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -2178,7 +2271,7 @@ export default function Home() {
               {activity === "retrieval-placemat" && (
                 <div className="placemat-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><span>Zone {String.fromCharCode(65 + index)}</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
+                    <div key={question.q}><span>Zone {String.fromCharCode(65 + index)}</span>{questionActions(index)}<p>{question.q}</p>{showAnswers && <em>{question.a}</em>}</div>
                   ))}
                   <strong className="placemat-centre">Check • discuss • improve</strong>
                 </div>
@@ -2187,7 +2280,7 @@ export default function Home() {
               {activity === "retrieval-roulette" && (
                 <div className="roulette-grid">
                   {generated.map((question, index) => (
-                    <div key={question.q}><b className="number-badge">{index + 1}</b><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><p>{question.q}</p><button className="roulette-answer-button" onClick={() => toggleRouletteAnswer(index)}>{revealedRoulette.has(index) ? "Hide answer" : "Reveal answer"}</button>{revealedRoulette.has(index) && <em>{question.a}</em>}</div>
+                    <div key={question.q}><b className="number-badge">{index + 1}</b>{questionActions(index)}<p>{question.q}</p><button className="roulette-answer-button" onClick={() => toggleRouletteAnswer(index)}>{revealedRoulette.has(index) ? "Hide answer" : "Reveal answer"}</button>{revealedRoulette.has(index) && <em>{question.a}</em>}</div>
                   ))}
                 </div>
               )}
@@ -2195,14 +2288,14 @@ export default function Home() {
               {activity === "answer-first" && (
                 <ol className="answer-first-list">
                   {generated.map((question, index) => (
-                    <li key={question.q}><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><strong>{question.a}</strong>{showAnswers && <em>Model question: {question.q}</em>}</li>
+                    <li key={question.q}>{questionActions(index)}<strong>{question.a}</strong>{showAnswers && <em>Model question: {question.q}</em>}</li>
                   ))}
                 </ol>
               )}
 
               {(activity === "quick-quiz" || activity === "one-worders") && (
                 <ol className="question-list">
-                  {generated.map((question, index) => <li key={question.q}><span className="question-number number-badge">{index + 1}</span><button className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button><span>{question.q}</span>{showAnswers && <em>{question.a}</em>}</li>)}
+                  {generated.map((question, index) => <li key={question.q}><span className="question-number number-badge">{index + 1}</span>{questionActions(index)}<span>{question.q}</span>{showAnswers && <em>{question.a}</em>}</li>)}
                 </ol>
               )}
 
@@ -2269,6 +2362,73 @@ export default function Home() {
               <button type="button" onClick={() => setCustomQuestionOpen(false)}>Cancel</button>
               <button type="submit" disabled={!customQuestion.trim() || !customAnswer.trim()}>Use my question</button>
             </div>
+          </form>
+        </div>
+      )}
+
+      {flaggedQuestion && flagQuestionIndex !== null && (
+        <div className="question-report-backdrop" role="dialog" aria-modal="true" aria-label="Flag a question for review" onMouseDown={(event) => { if (event.currentTarget === event.target) closeFlagQuestion(); }}>
+          <form className="question-report-dialog" onSubmit={submitQuestionReport}>
+            <div className="question-report-heading">
+              <div><p className="eyebrow">Question quality</p><h2>Flag for review</h2></div>
+              <button type="button" onClick={closeFlagQuestion} aria-label="Close question report" disabled={flagStatus === "sending"}>×</button>
+            </div>
+
+            {flagStatus === "sent" ? (
+              <div className="question-report-success" role="status">
+                <span aria-hidden="true">✓</span>
+                <h3>Report sent</h3>
+                <p>Thanks. Gary has the question details and can review it in the bank.</p>
+                <button type="button" onClick={closeFlagQuestion}>Done</button>
+              </div>
+            ) : (
+              <>
+                <p className="question-report-intro">Select the question and add a comment if helpful. The question, answer, course, topic and activity are included automatically.</p>
+                <label>
+                  <span>Question to flag</span>
+                  <select
+                    value={flagQuestionIndex}
+                    onChange={(event) => {
+                      setFlagQuestionIndex(Number(event.target.value));
+                      setFlagComment("");
+                      setFlagStatus("idle");
+                    }}
+                    disabled={flagStatus === "sending"}
+                  >
+                    {generated.map((question, index) => <option key={`${question.q}-${index}`} value={index}>Question {index + 1}: {question.q}</option>)}
+                  </select>
+                </label>
+                <div className="question-report-card">
+                  <span>{courseLabel} • {flaggedTopic?.name ?? "Science"}</span>
+                  <strong>{flaggedQuestion.q}</strong>
+                  <p><b>Current answer:</b> {flaggedQuestion.a}</p>
+                  <small>ID: {questionReportId(flaggedQuestion)}</small>
+                </div>
+                <label>
+                  <span>What is the issue? <small>Optional</small></span>
+                  <textarea value={flagComment} onChange={(event) => setFlagComment(event.target.value)} rows={3} placeholder="For example: unclear wording, incorrect answer, repeated question…" disabled={flagStatus === "sending"} />
+                </label>
+                <div className="question-report-person">
+                  <label>
+                    <span>Your name <small>Optional</small></span>
+                    <input value={flagTeacherName} onChange={(event) => setFlagTeacherName(event.target.value)} autoComplete="name" disabled={flagStatus === "sending"} />
+                  </label>
+                  <label>
+                    <span>Your email <small>Optional</small></span>
+                    <input type="email" value={flagTeacherEmail} onChange={(event) => setFlagTeacherEmail(event.target.value)} autoComplete="email" disabled={flagStatus === "sending"} />
+                  </label>
+                </div>
+                <label className="question-report-honey" aria-hidden="true">
+                  <span>Leave this field empty</span>
+                  <input value={flagHoneypot} onChange={(event) => setFlagHoneypot(event.target.value)} tabIndex={-1} autoComplete="off" />
+                </label>
+                {flagStatus === "error" && <p className="question-report-error" role="alert">The report could not be sent. Please check your connection and try again.</p>}
+                <div className="question-report-actions">
+                  <button type="button" onClick={closeFlagQuestion} disabled={flagStatus === "sending"}>Cancel</button>
+                  <button type="submit" disabled={flagStatus === "sending"}>{flagStatus === "sending" ? "Sending…" : flagStatus === "error" ? "Try again" : "Send report"}</button>
+                </div>
+              </>
+            )}
           </form>
         </div>
       )}
