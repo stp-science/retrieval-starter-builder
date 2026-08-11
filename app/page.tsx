@@ -21,7 +21,12 @@ type Question = {
 
 type GeneratedQuestion = Question & { topicId: string };
 
-type QuestionReportStatus = "idle" | "sending" | "sent" | "error";
+type QuestionReportStatus = "idle" | "sending" | "sent" | "fallback";
+
+type FormSubmitResponse = {
+  success?: boolean | string;
+  message?: string;
+};
 
 type VisualPrompt = {
   symbol: string;
@@ -501,6 +506,10 @@ function uniqueQuestionWording(questions: Question[]) {
 }
 
 const questionReportEmail = "gary.talbot@stpeters.school.nz";
+
+function formSubmitAccepted(payload: FormSubmitResponse | null) {
+  return payload?.success === true || payload?.success === "true";
+}
 
 function questionReportId(question: GeneratedQuestion) {
   const source = `${question.topicId}|${question.q.trim().toLowerCase()}`;
@@ -1328,12 +1337,38 @@ export default function Home() {
         headers: { Accept: "application/json" },
         body: formData,
       });
-      if (!response.ok) throw new Error(`Question report failed with status ${response.status}`);
+      const payload = await response.json().catch(() => null) as FormSubmitResponse | null;
+      if (!response.ok || !formSubmitAccepted(payload)) {
+        throw new Error(payload?.message || `Question report failed with status ${response.status}`);
+      }
       setFlagStatus("sent");
     } catch (error) {
       console.error("Question report failed", error);
-      setFlagStatus("error");
+      setFlagStatus("fallback");
     }
+  }
+
+  function questionReportMailto() {
+    if (!flaggedQuestion) return `mailto:${questionReportEmail}`;
+    const topic = topics.find((item) => item.id === flaggedQuestion.topicId);
+    const reportId = questionReportId(flaggedQuestion);
+    const subject = `Retrieval App question flagged: ${reportId}`;
+    const body = [
+      `Question ID: ${reportId}`,
+      `Course: ${courseLabel}`,
+      `Topic: ${topic?.name ?? flaggedQuestion.topicId}`,
+      `Activity: ${titleForActivity(activity)}`,
+      `Difficulty: ${flaggedQuestion.difficulty}`,
+      "",
+      `Question: ${flaggedQuestion.q}`,
+      `Answer: ${flaggedQuestion.a}`,
+      "",
+      `Teacher comment: ${flagComment.trim() || "No comment supplied"}`,
+      `Teacher name: ${flagTeacherName.trim() || "Not supplied"}`,
+      `Teacher email: ${flagTeacherEmail.trim() || "Not supplied"}`,
+      `Page URL: ${window.location.href}`,
+    ].join("\n");
+    return `mailto:${questionReportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   function questionActions(index: number) {
@@ -2422,10 +2457,19 @@ export default function Home() {
                   <span>Leave this field empty</span>
                   <input value={flagHoneypot} onChange={(event) => setFlagHoneypot(event.target.value)} tabIndex={-1} autoComplete="off" />
                 </label>
-                {flagStatus === "error" && <p className="question-report-error" role="alert">The report could not be sent. Please check your connection and try again.</p>}
+                {flagStatus === "fallback" && (
+                  <div className="question-report-error" role="alert">
+                    <strong>Automatic delivery is not available yet.</strong>
+                    <span>Open the pre-addressed email below and press Send so this report still reaches Gary.</span>
+                  </div>
+                )}
                 <div className="question-report-actions">
                   <button type="button" onClick={closeFlagQuestion} disabled={flagStatus === "sending"}>Cancel</button>
-                  <button type="submit" disabled={flagStatus === "sending"}>{flagStatus === "sending" ? "Sending…" : flagStatus === "error" ? "Try again" : "Send report"}</button>
+                  {flagStatus === "fallback" ? (
+                    <a className="question-report-email-button" href={questionReportMailto()}>Open email report</a>
+                  ) : (
+                    <button type="submit" disabled={flagStatus === "sending"}>{flagStatus === "sending" ? "Sending…" : "Send report"}</button>
+                  )}
                 </div>
               </>
             )}
