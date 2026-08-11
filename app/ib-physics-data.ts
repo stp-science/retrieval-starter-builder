@@ -54,7 +54,7 @@ export const physicsIbTopicSpecs: IbTopicSpec[] = [
     ["internal energy", "the total random kinetic and intermolecular potential energy of particles in a system", "heating and work can change internal energy without necessarily changing temperature"],
     ["specific heat capacity", "the energy required to raise the temperature of one kilogram by one kelvin", "it connects thermal energy change to mass and temperature change"],
     ["specific latent heat", "the energy per kilogram needed for a change of state at constant temperature", "energy changes particle potential energy while temperature remains unchanged"],
-    ["thermal conduction", "energy transfer through particle interactions without bulk movement of matter", "its rate depends on temperature gradient, material conductivity and geometry"],
+    ["thermal conduction", "thermal energy transfer through a solid by interactions between neighbouring particles", "its rate depends on temperature gradient, material conductivity and geometry"],
     ["thermal radiation", "energy transfer by electromagnetic waves, mainly infrared at everyday temperatures", "it can occur through a vacuum and depends on temperature and surface properties"],
   ]),
   p("ib-physics-b2", "B.2", "Greenhouse effect", "SL & HL", [
