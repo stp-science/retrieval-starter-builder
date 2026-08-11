@@ -190,6 +190,48 @@ export const focusedConcepts: Record<string, FocusedConcept[]> = {
     { title: "Nutrient cycling and decomposition", cues: "microorganisms, decomposition and recycling nutrients" },
     { title: "Ecosystem stability and restoration", cues: "disturbance, recovery, restoration and ngā tohu o te taiao" },
   ],
+  "y10-atoms-ions-periodic": [
+    { title: "Subatomic particles and atomic structure", cues: "protons, neutrons, electrons, nuclei and electron shells" },
+    { title: "Atomic and mass numbers", cues: "proton number, neutron number, isotopes and neutral atoms" },
+    { title: "Electron arrangement and ion formation", cues: "valence electrons, electron loss, electron gain, cations and anions" },
+    { title: "Patterns in the periodic table", cues: "groups, periods, metals, alkali metals, halogens and noble gases" },
+  ],
+  "y10-forces-motion": [
+    { title: "Representing and combining forces", cues: "force arrows, direction, magnitude, resultant and balanced forces" },
+    { title: "Newton's laws of motion", cues: "inertia, F = ma, interaction pairs and acceleration" },
+    { title: "Describing motion", cues: "distance, speed, velocity, acceleration and motion graphs" },
+    { title: "Resistive forces and stopping", cues: "friction, drag, terminal velocity, thinking distance and braking distance" },
+  ],
+  "y10-genetics": [
+    { title: "DNA, genes and chromosomes", cues: "genetic information, gene locations, alleles and mutations" },
+    { title: "Genotype and phenotype", cues: "dominant, recessive, homozygous, heterozygous and environmental influence" },
+    { title: "Inheritance models", cues: "gametes, fertilisation, Punnett squares and probability" },
+    { title: "Patterns beyond simple dominance", cues: "codominance, sex chromosomes, pedigree charts and variation" },
+  ],
+  "y10-acids-bases": [
+    { title: "Acids, bases, alkalis and pH", cues: "hydrogen ions, hydroxide ions, indicators and the pH scale" },
+    { title: "Neutralisation and salt formation", cues: "acid, base, salt, water and ionic equations" },
+    { title: "Acids with metals and carbonates", cues: "hydrogen, carbon dioxide, observations and word equations" },
+    { title: "Strength, concentration and titration", cues: "ionisation, dilution, end point and equivalence" },
+  ],
+  "y10-electricity": [
+    { title: "Static charge and discharge", cues: "electron transfer, attraction, repulsion, sparks and lightning" },
+    { title: "Components and circuit diagrams", cues: "cells, batteries, lamps, switches, resistors and standard symbols" },
+    { title: "Series and parallel rules", cues: "current paths, voltage sharing, junctions and bulb brightness" },
+    { title: "Voltage, current, resistance and power", cues: "V = IR, P = IV, meters, graphs and kilowatt-hours" },
+  ],
+  "y10-human-body": [
+    { title: "Digestion and absorption", cues: "food molecules, digestive organs, enzymes, villi and glucose" },
+    { title: "Gas exchange and breathing", cues: "lungs, bronchi, bronchioles, alveoli, diffusion and ventilation" },
+    { title: "Circulation and transport", cues: "heart, arteries, veins, capillaries and blood flow" },
+    { title: "Supplying aerobic respiration", cues: "glucose, oxygen, carbon dioxide, energy and exercise responses" },
+  ],
+  "y10-earth-science": [
+    { title: "Earth's internal structure and evidence", cues: "crust, mantle, outer core, inner core, P-waves and S-waves" },
+    { title: "Plate movement and boundaries", cues: "convection, sea-floor spreading, subduction, collision and strike-slip motion" },
+    { title: "Earthquakes and tsunamis", cues: "focus, epicentre, seismic waves, seismographs and safe responses" },
+    { title: "Volcanoes and volcanic hazards", cues: "magma reservoirs, vents, craters, calderas, hot spots and eruption effects" },
+  ],
 };
 
 export function conceptsForTopic(topic: { id: string; name?: string; keywords: string[] }): FocusedConcept[] {

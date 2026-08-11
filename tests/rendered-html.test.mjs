@@ -32,7 +32,8 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /4,776(?:<!-- -->)?-question bank/i);
+  assert.match(html, /5,456(?:<!-- -->)?-question bank/i);
+  assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
   assert.match(html, /Year (?:<!-- -->)?13/i);
   assert.match(html, /IB Sciences/i);
@@ -68,6 +69,29 @@ test("includes the ten Year 12 NCEA external assessment units", async () => {
   );
   assert.match(bank, /Agricultural & Horticultural Science/);
   assert.match(page, /seniorTopics/);
+});
+
+test("includes exactly the seven requested Year 10 topics in teaching order", async () => {
+  const bank = await readFile(new URL("../app/year10-question-bank.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const topicNames = [...bank.matchAll(/^    name: "([^"]+)",$/gm)].map((match) => match[1]);
+  const topicIds = [...bank.matchAll(/^    id: "(y10-[a-z-]+)",$/gm)].map((match) => match[1]);
+
+  assert.deepEqual(topicNames, [
+    "Atoms, Ions and the Periodic Table",
+    "Forces and Motion",
+    "Genetics",
+    "Acids and Bases",
+    "Electricity",
+    "Human Body",
+    "Earth Science",
+  ]);
+  assert.equal(topicIds.length, 7);
+  assert.equal(new Set(topicIds).size, 7);
+  assert.match(bank, /questions\.length < 40/);
+  assert.match(bank, /oneWordQuestions\.length < 40/);
+  assert.match(page, /year10Topics/);
+  assert.match(page, /\[7, 8, 9, 10, 12, 13, "IB"\]/);
 });
 
 test("includes the eight Year 13 NCEA Level 3 external assessment units", async () => {
