@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /5,456(?:<!-- -->)?-question bank/i);
+  assert.match(html, /6,364(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
   assert.match(html, /Year (?:<!-- -->)?13/i);
@@ -110,6 +110,20 @@ test("includes the eight Year 13 NCEA Level 3 external assessment units", async 
   assert.match(bank, /oneWordQuestions/);
   assert.match(page, /year13Topics/);
   assert.match(page, /Year \$\{year\} NCEA science course/);
+});
+
+test("expands every non-IB year-group topic with varied new questions", async () => {
+  const expansion = await readFile(new URL("../app/year-group-expansion.ts", import.meta.url), "utf8");
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const configuredTopicIds = [...expansion.matchAll(/^  "(y(?:7|8|9|10|12|13)-[a-z-]+)": \[/gm)].map((match) => match[1]);
+
+  assert.equal(configuredTopicIds.length, 40);
+  assert.equal(new Set(configuredTopicIds).size, 40);
+  assert.match(expansion, /topicConcepts\.length !== 6/);
+  assert.match(expansion, /expandedOneWordQuestions/);
+  assert.match(expansion, /contains a Yes\/No One Worders prompt/);
+  assert.match(page, /questions: uniqueQuestionWording\(\[\.\.\.topic\.questions, \.\.\.expandedQuestions\[topic\.id\]\]\)/);
+  assert.match(page, /\.\.\.expandedOneWordQuestions\[topic\.id\]/);
 });
 
 test("includes the expanded 24-activity catalogue", async () => {
