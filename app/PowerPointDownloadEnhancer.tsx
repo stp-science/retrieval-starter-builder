@@ -148,6 +148,7 @@ export function extractTeachingContent() {
   const yearLabel = cleanText(sheet.querySelector(".sheet-kicker span:last-child")?.textContent) || "Junior Science";
   const topicLine = texts(sheet, ".topic-chips span").join(" • ");
   let prompts: string[] = [];
+  let promptPoints: string[] = [];
 
   switch (activity) {
     case "quick-quiz":
@@ -225,6 +226,12 @@ export function extractTeachingContent() {
         return `Write a question whose answer is: ${answer}`;
       });
       break;
+    case "challenge-grid": {
+      const cards = Array.from(sheet.querySelectorAll<HTMLElement>(".challenge-grid > div"));
+      prompts = cards.map((card) => cleanText(card.querySelector("p")?.textContent)).filter(Boolean);
+      promptPoints = cards.map((card) => cleanText(card.querySelector(".points")?.textContent).toUpperCase());
+      break;
+    }
     default:
       prompts = texts(
         sheet,
@@ -246,7 +253,17 @@ export function extractTeachingContent() {
     .filter((item) => item.answer);
   const wordBank = activity === "cloze-recall" ? texts(sheet, ".cloze-word-bank b").join(" • ") : "";
 
-  return { title, instructions, prompts: unique(prompts), answers, wordBank, activity, yearLabel, topicLine };
+  return {
+    title,
+    instructions,
+    prompts: activity === "challenge-grid" ? prompts : unique(prompts),
+    promptPoints,
+    answers,
+    wordBank,
+    activity,
+    yearLabel,
+    topicLine,
+  };
 }
 
 export function promptLayout(count: number, preferredColumns?: number) {
@@ -271,7 +288,7 @@ export function promptLayout(count: number, preferredColumns?: number) {
 }
 
 export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
-  const { title, instructions, prompts, answers, wordBank, activity, yearLabel, topicLine } = extractTeachingContent();
+  const { title, instructions, prompts, promptPoints, answers, wordBank, activity, yearLabel, topicLine } = extractTeachingContent();
   const palette = activityPalettes[activity] ?? activityPalettes["quick-quiz"];
   const PptxGenJS = PptxGenJSOverride ?? await loadPptx();
   const presentation = new PptxGenJS();
@@ -388,23 +405,45 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
       fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
     });
 
-    slide.addText(isPlacemat ? `ZONE ${String.fromCharCode(65 + index)}` : `${index + 1}`, {
+    const isChallengeGrid = activity === "challenge-grid";
+    slide.addText(isPlacemat
+      ? `ZONE ${String.fromCharCode(65 + index)}`
+      : isChallengeGrid
+        ? (promptPoints[index] || "POINTS")
+        : `${index + 1}`, {
       x: x + 0.08,
       y: y + 0.08,
-      w: isPlacemat ? 0.72 : 0.3,
+      w: isPlacemat ? 0.72 : isChallengeGrid ? 0.72 : 0.3,
       h: 0.3,
       fontFace: "Aptos",
-      fontSize: isPlacemat ? 8.5 : 9.5,
+      fontSize: isPlacemat ? 8.5 : isChallengeGrid ? 8.5 : 9.5,
       bold: true,
       color: "FFFFFF",
       align: "center",
       valign: "mid",
       margin: 0,
-      shape: isPlacemat ? "roundRect" : "ellipse",
+      shape: isPlacemat || isChallengeGrid ? "roundRect" : "ellipse",
       fit: "shrink",
       fill: { color: palette.accent },
       line: { color: palette.accent, width: 0 },
     });
+
+    if (isChallengeGrid) {
+      slide.addText(`${index + 1}`, {
+        x: x + layout.boxWidth - 0.38,
+        y: y + 0.08,
+        w: 0.28,
+        h: 0.3,
+        fontFace: "Aptos",
+        fontSize: 9,
+        bold: true,
+        color: "64748B",
+        align: "right",
+        valign: "mid",
+        margin: 0,
+        fit: "shrink",
+      });
+    }
   });
 
   if (answers.length > 0) {
@@ -501,22 +540,39 @@ export async function createPowerPoint(PptxGenJSOverride?: PptxConstructor) {
         line: { color: palette.accent, width: 1 },
         fill: { color: index % 2 === 0 ? READING_PANEL_ALT : READING_PANEL },
       });
-      answerSlide.addText(`${item.number}`, {
+      const isChallengeGrid = activity === "challenge-grid";
+      answerSlide.addText(isChallengeGrid ? (promptPoints[index] || "POINTS") : `${item.number}`, {
         x: x + 0.08,
         y: y + 0.08,
-        w: 0.3,
+        w: isChallengeGrid ? 0.72 : 0.3,
         h: 0.3,
         fontFace: "Aptos",
-        fontSize: 9.5,
+        fontSize: isChallengeGrid ? 8.5 : 9.5,
         bold: true,
         color: "FFFFFF",
         align: "center",
         valign: "mid",
         margin: 0,
-        shape: "ellipse",
+        shape: isChallengeGrid ? "roundRect" : "ellipse",
         fill: { color: palette.accent },
         line: { color: palette.accent, width: 0 },
       });
+      if (isChallengeGrid) {
+        answerSlide.addText(`${item.number}`, {
+          x: x + answerLayout.boxWidth - 0.38,
+          y: y + 0.08,
+          w: 0.28,
+          h: 0.3,
+          fontFace: "Aptos",
+          fontSize: 9,
+          bold: true,
+          color: "64748B",
+          align: "right",
+          valign: "mid",
+          margin: 0,
+          fit: "shrink",
+        });
+      }
     });
   }
 
