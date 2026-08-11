@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /11,010(?:<!-- -->)?-question bank/i);
+  assert.match(html, /11,040(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
@@ -141,6 +141,11 @@ test("matches Year 11 Physics to the St Peter's Diploma course overview", async 
   assert.match(bank, /wave units/);
   assert.match(bank, /total internal reflection/);
   assert.match(bank, /Brownian motion/);
+  assert.match(bank, /background radiation/);
+  assert.match(bank, /background count correction/);
+  assert.match(bank, /half-life/);
+  assert.match(bank, /half-life calculation/);
+  assert.match(bank, /decay curve/);
   assert.match(bank, /mass-energy equivalence/);
   assert.match(bank, /bannedLegacyKeywords/);
   assert.match(bank, /coreAnswers\.size < 16/);
