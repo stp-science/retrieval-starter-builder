@@ -55,7 +55,7 @@ function makeSkillsTopic(
         kind: "explain" as const,
       },
       {
-        q: `Which scientific skill matches this description: ${definition}?`,
+        q: `Name the scientific skill described here: ${definition}.`,
         a: term,
         difficulty,
         kind: "short" as const,
@@ -75,7 +75,7 @@ function makeSkillsTopic(
         kind: "short" as const,
       },
       {
-        q: `Which scientific term best fits this purpose: ${application}?`,
+        q: `Name the scientific skill used for this purpose: ${application}.`,
         a: term,
         difficulty,
         kind: "short" as const,
