@@ -257,3 +257,19 @@ test("keeps PDF dividers and PowerPoint headers safely inset", async () => {
   assert.equal((powerpoint.match(/margin: HEADER_TEXT_MARGIN/g) ?? []).length, 2, "PowerPoint banner inset is not applied to both slides");
   assert.equal((powerpoint.match(/margin: INSTRUCTION_TEXT_MARGIN/g) ?? []).length, 2, "PowerPoint instruction padding is not applied to both slides");
 });
+
+test("lets teachers flag generated questions for review", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(page, /questionReportEmail = "gary\.talbot@stpetersschool\.nz"/, "question reports use the wrong review address");
+  assert.match(page, /function questionReportId/, "stable question report IDs are missing");
+  assert.match(page, /className="flag-button"/, "per-question flag buttons are missing");
+  assert.match(page, /Flag a question/, "question report selector is missing");
+  assert.match(page, /Question ID/, "question IDs are not included in reports");
+  assert.match(page, /Teacher comment/, "teacher comments are not included in reports");
+  assert.match(page, /https:\/\/formsubmit\.co\/ajax\//, "question reports are not sent through the form service");
+  assert.match(page, /\.question-controls, \.swap-button, \.flag-button/, "PDF cleanup does not remove question controls");
+  assert.match(styles, /\.question-report-backdrop/, "question report dialog styling is missing");
+  assert.match(styles, /@media print[\s\S]*\.flag-button/, "flag controls can leak into printed activities");
+});
