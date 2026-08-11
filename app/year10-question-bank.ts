@@ -15,13 +15,9 @@ export type Year10Topic = {
 type ConceptRow = readonly [answer: string, clueA: string, clueB: string, explanation: string, difficulty: Difficulty];
 type TopicSpec = { id: string; name: string; strand: Year10Topic["strand"]; concepts: ConceptRow[] };
 
-const explanationStems = [
-  (term: string, topic: string) => `Explain the scientific role of ${term} in ${topic}.`,
-  (term: string, topic: string) => `Describe how ${term} helps explain ${topic}.`,
-  (term: string, topic: string) => `Why is ${term} important when studying ${topic}?`,
-  (term: string, topic: string) => `Use ${term} to explain a key idea in ${topic}.`,
-  (term: string, topic: string) => `Describe the connection between ${term} and ${topic}.`,
-];
+function explanationPrompt(term: string) {
+  return `Explain one important scientific idea about ${term}.`;
+}
 
 function makeTopic(spec: TopicSpec): Year10Topic {
   return {
@@ -30,9 +26,9 @@ function makeTopic(spec: TopicSpec): Year10Topic {
     name: spec.name,
     strand: spec.strand,
     keywords: spec.concepts.map(([answer]) => answer),
-    questions: spec.concepts.flatMap(([answer, clueA, , explanation, difficulty], index) => [
+    questions: spec.concepts.flatMap(([answer, clueA, , explanation, difficulty]) => [
       { q: clueA, a: answer, difficulty, kind: "short" as const },
-      { q: explanationStems[index % explanationStems.length](answer, spec.name), a: explanation, difficulty, kind: "explain" as const },
+      { q: explanationPrompt(answer), a: explanation, difficulty, kind: "explain" as const },
     ]),
     oneWordQuestions: spec.concepts.flatMap(([answer, clueA, clueB, , difficulty]) => [
       { q: clueA, a: answer, difficulty, kind: "short" as const },
