@@ -199,6 +199,36 @@ test("includes the eight Year 13 NCEA Level 3 external assessment units", async 
   assert.match(page, /Year \$\{year\} NCEA science course/);
 });
 
+test("uses explicit response commands for senior equation and multi-part prompts", async () => {
+  const year12 = await readFile(new URL("../app/year12-question-bank.ts", import.meta.url), "utf8");
+  const year13 = await readFile(new URL("../app/year13-question-bank.ts", import.meta.url), "utf8");
+
+  assert.match(year12, /Define momentum and write its equation\./);
+  assert.match(year12, /Define electric current and write its equation in terms of charge and time\./);
+  assert.doesNotMatch(year12, /How is reaction enthalpy estimated from bond enthalpies\?/);
+
+  assert.match(year13, /Write the equation linking emf, terminal voltage, current, and internal resistance/);
+  assert.match(year13, /state what happens to reactance, impedance, current, and the phase difference/);
+  assert.match(year13, /Calculate the magnitude and direction of its impulse/);
+  assert.doesNotMatch(year13, /How is impedance found for a series LCR circuit\?/);
+  assert.doesNotMatch(year13, /Find terminal voltage\./);
+});
+
+test("uses direct student-friendly wording across generated question banks", async () => {
+  const year10 = await readFile(new URL("../app/year10-question-bank.ts", import.meta.url), "utf8");
+  const year11Physics = await readFile(new URL("../app/year11-physics-question-bank.ts", import.meta.url), "utf8");
+  const ib = await readFile(new URL("../app/ib-question-bank.ts", import.meta.url), "utf8");
+  const skills = await readFile(new URL("../app/scientific-skills-question-bank.ts", import.meta.url), "utf8");
+
+  assert.match(year11Physics, /Name the method of thermal energy transfer through a solid\./);
+  assert.doesNotMatch(year11Physics, /without bulk movement of matter/);
+  assert.match(year10, /Explain one important scientific idea about/);
+  assert.doesNotMatch(year10, /Explain the scientific role|helps explain|important when studying|Describe the connection between/);
+  assert.doesNotMatch(ib, /A student is revising|What should they remember|Compare how .* contribute to/);
+  assert.match(ib, /Complete this explanation:/);
+  assert.match(skills, /Name the scientific skill used for this purpose/);
+});
+
 test("expands every non-IB year-group topic with varied new questions", async () => {
   const expansion = await readFile(new URL("../app/year-group-expansion.ts", import.meta.url), "utf8");
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
