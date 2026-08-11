@@ -35,7 +35,7 @@ export type CurriculumVisual = {
   answer: string;
 };
 
-export const curriculumTopics: CurriculumTopic[] = [
+const rawCurriculumTopics: CurriculumTopic[] = [
   ...topicsPart0,
   ...topicsPart1,
   ...topicsPart2,
@@ -52,6 +52,114 @@ export const curriculumTopics: CurriculumTopic[] = [
   ...topicsPart13,
   ...topicsPart14,
 ] as CurriculumTopic[];
+
+const keywordRefinements: Record<string, Record<string, string>> = {
+  "y7-material-properties": {
+    material: "material type", property: "material property", conductor: "electrical conductor",
+    insulator: "electrical insulator", deformation: "material deformation", suitability: "material suitability",
+    evidence: "test evidence",
+  },
+  "y7-particle-model": {
+    solid: "solid state", liquid: "liquid state", gas: "gas state", particle: "particle model",
+    arrangement: "particle arrangement", spacing: "particle spacing", motion: "particle motion",
+    attraction: "particle attraction",
+  },
+  "y7-thermal-energy": {
+    transfer: "thermal energy transfer", conduction: "thermal conduction", radiation: "thermal radiation",
+    infrared: "infrared radiation", conductor: "thermal conductor", insulator: "thermal insulator",
+    density: "fluid density", expand: "thermal expansion", contract: "thermal contraction",
+    equilibrium: "thermal equilibrium", warmer: "warmer region", cooler: "cooler region",
+  },
+  "y7-diffusion": {
+    particle: "particle model", concentration: "particle concentration", oxygen: "oxygen diffusion",
+    "carbon dioxide": "carbon-dioxide diffusion", equilibrium: "diffusion equilibrium",
+    model: "diffusion model", evidence: "diffusion evidence",
+  },
+  "y7-cellular-respiration": {
+    water: "respiration water product", cell: "cell respiration", movement: "muscle movement",
+    growth: "cell growth", repair: "tissue repair", plant: "plant respiration", breathing: "ventilation",
+  },
+  "y7-deformation-friction": {
+    force: "applied force", push: "pushing force", pull: "pulling force", elastic: "elastic deformation",
+    permanent: "permanent deformation",
+  },
+  "y7-rocks-minerals": {
+    property: "mineral property",
+  },
+  "y8-mixtures": {
+    component: "mixture component", homogeneous: "homogeneous mixture", heterogeneous: "heterogeneous mixture",
+    dissolve: "dissolving", dilute: "dilute solution",
+  },
+  "y8-solubility": {
+    saturated: "saturated solution", unsaturated: "unsaturated solution", temperature: "solution temperature",
+  },
+  "y8-reproduction": {
+    variation: "genetic variation",
+  },
+  "y8-static-electricity": {
+    charged: "charged object", neutral: "neutral object", attract: "electrostatic attraction",
+    repel: "electrostatic repulsion", current: "electric current", voltage: "potential difference",
+    resistance: "electrical resistance",
+  },
+  "y8-chemical-changes": {
+    property: "substance property", indicator: "reaction indicator", gas: "gas formation",
+    reversible: "reversible change", irreversible: "irreversible change", evidence: "reaction evidence",
+    variable: "experimental variable", reliability: "result reliability", conclusion: "evidence-based conclusion",
+  },
+  "y8-genetic-material": {
+    trait: "inherited trait", variation: "genetic variation", offspring: "offspring inheritance",
+    parent: "parent organism", environment: "environmental influence",
+  },
+  "y8-pressure": {
+    force: "applied force", area: "contact area", sharp: "sharp edge", blunt: "blunt edge",
+    evidence: "pressure evidence",
+  },
+  "y8-adaptation-evolution": {
+    variation: "genetic variation", population: "breeding population", DNA: "DNA variation",
+    environment: "selection environment", survival: "differential survival", generation: "successive generation",
+    frequency: "allele frequency", evidence: "evolution evidence",
+  },
+  "y9-elements-compounds": {
+    symbol: "element symbol", bond: "chemical bond", formula: "chemical formula",
+    subscript: "formula subscript", coefficient: "equation coefficient", lattice: "giant lattice",
+    conservation: "conservation of atoms", separation: "mixture separation",
+  },
+  "y9-periodic-table": {
+    element: "chemical element", symbol: "element symbol", group: "periodic group", period: "periodic period",
+    prediction: "property prediction", trend: "periodic trend",
+  },
+  "y9-traits": {
+    trait: "organism trait", inherited: "inherited factor", variation: "phenotypic variation",
+    evidence: "trait evidence",
+  },
+  "y9-reactions": {
+    evidence: "reaction evidence",
+  },
+  "y9-forces": {
+    force: "applied force", magnitude: "force magnitude", direction: "force direction",
+    balanced: "balanced forces", unbalanced: "unbalanced forces", mass: "inertial mass",
+    newton: "force unit newton",
+  },
+  "y9-pressure-fluids": {
+    fluid: "fluid medium", model: "pressure model", float: "floating object", sink: "sinking object",
+    liquid: "liquid pressure", gas: "gas pressure",
+  },
+  "y9-transport-plants": {
+    root: "plant root", stem: "plant stem", leaf: "plant leaf", source: "source tissue", sink: "sink tissue",
+  },
+  "y9-spheres-earth": {
+    interaction: "sphere interaction", nitrogen: "atmospheric nitrogen", oxygen: "atmospheric oxygen",
+  },
+  "y9-ecosystems": {
+    individual: "individual organism", distribution: "species distribution", abundance: "population abundance",
+    stability: "ecosystem stability", disturbance: "ecological disturbance", restoration: "ecosystem restoration",
+  },
+};
+
+export const curriculumTopics: CurriculumTopic[] = rawCurriculumTopics.map((topic) => ({
+  ...topic,
+  keywords: topic.keywords.map((keyword) => keywordRefinements[topic.id]?.[keyword] ?? keyword),
+}));
 
 export const curriculumVisuals: Record<string, CurriculumVisual[]> = Object.assign(
   {},
