@@ -1,4 +1,5 @@
 import type { SeniorCourse } from "./year12-question-bank";
+import { year11PhysicsTopics } from "./year11-physics-question-bank";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -60,7 +61,7 @@ function makeTopic(spec: TopicSpec): Year11Topic {
 
 export const year11Courses: Year11Course[] = ["Biology", "Chemistry", "Physics"];
 
-export const year11Topics: Year11Topic[] = [
+const year11TopicCandidates: Year11Topic[] = [
   makeTopic({
     id: "y11-bio-cells-processes",
     name: "Cells and Cell Processes",
@@ -413,7 +414,12 @@ export const year11Topics: Year11Topic[] = [
   }),
 ];
 
-if (year11Topics.length !== 12) {
+export const year11Topics: Year11Topic[] = [
+  ...year11TopicCandidates.filter((topic) => topic.course !== "Physics"),
+  ...year11PhysicsTopics,
+];
+
+if (year11Topics.length !== 11) {
   throw new Error(`Year 11 bank is incomplete; found ${year11Topics.length} topics.`);
 }
 
