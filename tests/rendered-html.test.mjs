@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /10,700(?:<!-- -->)?-question bank/i);
+  assert.match(html, /10,970(?:<!-- -->)?-question bank/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
@@ -103,7 +103,7 @@ test("includes the requested Year 11 Biology, Chemistry and Physics courses", as
 
   assert.equal(topicIds.length, 12);
   assert.equal(new Set(topicIds).size, 12);
-  assert.deepEqual(topicNames, [
+  assert.deepEqual(topicNames.slice(0, 7), [
     "Cells and Cell Processes",
     "Genetics",
     "Human Responses",
@@ -111,11 +111,6 @@ test("includes the requested Year 11 Biology, Chemistry and Physics courses", as
     "Atomic Structure, Bonding, Acids and Bases",
     "Rates of Reaction",
     "Organic Chemistry",
-    "Mechanics",
-    "Waves",
-    "Electricity",
-    "Magnetism and Electromagnetism",
-    "Particle Physics",
   ]);
   assert.equal((bank.match(/^    course: "Biology",$/gm) ?? []).length, 4);
   assert.equal((bank.match(/^    course: "Chemistry",$/gm) ?? []).length, 3);
@@ -127,6 +122,24 @@ test("includes the requested Year 11 Biology, Chemistry and Physics courses", as
   assert.match(page, /year11Topics/);
   assert.match(page, /year11Courses/);
   assert.match(page, /Year 11 course/);
+});
+
+test("matches Year 11 Physics to the St Peter's Diploma course overview", async () => {
+  const bank = await readFile(new URL("../app/year11-physics-question-bank.ts", import.meta.url), "utf8");
+  const topicNames = [...bank.matchAll(/^    name: "([^"]+)",$/gm)].map((match) => match[1]);
+
+  assert.deepEqual(topicNames, ["Mechanics", "Electricity & Magnetism", "Waves", "Particle Physics"]);
+  assert.equal((bank.match(/^    id: "y11-physics-[a-z-]+",$/gm) ?? []).length, 4);
+  assert.match(bank, /distance-time gradient/);
+  assert.match(bank, /velocity-time area/);
+  assert.match(bank, /Kirchhoff's current law/);
+  assert.match(bank, /right-hand grip rule/);
+  assert.match(bank, /plane-mirror image/);
+  assert.match(bank, /total internal reflection/);
+  assert.match(bank, /Brownian motion/);
+  assert.match(bank, /mass-energy equivalence/);
+  assert.match(bank, /bannedLegacyKeywords/);
+  assert.match(bank, /coreAnswers\.size < 16/);
 });
 
 test("adds progressive Scientific Skills questions to every year and subject section", async () => {
