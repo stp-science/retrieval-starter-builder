@@ -292,8 +292,8 @@ export const seniorTopics: SeniorTopic[] = [
       strand: "Chemistry",
       keywords: [
         "alkane", "alkene", "alkyne", "haloalkane", "amine", "alcohol", "carboxylic acid", "functional group",
-        "homologous series", "constitutional isomer", "geometric isomer", "primary", "secondary", "tertiary",
-        "addition", "substitution", "oxidation", "elimination", "polymerisation", "major product", "solubility",
+        "homologous series", "constitutional isomer", "geometric isomer", "primary alcohol", "secondary alcohol", "tertiary alcohol",
+        "addition reaction", "substitution reaction", "oxidation reaction", "elimination reaction", "polymerisation", "major product", "solubility",
         "boiling point", "structural formula", "IUPAC",
       ],
     },
@@ -407,10 +407,10 @@ export const seniorTopics: SeniorTopic[] = [
       standard: "AS 91171",
       strand: "Physics",
       keywords: [
-        "displacement", "velocity", "acceleration", "projectile", "free fall", "circular motion", "resultant force",
-        "component", "equilibrium", "torque", "centripetal force", "spring", "Hooke's law", "momentum",
-        "impulse", "conservation", "work", "power", "kinetic energy", "gravitational potential", "elastic potential",
-        "vector", "force", "energy",
+        "displacement", "velocity", "acceleration", "projectile motion", "free fall", "circular motion", "resultant force",
+        "vector component", "force equilibrium", "torque", "centripetal force", "spring", "Hooke's law", "momentum",
+        "impulse", "conservation law", "work", "power", "kinetic energy", "gravitational potential energy", "elastic potential energy",
+        "vector quantity", "force", "energy",
       ],
     },
     [
