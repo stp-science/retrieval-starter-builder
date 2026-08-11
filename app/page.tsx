@@ -11,6 +11,7 @@ import { year11Courses, year11Topics } from "./year11-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expansion";
 import { scientificSkillsTopics } from "./scientific-skills-question-bank";
 import { assertSpecificKeywordSets } from "./keyword-quality";
+import { clarifyQuestion } from "./question-clarity";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -541,12 +542,18 @@ const yearGroupTopics: Topic[] = [
 const topics: Topic[] = [
   ...yearGroupTopics.map((topic) => ({
     ...topic,
-    questions: uniqueQuestionWording([...topic.questions, ...(expandedQuestions[topic.id] ?? [])]),
+    questions: uniqueQuestionWording([...topic.questions, ...(expandedQuestions[topic.id] ?? [])].map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? uniqueQuestionWording([...topic.oneWordQuestions, ...(expandedOneWordQuestions[topic.id] ?? [])])
+      ? uniqueQuestionWording([...topic.oneWordQuestions, ...(expandedOneWordQuestions[topic.id] ?? [])].map(clarifyQuestion))
       : undefined,
   })),
-  ...ibTopics,
+  ...ibTopics.map((topic) => ({
+    ...topic,
+    questions: uniqueQuestionWording(topic.questions.map(clarifyQuestion)),
+    oneWordQuestions: topic.oneWordQuestions?.length
+      ? uniqueQuestionWording(topic.oneWordQuestions.map(clarifyQuestion))
+      : undefined,
+  })),
 ];
 
 assertSpecificKeywordSets(topics);
@@ -1587,6 +1594,10 @@ export default function Home() {
             clonedSheet.style.transform = "none";
             const title = clonedSheet.querySelector(":scope > h2");
             if (title && !clonedSheet.querySelector(":scope > .pdf-title-divider")) {
+              title.classList.add("pdf-export-title");
+              const exportTitleStyle = clonedDocument.createElement("style");
+              exportTitleStyle.textContent = ".starter-sheet > h2.pdf-export-title::after { content: none !important; display: none !important; }";
+              clonedDocument.head.appendChild(exportTitleStyle);
               const divider = clonedDocument.createElement("div");
               divider.className = "pdf-title-divider";
               divider.setAttribute("aria-hidden", "true");
