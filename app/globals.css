@@ -90,6 +90,7 @@ button { color: inherit; }
 .strand-dot.chemistry, .legend i.chemistry { background: var(--yellow); }
 .strand-dot.physics, .legend i.physics { background: var(--purple); }
 .strand-dot.agriculture, .legend i.agriculture { background: #947148; }
+.strand-dot.skills, .legend i.skills { background: #168a92; }
 .topic-name { font-size: 12px; line-height: 1.25; font-weight: 700; flex: 1; }
 .topic-name small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .03em; }
 .question-count { white-space: nowrap; color: var(--muted); font-size: 10px; }
