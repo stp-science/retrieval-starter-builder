@@ -262,7 +262,8 @@ test("lets teachers flag generated questions for review", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
-  assert.match(page, /questionReportEmail = "gary\.talbot@stpeters\.school\.nz"/, "question reports use the wrong review address");\n  assert.doesNotMatch(page, /gary\.talbot@stpetersschool\.nz/, "the previous review address is still present");
+  assert.match(page, /questionReportEmail = "gary\.talbot@stpeters\.school\.nz"/, "question reports use the wrong review address");
+  assert.doesNotMatch(page, /gary\.talbot@stpetersschool\.nz/, "the previous review address is still present");
   assert.match(page, /function questionReportId/, "stable question report IDs are missing");
   assert.match(page, /className="flag-button"/, "per-question flag buttons are missing");
   assert.match(page, /Flag a question/, "question report selector is missing");
