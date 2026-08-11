@@ -17,7 +17,7 @@ export type Year11Topic = {
   year: 11;
   name: string;
   course: Year11Course;
-  programme: "STP Diploma" | "AQA GCSE Physics";
+  programme: "STP Diploma";
   strand: "Biology" | "Chemistry" | "Physics";
   keywords: string[];
   questions: Year11Question[];
@@ -270,7 +270,7 @@ export const year11Topics: Year11Topic[] = [
     id: "y11-physics-mechanics",
     name: "Mechanics",
     course: "Physics",
-    programme: "AQA GCSE Physics",
+    programme: "STP Diploma",
     strand: "Physics",
     concepts: [
       ["scalar", "What quantity has magnitude but no direction?", "Which quantity type includes speed, distance and mass?", "Why is speed a scalar but velocity a vector?", "Speed states only how fast an object moves, whereas velocity also specifies its direction.", "foundation"],
@@ -299,7 +299,7 @@ export const year11Topics: Year11Topic[] = [
     id: "y11-physics-waves",
     name: "Waves",
     course: "Physics",
-    programme: "AQA GCSE Physics",
+    programme: "STP Diploma",
     strand: "Physics",
     concepts: [
       ["transverse wave", "What wave has oscillations perpendicular to energy transfer?", "Which wave type includes electromagnetic waves?", "How can a rope wave demonstrate transverse motion?", "Each point of the rope moves up and down while the disturbance and energy travel along the rope.", "foundation"],
@@ -328,7 +328,7 @@ export const year11Topics: Year11Topic[] = [
     id: "y11-physics-electricity",
     name: "Electricity",
     course: "Physics",
-    programme: "AQA GCSE Physics",
+    programme: "STP Diploma",
     strand: "Physics",
     concepts: [
       ["electric charge", "What property of matter is measured in coulombs?", "Which quantity is transferred by an electric current?", "How is charge flow related to current and time?", "The charge transferred is Q = It, so a larger current transfers more charge each second.", "foundation"],
@@ -357,7 +357,7 @@ export const year11Topics: Year11Topic[] = [
     id: "y11-physics-magnetism",
     name: "Magnetism and Electromagnetism",
     course: "Physics",
-    programme: "AQA GCSE Physics",
+    programme: "STP Diploma",
     strand: "Physics",
     concepts: [
       ["permanent magnet", "What object produces its own lasting magnetic field?", "Which magnet keeps most of its magnetism when an external field is removed?", "How does a permanent magnet differ from an induced magnet?", "A permanent magnet retains its field, while an induced magnet becomes magnetic mainly while inside another field.", "foundation"],
@@ -386,7 +386,7 @@ export const year11Topics: Year11Topic[] = [
     id: "y11-physics-particle-physics",
     name: "Particle Physics",
     course: "Physics",
-    programme: "AQA GCSE Physics",
+    programme: "STP Diploma",
     strand: "Physics",
     concepts: [
       ["density", "What quantity equals mass divided by volume?", "Which material property is measured in kg/m³?", "How can the density of an irregular solid be measured?", "Measure its mass, find its volume by liquid displacement and divide mass by volume.", "foundation"],
