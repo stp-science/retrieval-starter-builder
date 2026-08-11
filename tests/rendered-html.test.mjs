@@ -284,6 +284,8 @@ test("lets teachers send general site feedback", async () => {
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
   assert.match(page, /className="general-feedback-button"/, "general feedback button is missing");
+  assert.match(page, /Feedback &amp; help/, "prominent feedback button label is missing");
+  assert.match(page, /className="topbar-actions"[\s\S]*className="general-feedback-button"/, "general feedback button should remain visible in the sticky top bar");
   assert.match(page, /Something isn&apos;t working/, "problem-report option is missing");
   assert.match(page, /Suggestion for improvement/, "improvement option is missing");
   assert.match(page, /submitGeneralFeedback/, "general feedback submission is missing");
