@@ -32,7 +32,8 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /11,038(?:<!-- -->)?-question bank/i);
+  assert.match(html, /10,083(?:<!-- -->)?-question bank/i);
+  assert.match(html, /every Year 7–9 topic contains 40 questions checked against its topic guide/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
@@ -236,7 +237,7 @@ test("uses direct student-friendly wording across generated question banks", asy
   assert.match(audit, /make the equation symbol being recalled explicit/, "the full-bank audit does not reject indirect equation clues");
 });
 
-test("expands every non-IB year-group topic with varied new questions", async () => {
+test("keeps Years 7-9 guide-scoped while expanding later year groups", async () => {
   const expansion = await readFile(new URL("../app/year-group-expansion.ts", import.meta.url), "utf8");
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const configuredTopicIds = [...expansion.matchAll(/^  "(y(?:7|8|9|10|12|13)-[a-z-]+)": \[/gm)].map((match) => match[1]);
@@ -247,8 +248,12 @@ test("expands every non-IB year-group topic with varied new questions", async ()
   assert.match(expansion, /topicConcepts\.length !== 6 && topicConcepts\.length !== 14/);
   assert.match(expansion, /expandedOneWordQuestions/);
   assert.match(expansion, /contains a Yes\/No One Worders prompt/);
-  assert.match(page, /questions: uniqueQuestionWording\(\[\.\.\.topic\.questions, \.\.\.\(expandedQuestions\[topic\.id\] \?\? \[\]\)\]\.map\(clarifyQuestion\)\)/);
-  assert.match(page, /\.\.\.\(expandedOneWordQuestions\[topic\.id\] \?\? \[\]\)/);
+  assert.match(page, /function topicExpansionQuestions\(topic: Topic\)/);
+  assert.match(page, /typeof topic\.year === "number" && topic\.year >= 7 && topic\.year <= 9/);
+  assert.match(page, /\.\.\.topicExpansionQuestions\(topic\)/);
+  assert.match(page, /\.\.\.topicExpansionOneWordQuestions\(topic\)/);
+  assert.doesNotMatch(page, /\.\.\.\(expandedQuestions\[topic\.id\] \?\? \[\]\)/);
+  assert.doesNotMatch(page, /\.\.\.\(expandedOneWordQuestions\[topic\.id\] \?\? \[\]\)/);
 });
 
 test("includes the expanded 24-activity catalogue", async () => {
