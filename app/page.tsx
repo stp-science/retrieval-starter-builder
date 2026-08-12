@@ -511,6 +511,18 @@ function uniqueQuestionWording(questions: Question[]) {
   });
 }
 
+function topicExpansionQuestions(topic: Topic) {
+  return typeof topic.year === "number" && topic.year >= 7 && topic.year <= 9
+    ? []
+    : (expandedQuestions[topic.id] ?? []);
+}
+
+function topicExpansionOneWordQuestions(topic: Topic) {
+  return typeof topic.year === "number" && topic.year >= 7 && topic.year <= 9
+    ? []
+    : (expandedOneWordQuestions[topic.id] ?? []);
+}
+
 const questionReportEmail = "gary.talbot@stpeters.school.nz";
 
 function formSubmitAccepted(payload: FormSubmitResponse | null) {
@@ -542,9 +554,9 @@ const yearGroupTopics: Topic[] = [
 const topics: Topic[] = [
   ...yearGroupTopics.map((topic) => ({
     ...topic,
-    questions: uniqueQuestionWording([...topic.questions, ...(expandedQuestions[topic.id] ?? [])].map(clarifyQuestion)),
+    questions: uniqueQuestionWording([...topic.questions, ...topicExpansionQuestions(topic)].map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? uniqueQuestionWording([...topic.oneWordQuestions, ...(expandedOneWordQuestions[topic.id] ?? [])].map(clarifyQuestion))
+      ? uniqueQuestionWording([...topic.oneWordQuestions, ...topicExpansionOneWordQuestions(topic)].map(clarifyQuestion))
       : undefined,
   })),
   ...ibTopics.map((topic) => ({
@@ -2070,7 +2082,7 @@ export default function Home() {
               </label>
             ))}
           </div>
-          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : "every topic contains at least 50 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
+          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : typeof year === "number" && year <= 9 ? "every Year 7–9 topic contains 40 questions checked against its topic guide" : "every topic contains at least 50 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
 
           <div className="divider" />
           <div className="step-heading">
