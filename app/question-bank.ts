@@ -1,5 +1,6 @@
 import { extraQuestions as legacyExtraQuestions } from "./question-bank-legacy";
 import { curriculumTopics, curriculumVisuals } from "./curriculum-topics";
+import { juniorGuideSupplementQuestions } from "./junior-guide-supplements";
 
 export type BankQuestion = {
   q: string;
@@ -7,9 +8,9 @@ export type BankQuestion = {
   difficulty: "foundation" | "core" | "stretch";
   kind: "short" | "explain";
 };
-
 export const extraQuestions: Record<string, BankQuestion[]> = {
   ...legacyExtraQuestions,
+  ...juniorGuideSupplementQuestions,
 };
 
 for (const topic of curriculumTopics) {
