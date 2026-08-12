@@ -8,8 +8,8 @@ Teachers choose a year group, one or more previously taught topics, and an activ
 
 ## Features
 
-- 600 questions across 15 Year 7-9 Science topics
-- 40 questions in every topic bank
+- 1,240 topic-guide-checked questions across 31 Year 7-9 Science topics
+- 40 questions in every Year 7-9 topic bank
 - 24 retrieval-practice activity formats
 - animated **Surprise me** wheel
 - individual **Swap** controls for replacing unwanted questions
@@ -38,27 +38,45 @@ one-question-at-a-time Retrieval Roulette reveals.
 - States of Matter and the Particle Model
 - Cells and Organisation
 - Thermal Energy
+- Diffusion
+- Cellular Respiration
+- Deformation and Friction
+- Photosynthesis
+- Ecosystem Interactions
+- Rocks and Minerals
 
 ### Year 8
 
 - Mixtures, Solutions and Concentration
 - Solubility
 - Reproduction
-- Chemical Changes
+- Static Electricity
+- Chemical Change
+- Genetic Material and Inheritance
+- Digestive System
+- Gas Exchange
+- Pressure
+- Adaptation and Evolution
+- Stars and Planets
 
 ### Year 9
 
 - Elements, Molecules and Compounds
 - The Periodic Table
-- Determining Traits
+- Determining Organism Traits
 - Chemical Reactions
-- Acids and Bases
-- Effects of Forces
-- Pressure and Fluids
+- The Effect of Forces
+- Fluids and Pressure
+- Transport Systems in Humans
+- Transport Systems in Plants
+- Spheres of the Earth
+- Ecosystems
 
 ## Editing the content
 
-The topic definitions and first eight questions for each topic are in `app/page.tsx`. The remaining 32 questions per topic are in `app/question-bank.ts`.
+The Years 7-9 topic definitions and guide-derived questions are loaded through `app/curriculum-topics.ts`. Topics whose source bank began with eight guide questions receive 32 additional guide-aligned questions from `app/junior-guide-supplements.ts`.
+
+Generic year-group expansion questions are deliberately disabled for Years 7-9. Run `npm run audit:junior-guides` to verify the 31 active topic IDs, 40 unique questions per topic and the unit-specific scope guards.
 
 Each question has:
 
@@ -91,8 +109,10 @@ npm run lint
 
 ## Project structure
 
-- `app/page.tsx` - interface, topic definitions and activity generators
-- `app/question-bank.ts` - expanded checked question bank
+- `app/page.tsx` - interface and activity generators
+- `app/curriculum-topics.ts` - active Years 7-9 topic definitions and guide-derived banks
+- `app/junior-guide-supplements.ts` - guide-aligned questions for the original 14 topic banks
+- `scripts/audit-junior-guide-scope.ts` - automated Years 7-9 curriculum-scope audit
 - `app/globals.css` - responsive styling and school colour palette
 - `public/stpeters-crest.webp` - school crest used in the interface
 - `tests/` - rendered-app check
