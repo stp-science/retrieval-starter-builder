@@ -156,9 +156,59 @@ const keywordRefinements: Record<string, Record<string, string>> = {
   },
 };
 
+const questionRefinements: Record<
+  string,
+  Record<string, Pick<CurriculumQuestion, "q" | "a">>
+> = {
+  "y7-deformation-friction": {
+    "Why might a heavier object not always deform a surface more?": {
+      q: "Why might a heavier object not always deform a surface more?",
+      a: "Deformation also depends on the material and how the force is applied.",
+    },
+    "Why is 'a force is needed to keep an object moving' not always correct?": {
+      q: "Why is 'a force is needed to keep an object moving' not always correct?",
+      a: "Opposing forces can have a balanced resultant effect while an object continues to move.",
+    },
+    "How can friction be reduced between moving machine parts?": {
+      q: "Why is more friction not always helpful?",
+      a: "Extra friction can make movement harder and produce more heating.",
+    },
+  },
+  "y7-cellular-respiration": {
+    "Does respiration occur in unicellular organisms?": {
+      q: "Which scientist is named in the guide for early work linking plants and air?",
+      a: "Joseph Priestley",
+    },
+    "Why is respiration essential for a unicellular organism?": {
+      q: "Why can healing increase a cell's demand for respiration?",
+      a: "Repair processes need chemical energy released by respiration.",
+    },
+  },
+  "y8-genetic-material": {
+    "Why is variation important in a population?": {
+      q: "Why are inheritance patterns not perfectly predictable?",
+      a: "Offspring inherit unique combinations of genetic material, so traits show variation and chance patterns.",
+    },
+  },
+  "y9-periodic-table": {
+    "What does atomic number represent?": {
+      q: "What is one piece of information shown in an element's periodic-table box?",
+      a: "Its element symbol or atomic number",
+    },
+    "Why do elements in the same group show similar chemical properties?": {
+      q: "How does Group 17 reactivity change down the group?",
+      a: "It decreases.",
+    },
+  },
+};
+
 export const curriculumTopics: CurriculumTopic[] = rawCurriculumTopics.map((topic) => ({
   ...topic,
   keywords: topic.keywords.map((keyword) => keywordRefinements[topic.id]?.[keyword] ?? keyword),
+  questions: topic.questions.map((question) => ({
+    ...question,
+    ...(questionRefinements[topic.id]?.[question.q] ?? {}),
+  })),
 }));
 
 export const curriculumVisuals: Record<string, CurriculumVisual[]> = Object.assign(
