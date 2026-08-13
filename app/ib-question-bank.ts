@@ -125,6 +125,7 @@ const ibKeywordExtras: Partial<Record<string, string[]>> = {
   "ib-physics-c4": ["fundamental frequency", "driven oscillation", "resonant frequency", "boundary condition"],
   "ib-physics-c3": ["path difference"],
   "ib-physics-e3": ["decay curve", "count rate", "random decay", "nuclear stability"],
+  "ib-physics-tools-vectors": ["magnitude", "direction", "vector addition", "vector resolution", "horizontal component", "vertical component"],
 };
 
 function topicKeywords(spec: IbTopicSpec) {
