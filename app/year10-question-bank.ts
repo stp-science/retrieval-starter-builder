@@ -5,6 +5,7 @@ import { electricityConcepts } from "./year10-data/electricity";
 import { forcesMotionConcepts } from "./year10-data/forces-motion";
 import { geneticsConcepts } from "./year10-data/genetics";
 import { humanBodyConcepts } from "./year10-data/human-body";
+import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expansion";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -39,6 +40,27 @@ type TopicSpec = {
   strand: Year10Topic["strand"];
   concepts: readonly ConceptRow[];
 };
+
+const year10TopicIds = [
+  "y10-atoms-ions-periodic",
+  "y10-forces-motion",
+  "y10-genetics",
+  "y10-acids-bases",
+  "y10-electricity",
+  "y10-human-body",
+  "y10-earth-science",
+] as const;
+
+/*
+ * Year 10 must be sourced only from the uploaded St Peter's unit plans/SLOs.
+ * The generic year-group expansion layer previously added extra concepts such
+ * as momentum and impulse. Remove all Year 10 expansion entries before the UI
+ * can merge them into generated activities.
+ */
+for (const topicId of year10TopicIds) {
+  delete expandedQuestions[topicId];
+  delete expandedOneWordQuestions[topicId];
+}
 
 /*
  * Year 10 retrieval questions are tied directly to the St Peter's Year 10
@@ -116,7 +138,7 @@ const vagueQuestionPattern =
 
 const forbiddenTopicContent: Record<string, RegExp> = {
   "y10-atoms-ions-periodic": /\bisotope\b|\bisoelectronic\b|\bhalogen\b|\bnoble gas\b/i,
-  "y10-forces-motion": /Newton'?s third law|\bmomentum\b|\bvector\b|\bstopping distance\b|\binertia\b/i,
+  "y10-forces-motion": /Newton'?s third law|\bmomentum\b|\bimpulse\b|\bvector\b|\bstopping distance\b|\binertia\b/i,
   "y10-genetics": /\bbase sequence\b|\bcodominance\b|\bsex chromosome\b|\bpedigree\b/i,
   "y10-acids-bases": /\btitration\b|\bequivalence point\b|\bend point\b/i,
 };
