@@ -38,6 +38,10 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
     return { ...question, q: "What is a permanent change in a DNA base sequence called?" };
   }
 
+  if (/^what type of force can act without physical contact$/i.test(stem)) {
+    return { ...question, a: "non-contact force" };
+  }
+
   const yesNo = stem.match(/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i);
   if (yesNo) {
     const instruction = answerNeedsExplanation(question.a)
