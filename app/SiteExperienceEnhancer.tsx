@@ -44,7 +44,6 @@ function patchPowerPointNumberBadges() {
           fontSize: 8.5,
         });
       }
-
       return originalAddText(text, options);
     };
 
@@ -89,21 +88,7 @@ function ensurePowerPointNumberFix() {
   }).finally(() => {
     pptxPreparation = null;
   });
-
   return pptxPreparation;
-}
-
-function restoreConnectFourAnswersWhenExportFinishes(button: HTMLButtonElement, toggle: HTMLButtonElement) {
-  let sawDisabled = false;
-  const startedAt = Date.now();
-  const timer = window.setInterval(() => {
-    if (button.disabled) sawDisabled = true;
-    const timedOut = Date.now() - startedAt > 20000;
-    if ((sawDisabled && !button.disabled) || timedOut) {
-      window.clearInterval(timer);
-      if (toggle.textContent?.includes("Hide answers")) toggle.click();
-    }
-  }, 120);
 }
 
 export default function SiteExperienceEnhancer() {
@@ -112,7 +97,6 @@ export default function SiteExperienceEnhancer() {
 
     const installScienceArtwork = () => {
       if (disposed) return;
-
       const hero = document.querySelector<HTMLElement>(".hero");
       if (hero && !hero.querySelector("[data-science-hero-art]")) {
         const image = document.createElement("img");
@@ -136,73 +120,46 @@ export default function SiteExperienceEnhancer() {
       }
     };
 
-    const handleExportCapture = (event: MouseEvent) => {
+    const handlePowerPoint = (event: MouseEvent) => {
       const target = event.target instanceof Element
-        ? event.target.closest<HTMLButtonElement>("button")
+        ? event.target.closest<HTMLButtonElement>("button[data-powerpoint-download='true']")
         : null;
       if (!target) return;
 
-      if (target.dataset.powerpointDownload === "true") {
-        if (target.dataset.pptxNumberFixReplay === "true") {
-          delete target.dataset.pptxNumberFixReplay;
-          patchPowerPointNumberBadges();
-          return;
-        }
-        if (window.PptxGenJS) {
-          patchPowerPointNumberBadges();
-          return;
-        }
-        if (target.dataset.pptxNumberFixPreparing === "true") {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-
+      if (target.dataset.pptxNumberFixReplay === "true") {
+        delete target.dataset.pptxNumberFixReplay;
+        patchPowerPointNumberBadges();
+        return;
+      }
+      if (window.PptxGenJS) {
+        patchPowerPointNumberBadges();
+        return;
+      }
+      if (target.dataset.pptxNumberFixPreparing === "true") {
         event.preventDefault();
         event.stopPropagation();
-        target.dataset.pptxNumberFixPreparing = "true";
-        void ensurePowerPointNumberFix().finally(() => {
-          delete target.dataset.pptxNumberFixPreparing;
-          target.dataset.pptxNumberFixReplay = "true";
-          target.click();
-        });
         return;
       }
-
-      const isWordDownload = target.classList.contains("word-button");
-      const isPdfDownload = target.classList.contains("download-button");
-      const connectFourSheet = document.querySelector<HTMLElement>(".starter-sheet.activity-connect-four");
-      if (!connectFourSheet || (!isWordDownload && !isPdfDownload)) return;
-
-      if (target.dataset.connectFourAnswerReplay === "true") {
-        delete target.dataset.connectFourAnswerReplay;
-        return;
-      }
-
-      const toggle = connectFourSheet.querySelector<HTMLButtonElement>(".answer-toggle");
-      if (!toggle || toggle.textContent?.includes("Hide answers")) return;
 
       event.preventDefault();
       event.stopPropagation();
-      toggle.click();
-      target.dataset.connectFourAnswerReplay = "true";
-
-      window.setTimeout(() => {
+      target.dataset.pptxNumberFixPreparing = "true";
+      void ensurePowerPointNumberFix().finally(() => {
+        delete target.dataset.pptxNumberFixPreparing;
+        target.dataset.pptxNumberFixReplay = "true";
         target.click();
-        restoreConnectFourAnswersWhenExportFinishes(target, toggle);
-      }, 0);
+      });
     };
 
     installScienceArtwork();
-    document.addEventListener("click", handleExportCapture, true);
-
+    document.addEventListener("click", handlePowerPoint, true);
     const observer = new MutationObserver(() => installScienceArtwork());
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       disposed = true;
       observer.disconnect();
-      document.removeEventListener("click", handleExportCapture, true);
+      document.removeEventListener("click", handlePowerPoint, true);
       document.querySelectorAll("[data-science-hero-art], [data-science-doodles]").forEach((element) => element.remove());
     };
   }, []);
