@@ -138,11 +138,30 @@ function topicKeywords(spec: IbTopicSpec) {
   return uniqueKeywords([...terms, ...termParts, ...supporting, ...(ibKeywordExtras[spec.id] ?? [])]).slice(0, 16);
 }
 
-function specificKnowledgeQuestion(term: string, significance: string, topic: IbTopicSpec) {
-  const statement = stripEndPunctuation(significance);
+function possessive(term: string) {
+  return /s$/i.test(term) ? `${term}'` : `${term}'s`;
+}
 
-  // High-frequency IB science relationships. These are deliberately direct:
-  // the command term and the exact knowledge being retrieved are both clear.
+function withNamedSubject(term: string, significance: string) {
+  const statement = stripEndPunctuation(significance);
+  if (/^its\b/i.test(statement)) return statement.replace(/^its\b/i, possessive(term));
+  if (/^it\b/i.test(statement)) return statement.replace(/^it\b/i, term);
+  return statement;
+}
+
+/**
+ * Builds only questions with a clear, finite retrieval target. The phrasing is
+ * modelled on the short command-term style used in IB science papers: state,
+ * identify, describe and explain. If a significance statement cannot be turned
+ * into a precise question safely, it is omitted rather than replaced by a vague
+ * "importance" or "why it matters" prompt.
+ */
+function specificKnowledgeQuestion(term: string, significance: string, topic: IbTopicSpec): string | null {
+  const statement = stripEndPunctuation(significance);
+  const named = withNamedSubject(term, significance);
+
+  // Frequently generated physics relationships that benefit from especially
+  // concise wording.
   if (/^it records both how far and in which direction an object has moved$/i.test(statement)) {
     return "State the two pieces of information given by displacement.";
   }
@@ -171,88 +190,94 @@ function specificKnowledgeQuestion(term: string, significance: string, topic: Ib
     return "At terminal speed, state the resultant force and the acceleration.";
   }
   if (/^it connects period and frequency to the sinusoidal equations of motion$/i.test(statement)) {
-    return "State the relationship between angular frequency, frequency and period in simple harmonic motion.";
+    return "State the relationships between angular frequency, frequency and period in simple harmonic motion.";
   }
 
-  const itAllows = statement.match(/^it (?:allows|enables) (.+)$/i);
-  if (itAllows) return `State what ${term} allows in ${topic.name}.`;
-
-  const itExplains = statement.match(/^it (explains|describes|shows|predicts|determines|measures|identifies|provides|supports|controls|distinguishes|connects|links|converts|quantifies|accounts for) (.+)$/i);
-  if (itExplains) {
-    const verb = itExplains[1].toLowerCase();
-    return `State what ${term} ${verb}.`;
-  }
-
-  const itDepends = statement.match(/^it depends on (.+)$/i);
-  if (itDepends) return `State the factors that ${term} depends on.`;
-
-  const isConserved = statement.match(/^(.+?) (?:is|are) conserved (?:when|if|in) (.+)$/i);
-  if (isConserved) return `State the condition under which ${lowerFirst(isConserved[1])} is conserved.`;
-
-  const isProportional = statement.match(/^(.+?) (?:is|are) (?:directly |inversely )?proportional to (.+)$/i);
-  if (isProportional) return `State how ${lowerFirst(isProportional[1])} is related to ${isProportional[2]}.`;
-
-  const determines = statement.match(/^(.+?) (determines?|controls?|affects?|influences?|sets?) (.+)$/i);
-  if (determines) return `Explain how ${lowerFirst(determines[1])} affects ${term}.`;
-
-  const because = statement.match(/^(.+?) because (.+)$/i);
+  // Explicit cause/reason relationships map naturally to the IB command term
+  // "explain".
+  const because = named.match(/^(.+?) because (.+)$/i);
   if (because) return `Explain why ${lowerFirst(because[1])}.`;
 
-  const when = statement.match(/^(.+?) when (.+)$/i);
-  if (when) return `State what happens to ${term} when ${lowerFirst(when[2])}.`;
+  const followsFrom = named.match(/^(.+?) (?:follows|follow) from (.+)$/i);
+  if (followsFrom) return `Explain why ${lowerFirst(followsFrom[1])}.`;
 
-  // Fallback is still explicit about the required knowledge and avoids vague
-  // wording such as “importance”, “matters” or “is important because”.
-  return `State one specific effect, relationship or use of ${term} in ${topic.name}.`;
-}
+  // Conditions and conservation statements have a single clear target.
+  const conserved = named.match(/^(.+?) (?:is|are) conserved (?:when|if|in) (.+)$/i);
+  if (conserved) return `State the condition under which ${lowerFirst(conserved[1])} is conserved.`;
 
-function explainVersion(question: string, term: string, topic: IbTopicSpec) {
-  if (/^State the relationship/i.test(question)) return question.replace(/^State/i, "Explain");
-  if (/^State the condition/i.test(question)) return question.replace(/^State/i, "Explain");
-  if (/^State what happens/i.test(question)) return question.replace(/^State/i, "Explain");
-  if (/^State what /i.test(question)) return question.replace(/^State/i, "Explain");
-  if (/^State which /i.test(question)) return question.replace(/^State/i, "Explain");
-  if (/^State the two /i.test(question)) return question.replace(/^State/i, "Describe");
-  if (/^Two devices /i.test(question)) {
-    return "Explain how power changes if the same amount of energy is transferred in a shorter time.";
+  const condition = named.match(/^(.+?) (?:occurs|occur|happens|happen|becomes|become) when (.+)$/i);
+  if (condition) return `State the condition in which ${lowerFirst(condition[1])} occurs.`;
+
+  const depends = named.match(/^(.+?) (?:depends|depend) on (.+)$/i);
+  if (depends) return `State the factors that ${lowerFirst(depends[1])} depends on.`;
+
+  const proportional = named.match(/^(.+?) (?:is|are) (directly |inversely )?proportional to (.+)$/i);
+  if (proportional) return `State how ${lowerFirst(proportional[1])} is related to ${proportional[3]}.`;
+
+  // Questions where the answer is the object of a clear scientific verb.
+  const canBeUsed = named.match(/^(.+?) can be used to (.+)$/i);
+  if (canBeUsed) return `State what ${lowerFirst(canBeUsed[1])} can be used to determine or do.`;
+
+  const canVerb = named.match(/^(.+?) can (.+)$/i);
+  if (canVerb) return `State what ${lowerFirst(canVerb[1])} can do.`;
+
+  const verbRelation = named.match(
+    /^(.+?) (allows?|enables?|causes?|determines?|controls?|affects?|influences?|supports?|provides?|maintains?|prevents?|drives?|explains?|links?|connects?|converts?|quantifies?|identifies?|measures?|predicts?|regulates?|coordinates?|creates?|produces?|generates?|reduces?|increases?|raises?|lowers?|sets?|reveals?|transfers?|accounts for|results in) (.+)$/i,
+  );
+  if (verbRelation) {
+    return `State what ${lowerFirst(verbRelation[1])} ${verbRelation[2].toLowerCase()}.`;
   }
-  if (/^At terminal speed/i.test(question)) {
-    return "Explain why an object moving at terminal speed has zero acceleration.";
-  }
-  return `Explain one specific relationship involving ${term} in ${topic.name}.`;
+
+  // A stated contrast is best retrieved with "describe" rather than an open
+  // explanation prompt.
+  const contrast = named.match(/^(.+?) while (.+)$/i);
+  if (contrast) return `Describe the two contrasting features of ${term} stated in ${topic.name}.`;
+
+  const differs = named.match(/^(.+?) (?:differs|differ) from (.+)$/i);
+  if (differs) return `State how ${lowerFirst(differs[1])} differs from ${differs[2]}.`;
+
+  // If no precise transformation is available, do not manufacture an open
+  // question. The concept is still retrieved through its definition and term
+  // identification questions below.
+  return null;
 }
 
 function buildQuestions(topic: IbTopicSpec): IbQuestion[] {
   return topic.concepts.flatMap((concept: IbConcept) => {
     const [term, definition, significance] = concept;
     const knowledgeQuestion = specificKnowledgeQuestion(term, significance, topic);
-    const explanationQuestion = explainVersion(knowledgeQuestion, term, topic);
-    return [
+
+    const questions: IbQuestion[] = [
       {
         q: `Define ${term}.`,
         a: capitalise(definition),
-        difficulty: "foundation" as const,
-        kind: "explain" as const,
+        difficulty: "foundation",
+        kind: "explain",
       },
       {
-        q: knowledgeQuestion,
-        a: capitalise(significance),
-        difficulty: "core" as const,
-        kind: "explain" as const,
+        q: `Identify the ${topic.subject.toLowerCase()} term described here: ${definition}.`,
+        a: term,
+        difficulty: "core",
+        kind: "short",
       },
       {
-        q: `Define ${term}. Then ${lowerFirst(knowledgeQuestion)}`,
-        a: `${capitalise(definition)} ${capitalise(significance)}`,
-        difficulty: "core" as const,
-        kind: "explain" as const,
-      },
-      {
-        q: explanationQuestion,
-        a: capitalise(significance),
-        difficulty: "stretch" as const,
-        kind: "explain" as const,
+        q: `State the ${topic.subject.toLowerCase()} term that means: ${definition}.`,
+        a: term,
+        difficulty: "core",
+        kind: "short",
       },
     ];
+
+    if (knowledgeQuestion) {
+      questions.splice(1, 0, {
+        q: knowledgeQuestion,
+        a: capitalise(significance),
+        difficulty: "stretch",
+        kind: /^Explain|^Describe/i.test(knowledgeQuestion) ? "explain" : "short",
+      });
+    }
+
+    return questions;
   });
 }
 
@@ -298,7 +323,10 @@ const vagueIbQuestionPatterns = [
   /why it matters/i,
   /is important in .+ because/i,
   /complete this explanation/i,
+  /one specific effect, relationship or use/i,
+  /one specific relationship involving/i,
 ];
+
 const vagueIbQuestions = ibTopics.flatMap((topic) =>
   [...topic.questions, ...topic.oneWordQuestions]
     .filter((question) => vagueIbQuestionPatterns.some((pattern) => pattern.test(question.q)))
@@ -306,6 +334,18 @@ const vagueIbQuestions = ibTopics.flatMap((topic) =>
 );
 if (vagueIbQuestions.length) {
   throw new Error(`IB questions contain vague classroom wording: ${vagueIbQuestions.join(" | ")}`);
+}
+
+for (const topic of ibTopics) {
+  if (topic.questions.length < 18) {
+    throw new Error(`${topic.id} needs at least 18 clear retrieval questions; found ${topic.questions.length}.`);
+  }
+  const seen = new Set<string>();
+  for (const question of topic.questions) {
+    const normalized = question.q.trim().toLowerCase();
+    if (seen.has(normalized)) throw new Error(`${topic.id} contains duplicate IB question wording: ${question.q}`);
+    seen.add(normalized);
+  }
 }
 
 const incompleteKeywordTopics = ibTopics.filter((topic) => topic.keywords.length !== 16);
