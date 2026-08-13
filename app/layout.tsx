@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PowerPointDownloadEnhancer from "./PowerPointDownloadEnhancer";
 import SiteExperienceEnhancer from "./SiteExperienceEnhancer";
 import ConnectFourEnhancer from "./ConnectFourEnhancer";
+import ConnectFourShowAllEnhancer from "./ConnectFourShowAllEnhancer";
 import "./globals.css";
 import "./preview-wide.css";
 import "./activity-polish.css";
@@ -32,6 +33,7 @@ export default function RootLayout({
         <PowerPointDownloadEnhancer />
         <SiteExperienceEnhancer />
         <ConnectFourEnhancer />
+        <ConnectFourShowAllEnhancer />
       </body>
     </html>
   );
