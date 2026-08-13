@@ -25,6 +25,19 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
   const original = question.q.trim().replace(/\s+/g, " ");
   const stem = original.replace(/[?.!…]+$/, "");
 
+  // Targeted fixes for reported questions.
+  if (/^how can neutron number be calculated from nucleon number$/i.test(stem)) {
+    return {
+      ...question,
+      q: "How can you calculate the number of neutrons from the mass number?",
+      a: "Subtract the atomic number (number of protons) from the mass number.",
+    };
+  }
+
+  if (/^what permanent change in a DNA base sequence is called$/i.test(stem)) {
+    return { ...question, q: "What is a permanent change in a DNA base sequence called?" };
+  }
+
   const yesNo = stem.match(/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i);
   if (yesNo) {
     const instruction = answerNeedsExplanation(question.a)
