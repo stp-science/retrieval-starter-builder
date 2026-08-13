@@ -192,6 +192,12 @@ function specificKnowledgeQuestion(term: string, significance: string, topic: Ib
   if (/^it connects period and frequency to the sinusoidal equations of motion$/i.test(statement)) {
     return "State the relationships between angular frequency, frequency and period in simple harmonic motion.";
   }
+  if (/^the period depends on mass and spring constant but not amplitude$/i.test(statement)) {
+    return "State the factors that determine the period of a mass-spring oscillator.";
+  }
+  if (/^the period depends on pendulum length and gravitational field strength$/i.test(statement)) {
+    return "State the factors that determine the period of a simple pendulum.";
+  }
 
   // Explicit cause/reason relationships map naturally to the IB command term
   // "explain".
