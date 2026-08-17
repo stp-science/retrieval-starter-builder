@@ -1,4 +1,5 @@
 import { seniorTopics } from "../app/year12-question-bank";
+import { expandedOneWordQuestions, expandedQuestions } from "../app/year-group-expansion";
 
 const chemistryTopics = seniorTopics.filter((topic) => topic.course === "Chemistry");
 
@@ -22,6 +23,7 @@ const bannedByTopic: Record<string, RegExp[]> = {
   "y12-chem-reactivity": [
     /\bK[asp]\b|pKa|buffer|titration|solubility product/i,
     /reaction order|rate constant|maxwell-boltzmann|pure solids? and pure liquids?/i,
+    /oxidation number|redox|spectator ion/i,
   ],
 };
 
@@ -86,10 +88,37 @@ for (const topic of chemistryTopics) {
     violations.push(`${topic.id} should contain 40 questions; found ${topic.questions.length}.`);
   }
 
+  const extensions = expandedQuestions[topic.id] ?? [];
+  const oneWordExtensions = expandedOneWordQuestions[topic.id] ?? [];
+
+  if (extensions.length !== 18) {
+    violations.push(`${topic.id} should contain 18 expansion questions; found ${extensions.length}.`);
+  }
+
+  if (oneWordExtensions.length !== 12) {
+    violations.push(`${topic.id} should contain 12 One Worders questions; found ${oneWordExtensions.length}.`);
+  }
+
   const bankText = [
     ...topic.keywords,
     ...topic.questions.flatMap((question) => [question.q, question.a]),
+    ...extensions.flatMap((question) => [question.q, question.a]),
+    ...oneWordExtensions.flatMap((question) => [question.q, question.a]),
   ].join("\n");
+
+  const studentFacingQuestions = [...topic.questions, ...extensions, ...oneWordExtensions];
+  for (const question of studentFacingQuestions) {
+    const prompt = question.q.trim();
+    const isQuestion = prompt.endsWith("?");
+    const isDirectInstruction = /^(?:Name|State|Describe|Explain|Give|Calculate|Write|Predict|Use)\b/i.test(prompt) && prompt.endsWith(".");
+    const isCalculationSetup = /^(?:For\b|A reaction\b|Bonds broken\b)/i.test(prompt) && prompt.endsWith(".");
+    if (!isQuestion && !isDirectInstruction && !isCalculationSetup) {
+      violations.push(`${topic.id} contains a prompt that is not a direct retrieval question or instruction: ${question.q}`);
+    }
+    if (prompt.length > 190) {
+      violations.push(`${topic.id} contains an overlong student prompt (${prompt.length} characters): ${question.q}`);
+    }
+  }
 
   for (const pattern of bannedByTopic[topic.id] ?? []) {
     if (pattern.test(bankText)) {
@@ -108,4 +137,4 @@ if (violations.length) {
   throw new Error(`Year 12 Chemistry scope audit failed:\n${violations.join("\n")}`);
 }
 
-console.log("Year 12 Chemistry scope audit passed: 120 questions across AS 91164, AS 91165 and AS 91166.");
+console.log("Year 12 Chemistry scope audit passed: 174 starter questions plus 36 One Worders variants across AS 91164, AS 91165 and AS 91166.");
