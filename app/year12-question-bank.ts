@@ -297,7 +297,7 @@ export const seniorTopics: SeniorTopic[] = [
         "constitutional isomer", "geometric isomer", "primary alcohol", "secondary alcohol", "tertiary alcohol",
         "primary haloalkane", "secondary haloalkane", "tertiary haloalkane",
         "addition reaction", "substitution reaction", "oxidation reaction", "elimination reaction", "polymerisation", "major product", "solubility",
-        "boiling point", "structural formula", "IUPAC", "reagent", "conditions", "observation",
+        "boiling point", "structural formula", "IUPAC", "reagent", "reaction conditions", "observation",
       ],
     },
     [
