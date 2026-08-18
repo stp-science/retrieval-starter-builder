@@ -12,6 +12,7 @@ import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expans
 import { scientificSkillsTopics } from "./scientific-skills-question-bank";
 import { assertSpecificKeywordSets } from "./keyword-quality";
 import { clarifyQuestion } from "./question-clarity";
+import { assertThinkingLinkingCoverage, buildThinkingLinkingKeywords } from "./thinking-linking-keywords";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -569,6 +570,7 @@ const topics: Topic[] = [
 ];
 
 assertSpecificKeywordSets(topics);
+assertThinkingLinkingCoverage(topics);
 
 const activities: { id: ActivityId; name: string; description: string; tag: string }[] = [
   { id: "quick-quiz", name: "Quick Quiz", description: "A balanced mix of short and explanation questions.", tag: "Flexible" },
@@ -601,7 +603,7 @@ const activityInstructions: Record<ActivityId, string> = {
   "quick-quiz": "Answer every question from memory. Be ready to improve your answers in a different colour.",
   "one-worders": "Write the shortest accurate answer you can. No notes and no full sentences unless needed.",
   "retrieval-grid": "Work across the grid from memory. Complete as many boxes as you can in the time given.",
-  "thinking-linking": "Choose two words and explain the scientific link between them. Aim to make at least five different links.",
+  "thinking-linking": "Choose two words and explain the scientific link between them. Every word has at least one possible partner in the grid. Aim to make at least five different links.",
   "challenge-grid": "Choose questions from the grid. Your goal is to score as many points as possible without using notes.",
   "quiz-quiz-trade": "Quiz your partner, check their answer, coach if needed, then swap cards and find a new partner.",
   "brain-dump": "Write everything you can remember for each prompt. Then compare, correct and add missing knowledge.",
@@ -1173,7 +1175,9 @@ export default function Home() {
       const unused = shuffled(source).filter((question) => !result.some((picked) => picked.q === question.q));
       result.push(...unused.slice(0, requested - result.length));
     }
-    const keywords = shuffled(selectedTopics.flatMap((topic) => topic.keywords));
+    const keywords = activity === "thinking-linking"
+      ? buildThinkingLinkingKeywords(selectedTopics)
+      : shuffled(selectedTopics.flatMap((topic) => topic.keywords));
     let finalResult = shuffled(result).slice(0, requested);
     if (activity === "question-chain") {
       const chainTopic = shuffled(selectedTopics.filter((topic) => topic.questions.length))[0];
