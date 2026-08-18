@@ -182,6 +182,19 @@ test("keeps activity keywords subject-specific across every topic", async () => 
   assert.match(page, /assertSpecificKeywordSets\(topics\)/);
 });
 
+test("builds Thinking & Linking grids from connected keyword pairs", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const linking = await readFile(new URL("../app/thinking-linking-keywords.ts", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(page, /buildThinkingLinkingKeywords\(selectedTopics\)/);
+  assert.match(page, /assertThinkingLinkingCoverage\(topics\)/);
+  assert.match(linking, /connectionPairs/);
+  assert.match(linking, /selectedPairs\.flatMap/);
+  assert.match(css, /\.linking-grid div[^}]*text-transform: none/);
+  assert.doesNotMatch(css, /\.linking-grid div[^}]*text-transform: capitalize/);
+});
+
 test("includes the eight Year 13 NCEA Level 3 external assessment units", async () => {
   const bank = await readFile(new URL("../app/year13-question-bank.ts", import.meta.url), "utf8");
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
