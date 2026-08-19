@@ -357,7 +357,7 @@ const rows: Record<string, Row[]> = {
     ["What instructions does a gene contain?", "Instructions for making a protein or part of a protein", "core", "explain"],
     ["How can a protein affect an observable trait?", "Proteins influence cell structures and processes that contribute to the trait.", "core", "explain"],
     ["Can one whole trait always be linked to one gene?", "No. Most traits are influenced by many genes and the environment.", "core", "explain"],
-    ["What does it mean when a gene is active?", "Its information is being used to make its product.", "core", "explain"],
+    ["When a gene is active, what is its information being used for?", "Its information is being used to make its product.", "core", "explain"],
     ["Can an environmental signal affect gene activity?", "Yes", "foundation", "short"],
     ["How can soil pH affect hydrangea flower colour?", "Soil conditions can influence processes and gene activity involved in producing flower pigments.", "core", "explain"],
     ["How can temperature affect traits in some organisms?", "Temperature can act as an environmental signal during development.", "core", "explain"],

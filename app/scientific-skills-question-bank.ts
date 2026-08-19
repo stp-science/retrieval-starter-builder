@@ -42,40 +42,44 @@ function makeSkillsTopic(
   details: Omit<ScientificSkillsTopic, "name" | "keywords" | "questions" | "oneWordQuestions">,
   concepts: SkillConcept[],
 ): ScientificSkillsTopic {
-  const context = details.course ? `${details.year} ${details.course}` : `Year ${details.year} Science`;
+  const context = details.year === "IB"
+    ? `IB ${details.course}`
+    : details.course
+      ? `Year ${details.year} ${details.course}`
+      : `Year ${details.year} Science`;
   return {
     ...details,
     name: "Scientific Skills",
     keywords: concepts.map(([term]) => term),
     questions: concepts.flatMap(([term, definition, application, difficulty]) => [
       {
-        q: `What is meant by ${term} in scientific work?`,
+        q: `In scientific work, what does ${term} mean?`,
         a: capitalise(definition),
         difficulty,
         kind: "explain" as const,
       },
       {
-        q: `Name the scientific skill described here: ${definition}.`,
+        q: `What do we call ${definition}?`,
         a: term,
         difficulty,
         kind: "short" as const,
       },
       {
-        q: `Explain why ${term} matters in ${context}.`,
+        q: `Why is ${term} useful in ${context}?`,
         a: capitalise(application),
         difficulty: difficulty === "foundation" ? "core" as const : difficulty,
         kind: "explain" as const,
       },
     ]),
-    oneWordQuestions: concepts.flatMap(([term, definition, application, difficulty]) => [
+    oneWordQuestions: concepts.flatMap(([term, definition, , difficulty]) => [
       {
-        q: `Name the scientific skill: ${definition}.`,
+        q: `What do we call ${definition}?`,
         a: term,
         difficulty,
         kind: "short" as const,
       },
       {
-        q: `Name the scientific skill used for this purpose: ${application}.`,
+        q: `In science, which term means “${definition}”?`,
         a: term,
         difficulty,
         kind: "short" as const,

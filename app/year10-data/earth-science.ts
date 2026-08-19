@@ -4,7 +4,7 @@ export const earthScienceConcepts = [
   ["mantle", "Which thick layer lies below the crust?", "Which Earth layer contains slowly moving material involved in convection?", "foundation"],
   ["outer core", "Which liquid layer lies between the mantle and inner core?", "Which Earth layer does not allow S-waves to travel through it?", "core"],
   ["inner core", "What is the solid layer at the centre of Earth called?", "Which Earth layer lies inside the outer core?", "core"],
-  ["convection", "What process involves warmer mantle material rising and cooler material sinking?", "Which process in the mantle helps explain why tectonic plates move?", "core"],
+  ["convection", "What process involves warmer mantle material rising and cooler material sinking?", "Which process in the mantle contributes to tectonic plate movement?", "core"],
   ["tectonic plate", "What do we call a large section of Earth's outer surface that moves slowly?", "Which moving part of Earth's surface interacts with other plates at boundaries?", "core"],
   ["collision", "What happens when two tectonic plates move toward each other and push together?", "Which plate movement can lead to mountain building?", "core"],
   ["subduction", "What process occurs when one tectonic plate is forced beneath another?", "What do we call the sinking of one plate beneath another at a plate boundary?", "core"],
@@ -30,3 +30,4 @@ export const earthScienceConcepts = [
   ["P-waves and S-waves", "What evidence can scientists use to infer the internal structure of Earth?", "Which two types of seismic waves provide evidence about Earth's layers?", "stretch"],
   ["follow evacuation and Civil Defence advice", "What should you do if authorities tell you to evacuate because of an earthquake, volcano or tsunami risk?", "What type of official advice should you follow during a major geological emergency?", "core"],
 ] as const;
+

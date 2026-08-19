@@ -262,13 +262,13 @@ function buildQuestions(topic: IbTopicSpec): IbQuestion[] {
         kind: "explain",
       },
       {
-        q: `Identify the ${topic.subject.toLowerCase()} term described here: ${definition}.`,
+        q: `What do we call ${definition}?`,
         a: term,
         difficulty: "core",
         kind: "short",
       },
       {
-        q: `State the ${topic.subject.toLowerCase()} term that means: ${definition}.`,
+        q: `In ${topic.subject}, what do we call ${definition}?`,
         a: term,
         difficulty: "core",
         kind: "short",
@@ -291,13 +291,13 @@ function buildQuestions(topic: IbTopicSpec): IbQuestion[] {
 function buildOneWordQuestions(topic: IbTopicSpec): IbQuestion[] {
   return topic.concepts.flatMap(([term, definition]) => [
     {
-      q: `Identify the ${topic.subject.toLowerCase()} term described here: ${definition}.`,
+      q: `What do we call ${definition}?`,
       a: term,
       difficulty: "core" as const,
       kind: "short" as const,
     },
     {
-      q: `State the ${topic.subject.toLowerCase()} term that means: ${definition}.`,
+      q: `In ${topic.subject}, what do we call ${definition}?`,
       a: term,
       difficulty: "core" as const,
       kind: "short" as const,
@@ -361,3 +361,4 @@ if (incompleteKeywordTopics.length) {
     `IB topics require 16 subject-specific keywords: ${incompleteKeywordTopics.map((topic) => `${topic.id} (${topic.keywords.length})`).join(", ")}.`,
   );
 }
+

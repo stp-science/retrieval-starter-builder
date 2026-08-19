@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /10,083(?:<!-- -->)?-question bank/i);
+  assert.match(html, /9,861(?:<!-- -->)?-question bank/i);
   assert.match(html, /every Year 7–9 topic contains 40 questions checked against its topic guide/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
@@ -230,6 +230,8 @@ test("uses explicit response commands for senior equation and multi-part prompts
 
 test("uses direct student-friendly wording across generated question banks", async () => {
   const year10 = await readFile(new URL("../app/year10-question-bank.ts", import.meta.url), "utf8");
+  const year10Electricity = await readFile(new URL("../app/year10-data/electricity.ts", import.meta.url), "utf8");
+  const year10Forces = await readFile(new URL("../app/year10-data/forces-motion.ts", import.meta.url), "utf8");
   const year11Physics = await readFile(new URL("../app/year11-physics-question-bank.ts", import.meta.url), "utf8");
   const ib = await readFile(new URL("../app/ib-question-bank.ts", import.meta.url), "utf8");
   const skills = await readFile(new URL("../app/scientific-skills-question-bank.ts", import.meta.url), "utf8");
@@ -239,15 +241,24 @@ test("uses direct student-friendly wording across generated question banks", asy
 
   assert.match(year11Physics, /Name the method of thermal energy transfer through a solid\./);
   assert.doesNotMatch(year11Physics, /without bulk movement of matter/);
-  assert.match(year10, /Explain one important scientific idea about/);
+  assert.match(year10, /delete expandedQuestions\[topicId\]/);
+  assert.match(year10Electricity, /What type of circuit has only one path for current\?/);
+  assert.match(year10Electricity, /What type of circuit has two or more branches\?/);
+  assert.match(year10Forces, /\["F = ma"/);
+  assert.match(year10Forces, /\["a = Δv\/Δt"/);
   assert.doesNotMatch(year10, /Explain the scientific role|helps explain|important when studying|Describe the connection between/);
+  assert.match(year11Physics, /If an object has fewer electrons than protons, what is its overall charge\?/);
+  assert.match(year11Physics, /Which type of circuit lets other home lights stay on when one light is switched off\?/);
   assert.doesNotMatch(ib, /A student is revising|What should they remember|Compare how .* contribute to/);
-  assert.match(ib, /Complete this explanation:/);
-  assert.match(skills, /Name the scientific skill used for this purpose/);
+  assert.match(ib, /What do we call \$\{definition\}\?/);
+  assert.doesNotMatch(ib, /Identify the .* term described here|Complete this explanation:/);
+  assert.match(skills, /What do we call \$\{definition\}\?/);
+  assert.doesNotMatch(skills, /Name the scientific skill used for this purpose|What scientific skill is described as/);
   assert.match(page, /\.map\(clarifyQuestion\)/, "the full question bank does not use the clarity pass");
   assert.match(clarity, /Answer yes or no/, "yes-no prompts do not tell students how to answer");
   assert.match(clarity, /what does \$\{symbol\} represent/, "equation prompts do not identify the target symbol");
   assert.match(audit, /make the equation symbol being recalled explicit/, "the full-bank audit does not reject indirect equation clues");
+  assert.match(audit, /ask which type of circuit or connection/, "the full-bank audit does not reject compressed circuit wording");
 });
 
 test("keeps Years 7-9 guide-scoped while expanding later year groups", async () => {

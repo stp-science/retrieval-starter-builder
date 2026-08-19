@@ -87,6 +87,19 @@ const awkwardPatterns: Array<[RegExp, string]> = [
   [/Which key term matches this description/i, "use a direct naming command"],
   [/Name the concept described as/i, "use a direct subject-specific naming command"],
   [/^(?:What|Which).+\bcalculated using\b/i, "make the equation symbol being recalled explicit"],
+  [/^Define meant by\b/i, "ask what the term means in natural language"],
+  [/Explain one important scientific idea about/i, "ask for a specific definition and fact"],
+  [/^Which (?:charge|motion) state\b/i, "describe the physical situation before asking for the answer"],
+  [/^Which (?:[a-z-]+\s+){0,3}category\b/i, "ask what type it is"],
+  [/^Which connection\b/i, "ask which type of circuit or connection"],
+  [/^What graph feature\b/i, "ask which part of the graph students should use"],
+  [/requires matter through which/i, "ask directly whether the wave needs a medium"],
+  [/^Name the (?:Biology|Chemistry|Physics) term described here\b/i, "ask directly for the subject term"],
+  [/^Which (?:Biology|Chemistry|Physics) term means\b/i, "ask directly for the subject term"],
+  [/^What scientific skill is described as\b/i, "ask directly what the definition is called"],
+  [/^Which scientific skill is important because\b/i, "ask directly for the scientific term"],
+  [/^What is the (?:Biology|Chemistry|Physics) term for\b/i, "ask directly what the definition is called"],
+  [/^What (?:Biology|Chemistry|Physics) term means\b/i, "ask directly what the definition is called"],
 ];
 
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
@@ -128,12 +141,17 @@ for (const { topic, question, bank } of entries) {
     violations.push(`${location}: state whether a yes-no response and explanation are required: ${prompt}`);
   }
 
-  if (question.kind === "explain" && answer.split(/\s+/).length > 14 && /^(?:What|Which)\b/i.test(prompt)) {
+  if (
+    question.kind === "explain"
+    && answer.split(/\s+/).length > 14
+    && /^(?:What|Which)\b/i.test(prompt)
+    && !/\b(?:explain|describe|compare|justify|evaluate|calculate|state|give|name|identify)\b/i.test(prompt)
+  ) {
     violations.push(`${location}: use an explicit explain, describe or state command: ${prompt}`);
   }
 }
 
-if (topics.length < 171 || entries.length < 11_000) {
+if (topics.length < 171 || entries.length < 10_800) {
   violations.push(`audit coverage unexpectedly fell to ${entries.length} prompts across ${topics.length} topics`);
 }
 

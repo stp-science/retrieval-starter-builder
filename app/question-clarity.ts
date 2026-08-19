@@ -42,6 +42,42 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
     return { ...question, a: "non-contact force" };
   }
 
+  const meantBy = stem.match(/^what is meant by (.+)$/i);
+  if (meantBy) {
+    return { ...question, q: `What does ${lowerFirst(meantBy[1])} mean?` };
+  }
+
+  const namedSubjectTerm = stem.match(/^name the (biology|chemistry|physics) term described here:\s*(.+)$/i);
+  if (namedSubjectTerm) {
+    return {
+      ...question,
+      q: `What is the ${namedSubjectTerm[1]} term for “${lowerFirst(namedSubjectTerm[2])}”?`,
+    };
+  }
+
+  const subjectTermMeans = stem.match(/^which (biology|chemistry|physics) term means [“"]?(.+?)[”"]?$/i);
+  if (subjectTermMeans) {
+    return {
+      ...question,
+      q: `What is the ${subjectTermMeans[1]} term for “${lowerFirst(subjectTermMeans[2])}”?`,
+    };
+  }
+
+  const termDescription = stem.match(/^(?:what|which) (?:term|word) (?:describes|applies to) (.+)$/i);
+  if (termDescription) {
+    return { ...question, q: `What do we call ${lowerFirst(termDescription[1])}?` };
+  }
+
+  const ideaExplains = stem.match(/^which idea explains (.+)$/i);
+  if (ideaExplains) {
+    return { ...question, q: `What explains ${lowerFirst(ideaExplains[1])}?` };
+  }
+
+  const typeCategory = stem.match(/^which ([a-z-]+) category (.+)$/i);
+  if (typeCategory) {
+    return { ...question, q: `What type of ${typeCategory[1].toLowerCase()} ${lowerFirst(typeCategory[2])}?` };
+  }
+
   const yesNo = stem.match(/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i);
   if (yesNo) {
     const instruction = answerNeedsExplanation(question.a)
@@ -145,3 +181,4 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
 
   return original === question.q ? question : { ...question, q: original };
 }
+
