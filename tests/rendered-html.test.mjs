@@ -32,7 +32,7 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /9,861(?:<!-- -->)?-question bank/i);
+  assert.match(html, /10,366(?:<!-- -->)?-question bank/i);
   assert.match(html, /every Year 7–9 topic contains 40 questions checked against its topic guide/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
@@ -51,7 +51,7 @@ test("includes every IB Biology, Chemistry and Physics syllabus topic", async ()
 
   assert.equal((biology.match(/^  b\(/gm) ?? []).length, 40);
   assert.equal((chemistry.match(/^  c\(/gm) ?? []).length, 22);
-  assert.equal((physics.match(/^  p\(/gm) ?? []).length, 24);
+  assert.equal((physics.match(/^  p\(/gm) ?? []).length, 27);
   assert.match(bank, /year: "IB"/);
   assert.match(bank, /oneWordQuestions: buildOneWordQuestions/);
   assert.match(page, /ibSubjects/);
