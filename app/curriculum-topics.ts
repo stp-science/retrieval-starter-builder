@@ -158,8 +158,20 @@ const keywordRefinements: Record<string, Record<string, string>> = {
 
 const questionRefinements: Record<
   string,
-  Record<string, Pick<CurriculumQuestion, "q" | "a">>
+  Record<string, Partial<Pick<CurriculumQuestion, "q" | "a" | "kind">>>
 > = {
+  "y7-material-properties": {
+    "How is hardness defined in this topic?": {
+      q: "What is hardness as a material property?",
+      a: "Resistance to scratching or denting.",
+    },
+  },
+  "y7-thermal-energy": {
+    "Name one source of thermal energy studied in this topic.": {
+      q: "Name one source that can increase an object's thermal energy.",
+      a: "For example, the Sun, fire, friction or an electric heater.",
+    },
+  },
   "y7-deformation-friction": {
     "Why might a heavier object not always deform a surface more?": {
       q: "Why might a heavier object not always deform a surface more?",
@@ -176,18 +188,135 @@ const questionRefinements: Record<
   },
   "y7-cellular-respiration": {
     "Does respiration occur in unicellular organisms?": {
-      q: "Which scientist is named in the guide for early work linking plants and air?",
-      a: "Joseph Priestley",
+      q: "Which scientist used experiments with plants and burning candles to investigate changes in air?",
+      a: "Joseph Priestley.",
     },
     "Why is respiration essential for a unicellular organism?": {
       q: "Why can healing increase a cell's demand for respiration?",
       a: "Repair processes need chemical energy released by respiration.",
     },
   },
+  "y8-mixtures": {
+    "What is crystallisation used for in this topic?": {
+      q: "What is crystallisation used for when separating a solution?",
+      a: "Recovering a dissolved solid as crystals from the solution.",
+    },
+  },
+  "y8-solubility": {
+    "What should be done with an anomalous solubility result?": {
+      q: "What should you do with an anomalous result when calculating a mean?",
+      a: "Investigate it and repeat the measurement if possible. Exclude it from the mean only when there is evidence that it is invalid, and state what you did.",
+    },
+  },
+  "y8-reproduction": {
+    "How many parents are involved in sexual reproduction?": {
+      q: "Why does sexual reproduction usually produce genetically varied offspring?",
+      a: "Genetic information from two parents is combined during fertilisation.",
+    },
+    "How many parents are needed for asexual reproduction?": {
+      q: "Why are offspring produced by asexual reproduction usually genetically identical to their parent?",
+      a: "They are produced from one parent without the fusion of gametes.",
+    },
+  },
+  "y8-static-electricity": {
+    "What is the unit of voltage?": {
+      q: "What is the unit of potential difference (voltage)?",
+      a: "The volt (V).",
+    },
+  },
+  "y8-chemical-changes": {
+    "What does irreversible mean?": {
+      q: "What is a reversible chemical reaction?",
+      a: "A reaction in which the products can react to form the original reactants.",
+    },
+    "What does reversible mean?": {
+      q: "What is a reversible change?",
+      a: "A change that can be reversed to recover the original substance or state.",
+    },
+  },
   "y8-genetic-material": {
     "Why is variation important in a population?": {
       q: "Why are inheritance patterns not perfectly predictable?",
       a: "Offspring inherit unique combinations of genetic material, so traits show variation and chance patterns.",
+    },
+  },
+  "y8-digestive-system": {
+    "Name the seven components of a balanced diet in this topic.": {
+      q: "Name the seven components of a balanced diet.",
+      a: "Carbohydrates, fats, proteins, vitamins, minerals, fibre and water.",
+    },
+  },
+  "y8-stars-planets": {
+    "What criteria define a planet in this topic?": {
+      q: "State three criteria used to classify an object as a planet.",
+      a: "It orbits a star, is roughly spherical and has cleared most debris from its orbital path.",
+    },
+  },
+  "y8-pressure": {
+    "If the area doubles and force stays constant, what happens to pressure?": {
+      q: "What does the speed of an object tell you?",
+      a: "How much distance the object travels in a given time.",
+    },
+    "If force and area both double, what happens to pressure?": {
+      q: "Write the equation used to calculate speed.",
+      a: "Speed = distance ÷ time.",
+    },
+    "What does contact area mean?": {
+      q: "What is the standard unit of speed?",
+      a: "Metres per second (m/s).",
+    },
+    "Why is tool shape important?": {
+      q: "A runner travels 100 m in 20 s. Calculate the runner's average speed.",
+      a: "5 m/s.",
+    },
+    "How does a rolling pin reduce pressure compared with a thin edge?": {
+      q: "A cyclist travels 240 m in 60 s. Calculate the cyclist's average speed.",
+      a: "4 m/s.",
+    },
+    "Why can a hammer head create a dent?": {
+      q: "A car travels at 12 m/s for 5 s. Calculate the distance travelled.",
+      a: "60 m.",
+    },
+    "What should be kept the same when comparing two contact areas?": {
+      q: "A swimmer travels 50 m at an average speed of 2 m/s. Calculate the time taken.",
+      a: "25 s.",
+    },
+    "Why is a fair comparison needed in a pressure demonstration?": {
+      q: "Two students travel the same distance. How can you decide which student moved faster?",
+      a: "The student who took less time had the greater average speed.",
+    },
+    "What is the independent variable when comparing sharp and blunt ends under the same force?": {
+      q: "What is average speed?",
+      a: "The total distance travelled divided by the total time taken.",
+    },
+    "What is the dependent variable in a clay-dent pressure test?": {
+      q: "Why can average speed hide changes in speed during a journey?",
+      a: "It gives one value for the whole journey and does not show when the object sped up, slowed down or stopped.",
+      kind: "explain",
+    },
+    "What evidence would support the claim that smaller area produces greater pressure?": {
+      q: "What quantity should be plotted on the horizontal axis of a distance–time graph?",
+      a: "Time.",
+    },
+    "Is pressure relevant only to liquids?": {
+      q: "What quantity should be plotted on the vertical axis of a distance–time graph?",
+      a: "Distance.",
+    },
+    "Why might a heavier object not always create more pressure?": {
+      q: "What does a steeper line on a distance–time graph show?",
+      a: "A greater speed.",
+    },
+    "What does 'concentrate force' mean?": {
+      q: "What does a horizontal line on a distance–time graph show?",
+      a: "The object is stationary because its distance is not changing.",
+    },
+    "What does 'spread force' mean?": {
+      q: "How could you measure the average speed of a trolley in a classroom investigation?",
+      a: "Measure a known distance and the time taken, then divide the distance by the time.",
+    },
+    "How does Year 8 solid pressure prepare students for fluid pressure?": {
+      q: "Why should a speed investigation be repeated?",
+      a: "Repeats help identify unusual results and make the calculated average speed more reliable.",
     },
   },
   "y9-periodic-table": {
@@ -199,17 +328,55 @@ const questionRefinements: Record<
       q: "How does Group 17 reactivity change down the group?",
       a: "It decreases.",
     },
+    "How are elements broadly classified in this topic?": {
+      q: "What two broad categories can elements be classified into?",
+      a: "Metals and non-metals.",
+    },
+    "Name one Group 1 element studied in this topic.": {
+      q: "Name one Group 1 element.",
+      a: "Lithium, sodium, potassium, rubidium or caesium.",
+    },
+    "Name one halogen studied in this topic.": {
+      q: "Name one Group 17 element (halogen).",
+      a: "Fluorine, chlorine, bromine or iodine.",
+    },
+  },
+  "y9-forces": {
+    "Name one common force used in the guide's force diagrams.": {
+      q: "Name one force that could be shown on a force diagram.",
+      a: "For example, an applied force, friction, weight, support force, tension or drag.",
+    },
+  },
+  "y9-pressure-fluids": {
+    "Which scientist is linked in the guide to early pressure investigations?": {
+      q: "Which scientist is the SI pressure unit, the pascal, named after?",
+      a: "Blaise Pascal.",
+    },
   },
 };
 
-export const curriculumTopics: CurriculumTopic[] = rawCurriculumTopics.map((topic) => ({
-  ...topic,
-  keywords: topic.keywords.map((keyword) => keywordRefinements[topic.id]?.[keyword] ?? keyword),
-  questions: topic.questions.map((question) => ({
-    ...question,
-    ...(questionRefinements[topic.id]?.[question.q] ?? {}),
-  })),
-}));
+const inactiveJuniorTopicIds = new Set([
+  "y8-genetic-material",
+  "y8-gas-exchange",
+  "y9-transport-plants",
+]);
+
+export const curriculumTopics: CurriculumTopic[] = rawCurriculumTopics
+  .filter((topic) => !inactiveJuniorTopicIds.has(topic.id))
+  .map((topic) => ({
+    ...topic,
+    name: topic.id === "y8-pressure" ? "Pressure and Speed" : topic.name,
+    keywords: [
+      ...topic.keywords.map((keyword) => keywordRefinements[topic.id]?.[keyword] ?? keyword),
+      ...(topic.id === "y8-pressure"
+        ? ["speed", "distance", "time", "average speed", "distance-time graph"]
+        : []),
+    ],
+    questions: topic.questions.map((question) => ({
+      ...question,
+      ...(questionRefinements[topic.id]?.[question.q] ?? {}),
+    })),
+  }));
 
 export const curriculumVisuals: Record<string, CurriculumVisual[]> = Object.assign(
   {},

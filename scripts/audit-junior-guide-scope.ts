@@ -17,9 +17,7 @@ const expectedTopicIds = new Set([
   "y8-reproduction",
   "y8-static-electricity",
   "y8-chemical-changes",
-  "y8-genetic-material",
   "y8-digestive-system",
-  "y8-gas-exchange",
   "y8-pressure",
   "y8-adaptation-evolution",
   "y8-stars-planets",
@@ -30,7 +28,6 @@ const expectedTopicIds = new Set([
   "y9-forces",
   "y9-pressure-fluids",
   "y9-transport-humans",
-  "y9-transport-plants",
   "y9-spheres-earth",
   "y9-ecosystems",
 ]);
@@ -107,7 +104,7 @@ if (
   [...expectedTopicIds].some((topicId) => !actualTopicIds.has(topicId))
 ) {
   throw new Error(
-    `Expected the 31 guide-backed Years 7-9 topics; found ${[
+    `Expected the 28 current Years 7-9 topics; found ${[
       ...actualTopicIds,
     ].join(", ")}.`,
   );
@@ -151,12 +148,23 @@ for (const topic of juniorTopics) {
 }
 
 const unexpectedSupplements = Object.keys(juniorGuideSupplementQuestions).filter(
-  (topicId) => !actualTopicIds.has(topicId),
+  (topicId) =>
+    !actualTopicIds.has(topicId) &&
+    !["y8-genetic-material", "y8-gas-exchange", "y9-transport-plants"].includes(topicId),
 );
 if (unexpectedSupplements.length > 0) {
   throw new Error(
     `Junior guide supplements include inactive topics: ${unexpectedSupplements.join(", ")}.`,
   );
+}
+
+const pressureAndSpeed = juniorTopics.find((topic) => topic.id === "y8-pressure");
+if (
+  pressureAndSpeed?.name !== "Pressure and Speed" ||
+  !pressureAndSpeed.keywords.includes("speed") ||
+  !pressureAndSpeed.questions.some((question) => /calculate speed|equation used to calculate speed/i.test(question.q))
+) {
+  throw new Error("Year 8 Pressure must include the agreed speed content.");
 }
 
 console.log(

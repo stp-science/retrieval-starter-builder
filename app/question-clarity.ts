@@ -4,6 +4,13 @@ type QuestionLike = {
   kind: "short" | "explain";
 };
 
+const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
+
+/** Questions answered only with Yes or No do not require enough retrieval thinking. */
+export function isBareYesNoQuestion(question: QuestionLike) {
+  return yesNoOpening.test(question.q.trim()) && /^(?:yes|no)[.!]?$/i.test(question.a.trim());
+}
+
 function finish(value: string, mark = ".") {
   return `${value.trim().replace(/[?.!…]+$/, "")}${mark}`;
 }
@@ -22,7 +29,56 @@ function answerNeedsExplanation(answer: string) {
  * export formats, and is also checked by the question-language audit.
  */
 export function clarifyQuestion<T extends QuestionLike>(question: T): T {
-  const original = question.q.trim().replace(/\s+/g, " ");
+  let original = question.q.trim().replace(/\s+/g, " ");
+
+  const exactRefinements: Record<string, Pick<QuestionLike, "q" | "a">> = {
+    "what should be done with an anomalous solubility result?": {
+      q: "What should you do with an anomalous result when calculating a mean?",
+      a: "Investigate it and repeat the measurement if possible. Exclude it from the mean only when there is evidence that it is invalid, and state what you did.",
+    },
+    "name the seven components of a balanced diet in this topic.": {
+      q: "Name the seven components of a balanced diet.",
+      a: "Carbohydrates, fats, proteins, vitamins, minerals, fibre and water.",
+    },
+    "what is crystallisation used for in this topic?": {
+      q: "What is crystallisation used for when separating a solution?",
+      a: "Recovering a dissolved solid as crystals from the solution.",
+    },
+    "which scientist is linked in the guide to early pressure investigations?": {
+      q: "Which scientist is the SI pressure unit, the pascal, named after?",
+      a: "Blaise Pascal.",
+    },
+    "name one common force used in the guide's force diagrams.": {
+      q: "Name one force that could be shown on a force diagram.",
+      a: "For example, an applied force, friction, weight, support force, tension or drag.",
+    },
+    "is friction an internal or external force on an object?": {
+      q: "Classify friction as an internal or external force on an object.",
+      a: "An external force.",
+    },
+    "is tension within a stretched rope internal or external to the rope?": {
+      q: "Classify tension as an internal or external force within a stretched rope.",
+      a: "An internal force.",
+    },
+    "is melting ice a physical or chemical change?": {
+      q: "Classify melting ice as a physical or chemical change.",
+      a: "A physical change because no new substance forms.",
+    },
+    "what type of respiration is studied in this year 7 topic?": {
+      q: "What type of respiration uses oxygen to release energy from glucose?",
+      a: "Aerobic respiration.",
+    },
+    "give one use of a halogen from the guide.": {
+      q: "Give one use of a Group 17 element (halogen).",
+      a: "For example, chlorine is used to disinfect water or iodine is used as an antiseptic.",
+    },
+  };
+  const exactRefinement = exactRefinements[original.toLowerCase()];
+  if (exactRefinement) return { ...question, ...exactRefinement };
+
+  original = original
+    .replace(/\s+studied in this topic(?=[?.!]|$)/i, "")
+    .replace(/\s+in this topic(?=[?.!]|$)/i, "");
   const stem = original.replace(/[?.!…]+$/, "");
 
   // Targeted fixes for reported questions.
@@ -78,12 +134,16 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
     return { ...question, q: `What type of ${typeCategory[1].toLowerCase()} ${lowerFirst(typeCategory[2])}?` };
   }
 
-  const yesNo = stem.match(/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i);
+  const yesNo = stem.match(yesNoOpening);
   if (yesNo) {
-    const instruction = answerNeedsExplanation(question.a)
-      ? "Answer yes or no, then explain"
-      : "Answer yes or no";
-    return { ...question, q: `${instruction}: ${finish(stem, "?")}` };
+    if (!/^(?:yes|no)\b/i.test(question.a.trim())) {
+      return original === question.q ? question : { ...question, q: original };
+    }
+    return {
+      ...question,
+      q: `Give a scientific explanation for your answer: ${finish(stem, "?")}`,
+      kind: "explain",
+    };
   }
 
   const formulaClue = stem.match(/^(?:what|which) (?:[a-z-]+ )*?(?:quantity|force|energy|speed|rate|total|value) (?:is|can be) calculated using (.+)$/i);
@@ -105,7 +165,7 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
   if (called) return { ...question, q: finish(`Name ${lowerFirst(called[1])}`) };
 
   const means = stem.match(/^what does (.+) mean$/i);
-  if (means) return { ...question, q: finish(`Define ${lowerFirst(means[1])}`) };
+  if (means) return { ...question, q: finish(`What does ${lowerFirst(means[1])} mean`, "?") };
 
   const lawStatement = stem.match(/^what does (.+? law) state(.*)$/i);
   if (lawStatement) return { ...question, q: finish(`State ${lowerFirst(lawStatement[1])}${lawStatement[2]}`) };
@@ -149,7 +209,7 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
       return { ...question, q: finish(`Describe ${subject}`) };
     }
     if (question.kind === "explain") {
-      return { ...question, q: finish(`Define ${subject.replace(/^(?:a|an)\s+/i, "")}`) };
+      return original === question.q ? question : { ...question, q: original };
     }
     return original === question.q ? question : { ...question, q: original };
   }
@@ -159,7 +219,7 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
     const subject = lowerFirst(pluralDefinition[1]);
     const asksForList = /^(?:(?:the )?(?:one|two|three|four|five|six|main|key|major|different)\b|the (?:[a-z-]+ )?(?:products|reactants|features|conditions|factors|parts|stages|steps|uses|causes|effects|requirements|limitations|advantages|disadvantages)\b)/i.test(subject);
     if (asksForList) return { ...question, q: finish(`State ${subject}`) };
-    if (question.kind === "explain") return { ...question, q: finish(`Define ${subject}`) };
+    if (question.kind === "explain") return original === question.q ? question : { ...question, q: original };
     return original === question.q ? question : { ...question, q: original };
   }
 
@@ -181,4 +241,3 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
 
   return original === question.q ? question : { ...question, q: original };
 }
-

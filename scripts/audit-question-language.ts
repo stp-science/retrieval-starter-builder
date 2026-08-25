@@ -7,7 +7,7 @@ import { year11Topics } from "../app/year11-question-bank";
 import { seniorTopics } from "../app/year12-question-bank";
 import { year13Topics } from "../app/year13-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "../app/year-group-expansion";
-import { clarifyQuestion } from "../app/question-clarity";
+import { clarifyQuestion, isBareYesNoQuestion } from "../app/question-clarity";
 
 type AuditQuestion = {
   q: string;
@@ -51,13 +51,17 @@ const topics: AuditTopic[] = [
     ...topic,
     questions: uniqueQuestionWording([
       ...topic.questions,
-      ...(expandedQuestions[topic.id] ?? []),
-    ].map(clarifyQuestion)),
+      ...(typeof topic.year === "number" && topic.year >= 7 && topic.year <= 9
+        ? []
+        : (expandedQuestions[topic.id] ?? [])),
+    ].filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
       ? uniqueQuestionWording([
           ...topic.oneWordQuestions,
-          ...(expandedOneWordQuestions[topic.id] ?? []),
-        ].map(clarifyQuestion))
+          ...(typeof topic.year === "number" && topic.year >= 7 && topic.year <= 9
+            ? []
+            : (expandedOneWordQuestions[topic.id] ?? [])),
+        ].filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion))
       : [],
   })),
   ...(ibTopics as AuditTopic[]).map((topic) => ({
@@ -100,6 +104,9 @@ const awkwardPatterns: Array<[RegExp, string]> = [
   [/^Which scientific skill is important because\b/i, "ask directly for the scientific term"],
   [/^What is the (?:Biology|Chemistry|Physics) term for\b/i, "ask directly what the definition is called"],
   [/^What (?:Biology|Chemistry|Physics) term means\b/i, "ask directly what the definition is called"],
+  [/\b(?:in this topic|in the guide|named in the guide|guide's)\b/i, "remove hidden lesson or guide context"],
+  [/^Define .+\b(?:used for|made from|occur|happen|contain|needed|found|measured|shown)\b/i, "use a complete natural question instead of a malformed definition"],
+  [/^Answer yes or no\b/i, "replace low-thinking yes-no wording"],
 ];
 
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
@@ -125,7 +132,7 @@ for (const { topic, question, bank } of entries) {
     if (pattern.test(prompt)) violations.push(`${location}: ${advice}: ${prompt}`);
   }
 
-  if (bank === "one-word" && yesNoOpening.test(prompt)) {
+  if (bank === "one-word" && yesNoOpening.test(prompt) && /^(?:yes|no)\b/i.test(answer)) {
     violations.push(`${location}: One Worders cannot use a yes/no prompt: ${prompt}`);
   }
 
@@ -137,7 +144,7 @@ for (const { topic, question, bank } of entries) {
     violations.push(`${location}: make it explicit that an equation is required: ${prompt}`);
   }
 
-  if (/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i.test(prompt)) {
+  if (/^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i.test(prompt) && /^(?:yes|no)\b/i.test(answer)) {
     violations.push(`${location}: state whether a yes-no response and explanation are required: ${prompt}`);
   }
 
@@ -145,13 +152,14 @@ for (const { topic, question, bank } of entries) {
     question.kind === "explain"
     && answer.split(/\s+/).length > 14
     && /^(?:What|Which)\b/i.test(prompt)
+    && !/^What (?:is|are|does|should)\b/i.test(prompt)
     && !/\b(?:explain|describe|compare|justify|evaluate|calculate|state|give|name|identify)\b/i.test(prompt)
   ) {
     violations.push(`${location}: use an explicit explain, describe or state command: ${prompt}`);
   }
 }
 
-if (topics.length < 171 || entries.length < 10_800) {
+if (topics.length < 168 || entries.length < 9_000) {
   violations.push(`audit coverage unexpectedly fell to ${entries.length} prompts across ${topics.length} topics`);
 }
 

@@ -32,13 +32,14 @@ test("renders development preview metadata", async () => {
   );
   const html = await response.text();
   assert.match(html, developmentPreviewMeta);
-  assert.match(html, /10,366(?:<!-- -->)?-question bank/i);
-  assert.match(html, /every Year 7–9 topic contains 40 questions checked against its topic guide/i);
+  assert.match(html, /9,687(?:<!-- -->)?-question bank/i);
+  assert.match(html, /every Year 7–9 topic contains around 40 user-friendly questions checked against its topic guide/i);
   assert.match(html, /Year (?:<!-- -->)?10/i);
   assert.match(html, /Year (?:<!-- -->)?11/i);
   assert.match(html, /Year (?:<!-- -->)?12/i);
   assert.match(html, /Year (?:<!-- -->)?13/i);
   assert.match(html, /IB Sciences/i);
+  assert.doesNotMatch(html, /Transport Systems in Plants/i);
   assert.doesNotMatch(html, /topic-option selected/i);
 });
 
@@ -51,7 +52,7 @@ test("includes every IB Biology, Chemistry and Physics syllabus topic", async ()
 
   assert.equal((biology.match(/^  b\(/gm) ?? []).length, 40);
   assert.equal((chemistry.match(/^  c\(/gm) ?? []).length, 22);
-  assert.equal((physics.match(/^  p\(/gm) ?? []).length, 27);
+  assert.equal((physics.match(/^  p\(/gm) ?? []).length, 24);
   assert.match(bank, /year: "IB"/);
   assert.match(bank, /oneWordQuestions: buildOneWordQuestions/);
   assert.match(page, /ibSubjects/);
@@ -255,7 +256,8 @@ test("uses direct student-friendly wording across generated question banks", asy
   assert.match(skills, /What do we call \$\{definition\}\?/);
   assert.doesNotMatch(skills, /Name the scientific skill used for this purpose|What scientific skill is described as/);
   assert.match(page, /\.map\(clarifyQuestion\)/, "the full question bank does not use the clarity pass");
-  assert.match(clarity, /Answer yes or no/, "yes-no prompts do not tell students how to answer");
+  assert.match(clarity, /Give a scientific explanation for your answer/, "misconception prompts do not require scientific thinking");
+  assert.match(clarity, /isBareYesNoQuestion/, "bare yes-no prompts are not excluded from generated activities");
   assert.match(clarity, /what does \$\{symbol\} represent/, "equation prompts do not identify the target symbol");
   assert.match(audit, /make the equation symbol being recalled explicit/, "the full-bank audit does not reject indirect equation clues");
   assert.match(audit, /ask which type of circuit or connection/, "the full-bank audit does not reject compressed circuit wording");

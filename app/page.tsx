@@ -11,7 +11,7 @@ import { year11Courses, year11Topics } from "./year11-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "./year-group-expansion";
 import { scientificSkillsTopics } from "./scientific-skills-question-bank";
 import { assertSpecificKeywordSets } from "./keyword-quality";
-import { clarifyQuestion } from "./question-clarity";
+import { clarifyQuestion, isBareYesNoQuestion } from "./question-clarity";
 import { assertThinkingLinkingCoverage, buildThinkingLinkingKeywords } from "./thinking-linking-keywords";
 
 type Difficulty = "foundation" | "core" | "stretch";
@@ -555,16 +555,24 @@ const yearGroupTopics: Topic[] = [
 const topics: Topic[] = [
   ...yearGroupTopics.map((topic) => ({
     ...topic,
-    questions: uniqueQuestionWording([...topic.questions, ...topicExpansionQuestions(topic)].map(clarifyQuestion)),
+    questions: uniqueQuestionWording(
+      [...topic.questions, ...topicExpansionQuestions(topic)]
+        .filter((question) => !isBareYesNoQuestion(question))
+        .map(clarifyQuestion),
+    ),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? uniqueQuestionWording([...topic.oneWordQuestions, ...topicExpansionOneWordQuestions(topic)].map(clarifyQuestion))
+      ? uniqueQuestionWording(
+          [...topic.oneWordQuestions, ...topicExpansionOneWordQuestions(topic)]
+            .filter((question) => !isBareYesNoQuestion(question))
+            .map(clarifyQuestion),
+        )
       : undefined,
   })),
   ...ibTopics.map((topic) => ({
     ...topic,
-    questions: uniqueQuestionWording(topic.questions.map(clarifyQuestion)),
+    questions: uniqueQuestionWording(topic.questions.filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? uniqueQuestionWording(topic.oneWordQuestions.map(clarifyQuestion))
+      ? uniqueQuestionWording(topic.oneWordQuestions.filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion))
       : undefined,
   })),
 ];
@@ -2086,7 +2094,7 @@ export default function Home() {
               </label>
             ))}
           </div>
-          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : typeof year === "number" && year <= 9 ? "every Year 7–9 topic contains 40 questions checked against its topic guide" : "every topic contains at least 50 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
+          <p className="bank-note"><strong>Large checked bank:</strong> {year === "IB" ? "every IB syllabus topic contains 36 course-specific prompts" : typeof year === "number" && year <= 9 ? "every Year 7–9 topic contains around 40 user-friendly questions checked against its topic guide" : "every topic contains at least 50 prompts"}. Generate again for a fresh mix, or swap individual questions in the classroom preview.</p>
 
           <div className="divider" />
           <div className="step-heading">
