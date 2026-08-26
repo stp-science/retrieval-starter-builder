@@ -1183,6 +1183,14 @@ export default function Home() {
       const unused = shuffled(source).filter((question) => !result.some((picked) => picked.q === question.q));
       result.push(...unused.slice(0, requested - result.length));
     }
+    const fixedQuestionActivities: ActivityId[] = ["connect-four", "retrieval-clock", "retrieval-placemat"];
+    if (fixedQuestionActivities.includes(activity) && result.length < requested) {
+      const fallbackSource = activity === "retrieval-placemat"
+        ? pool.map(openEndedPlacematQuestion)
+        : pool;
+      const unusedFallback = shuffled(fallbackSource).filter((question) => !result.some((picked) => picked.q === question.q));
+      result.push(...unusedFallback.slice(0, requested - result.length));
+    }
     const keywords = activity === "thinking-linking"
       ? buildThinkingLinkingKeywords(selectedTopics)
       : shuffled(selectedTopics.flatMap((topic) => topic.keywords));
