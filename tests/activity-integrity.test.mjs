@@ -54,7 +54,7 @@ test("keeps Connect Four responsive and fully populated", async () => {
   assert.match(page, /unusedFallback\.slice\(0, requested - result\.length\)/);
   assert.match(page, /className="connect-four-grid"/);
 
-  assert.match(enhancer, /data\.connectFourReveal/);
+  assert.match(enhancer, /dataset\.connectFourReveal/);
   assert.match(enhancer, /connect-four-square-answer/);
   assert.match(showAll, /if \(button\.textContent !== nextLabel\) button\.textContent = nextLabel/);
   assert.match(showAll, /if \(button\.getAttribute\("aria-expanded"\) !== nextExpanded\)/);
