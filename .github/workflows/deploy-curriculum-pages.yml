@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check activity wiring
+        run: node --test tests/activity-integrity.test.mjs
+
       - name: Build static site
         run: npx next build
 
