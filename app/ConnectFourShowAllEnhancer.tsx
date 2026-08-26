@@ -24,8 +24,10 @@ function updateShowAllLabels(sheet: HTMLElement) {
   const answers = getAnswerBoxes(sheet);
   const allVisible = answers.length > 0 && answers.every((answer) => !answer.hidden);
   document.querySelectorAll<HTMLButtonElement>("[data-connect-four-show-all='true']").forEach((button) => {
-    button.textContent = allVisible ? "Hide all answers" : "Show all answers";
-    button.setAttribute("aria-expanded", allVisible ? "true" : "false");
+    const nextLabel = allVisible ? "Hide all answers" : "Show all answers";
+    const nextExpanded = allVisible ? "true" : "false";
+    if (button.textContent !== nextLabel) button.textContent = nextLabel;
+    if (button.getAttribute("aria-expanded") !== nextExpanded) button.setAttribute("aria-expanded", nextExpanded);
   });
 }
 
