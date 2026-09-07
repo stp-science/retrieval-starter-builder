@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Audit question wording
+        run: npm run audit:questions
+
       - name: Check activity wiring
         run: node --test tests/activity-integrity.test.mjs
 
