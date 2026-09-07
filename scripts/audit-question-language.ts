@@ -109,10 +109,26 @@ const awkwardPatterns: Array<[RegExp, string]> = [
   [/^Answer yes or no\b/i, "replace low-thinking yes-no wording"],
 ];
 
+const commandWords = "Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete|Use|Choose|Plot|Measure";
+const directCommand = new RegExp(`^(?:${commandWords})\\b`, "i");
+const contextualCommand = new RegExp(`^(?:At|In|For|When|During|Using|From|With|After|Before)\\b[^.!?]{0,160},\\s*(?:${commandWords})\\b`, "i");
+const scenarioCommand = new RegExp(`^[^?]{3,180}[.!]\\s+(?:${commandWords})\\b`, "i");
+
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
 const formulaAnswer = /[A-Za-zΔτΦωα][A-Za-z0-9_{}₀-₉()]*\s*=|=\s*[A-Za-z0-9ΔτΦωα]|→|⇌/;
 const vagueFormulaPrompt = /^(?:What is|How is|How are)\b/i;
 const explicitFormulaCommand = /\b(?:define|equation|relationship|related|calculate|calculated|found|link|mean|state|write|express)\b/i;
+
+const vagueNoun = /^(?:State|Name|Identify|Describe|Explain|Write|Give|List)\s+(?:what\s+)?(?:the\s+|a\s+|an\s+)?(formula|equation|symbol|graph|diagram|value|number|direction|colour|products?|reactants?|role|function|process|method|structure|part|stage|step|trend|relationship|result|feature|factor|unit|rows?|columns?)\b/i;
+const qualifier = /\b(?:of|for|when|in|from|between|that|which|where|using|on|with|to|during|after|before|under|at|by)\b/i;
+const malformedSingularWhat = /\bwhat (?:a|an|the) (?:formula|arrowhead|graph|symbol|equation|indicator|force|object|cell|particle|solution|reaction|element|atom|gene|allele|chromosome|enzyme|wave|current|voltage|resistance|temperature|pressure|mass|weight|speed|velocity|acceleration) (?:tell|show|mean|represent|indicate|affect|change|act|react|move|flow|increase|decrease|depend|carry|allow|provide|cause|produce|form|require|need)\b/i;
+const unsupportedGraphReference = /\b(?:the|this) graph\b/i;
+const graphQualifier = /\bgraph (?:of|showing|for|where|that|with)\b|\b(?:distance[-– ]time|velocity[-– ]time|speed[-– ]time|force[-– ]extension|solubility|cooling|heating|energy[- ]profile|bar|line|scatter|histogram) graph\b/i;
+const unsupportedDiagramReference = /\b(?:the|this) diagram\b/i;
+const diagramQualifier = /\b(?:particle|force|circuit|ray|energy[- ]level|energy[- ]profile|cell|wave|free[- ]body|Punnett|Venn) diagram\b|\bdiagram (?:of|showing|for|where|that|with)\b/i;
+const hiddenReference = /\b(?:shown above|shown below|given above|given below|the previous question|the question above|the question below)\b/i;
+const vaguePronounCommand = /^(?:State|Name|Identify|Describe|Explain)\s+(?:what|why|how)?\s*(?:it|they|this|these|those)\b/i;
+
 const violations: string[] = [];
 
 for (const { topic, question, bank } of entries) {
@@ -130,6 +146,35 @@ for (const { topic, question, bank } of entries) {
 
   for (const [pattern, advice] of awkwardPatterns) {
     if (pattern.test(prompt)) violations.push(`${location}: ${advice}: ${prompt}`);
+  }
+
+  if (!directCommand.test(prompt) && !contextualCommand.test(prompt) && !scenarioCommand.test(prompt)) {
+    violations.push(`${location}: use an explicit command word so the question works independently: ${prompt}`);
+  }
+
+  const generic = prompt.match(vagueNoun);
+  if (generic && !qualifier.test(prompt) && !/[=→⇌]/.test(prompt)) {
+    violations.push(`${location}: add the missing scientific context for '${generic[1]}': ${prompt}`);
+  }
+
+  if (malformedSingularWhat.test(prompt)) {
+    violations.push(`${location}: subject-verb grammar is malformed after command-word conversion: ${prompt}`);
+  }
+
+  if (unsupportedGraphReference.test(prompt) && !graphQualifier.test(prompt)) {
+    violations.push(`${location}: name the type or content of the graph because no separate graph is shown: ${prompt}`);
+  }
+
+  if (unsupportedDiagramReference.test(prompt) && !diagramQualifier.test(prompt)) {
+    violations.push(`${location}: name the type or content of the diagram because no separate diagram is shown: ${prompt}`);
+  }
+
+  if (hiddenReference.test(prompt)) {
+    violations.push(`${location}: remove the hidden reference to material that is not displayed with the question: ${prompt}`);
+  }
+
+  if (vaguePronounCommand.test(prompt)) {
+    violations.push(`${location}: replace the pronoun with the scientific object or process being asked about: ${prompt}`);
   }
 
   if (bank === "one-word" && yesNoOpening.test(prompt) && /^(?:yes|no)\b/i.test(answer)) {
@@ -164,7 +209,7 @@ if (topics.length < 168 || entries.length < 9_000) {
 }
 
 if (violations.length) {
-  throw new Error(`Question-language audit failed:\n${violations.join("\n")}`);
+  throw new Error(`Question-language audit failed with ${violations.length} issue(s) across the fully rendered bank:\n${violations.join("\n")}`);
 }
 
-console.log(`Question-language audit passed: ${entries.length.toLocaleString("en-NZ")} prompts across ${topics.length} topics.`);
+console.log(`Question-language audit passed: ${entries.length.toLocaleString("en-NZ")} rendered prompts across ${topics.length} topics all use explicit commands, standalone context and the grammar checks.`);
