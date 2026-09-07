@@ -4,10 +4,16 @@ type QuestionLike = {
   kind: "short" | "explain";
 };
 
+export type QuestionTopicContext = {
+  id: string;
+  name: string;
+  strand?: string;
+};
+
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
 const commandOpening = /^(?:Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete)\b/i;
 const contextualCommandOpening = /^(?:At|In|For|When|During|Using|From|With)\b[^.!?]{0,120},\s*(?:define|state|name|identify|describe|explain|compare|calculate|determine|suggest|justify|evaluate|outline|write|give|classify|predict|select|label|draw|sketch|order|list|complete)\b/i;
-const linkingVerb = /^(?:is|are|was|were|contains?|controls?|describes?|allows?|provides?|measures?|has|have|uses?|causes?|produces?|forms?|shows?|links?|moves?|transports?|absorbs?|releases?|stores?|carries?|prevents?|detects?|responds?|occurs?|happens?|affects?|influences?|changes?|increases?|decreases?|requires?|needs?|must|can|will|would|should)$/i;
+const linkingVerb = /^(?:is|are|was|were|contains?|controls?|describes?|allows?|provides?|measures?|has|have|uses?|causes?|produces?|forms?|shows?|tells?|means?|represents?|indicates?|links?|moves?|transports?|absorbs?|releases?|stores?|carries?|prevents?|detects?|responds?|occurs?|happens?|affects?|influences?|changes?|increases?|decreases?|requires?|needs?|gives?|determines?|defines?|identifies?|explains?|predicts?|depends?|works?|reaches?|becomes?|stays?|remains?|reacts?|travels?|flows?|falls?|rises?|equals?|acts?|must|can|will|would|should)$/i;
 
 export function isBareYesNoQuestion(question: QuestionLike) {
   return yesNoOpening.test(question.q.trim()) && /^(?:yes|no)[.!]?$/i.test(question.a.trim());
@@ -80,8 +86,12 @@ function commandify<T extends QuestionLike>(question: T): T {
   const scenarioWhat = stem.match(/^(.+?[.!])\s+What (.+)$/i);
   if (scenarioWhat) {
     const tail = scenarioWhat[2];
-    const command = /^(?:does|do|did)\b/i.test(tail) ? "Describe" : "State";
-    return { ...question, q: `${scenarioWhat[1]} ${command} what ${lowerFirst(tail)}.` };
+    const auxiliary = tail.match(/^(does|do|did|can|could|would|should|will)\s+(.+)$/i);
+    if (auxiliary) {
+      const command = /^(?:does|do|did)$/i.test(auxiliary[1]) ? "Describe" : "State";
+      return { ...question, q: `${scenarioWhat[1]} ${command} what ${declarativeFromAuxiliary(auxiliary[1], auxiliary[2])}.` };
+    }
+    return { ...question, q: `${scenarioWhat[1]} State what ${lowerFirst(tail)}.` };
   }
 
   const contextRepresent = stem.match(/^(.+?),\s*what does (.+?) represent$/i);
@@ -158,14 +168,14 @@ function commandify<T extends QuestionLike>(question: T): T {
   const whatCause = stem.match(/^what causes? (.+)$/i);
   if (whatCause) return { ...question, q: finish(`Explain what causes ${lowerFirst(whatCause[1])}`), kind: "explain" };
 
-  const whatDoes = stem.match(/^what (?:does|do|did) (.+)$/i);
+  const whatDoes = stem.match(/^what (does|do|did) (.+)$/i);
   if (whatDoes) {
     const command = question.kind === "explain" || answerNeedsExplanation(question.a) ? "Describe" : "State";
-    return { ...question, q: finish(`${command} what ${lowerFirst(whatDoes[1])}`) };
+    return { ...question, q: finish(`${command} what ${declarativeFromAuxiliary(whatDoes[1], whatDoes[2])}`) };
   }
 
-  const whatModal = stem.match(/^what (?:can|could|would|should|will) (.+)$/i);
-  if (whatModal) return { ...question, q: finish(`State what ${lowerFirst(whatModal[1])}`) };
+  const whatModal = stem.match(/^what (can|could|would|should|will) (.+)$/i);
+  if (whatModal) return { ...question, q: finish(`State what ${declarativeFromAuxiliary(whatModal[1], whatModal[2])}`) };
 
   const equationPrompt = stem.match(/^(?:what|which) (equation|formula|relationship) (.+)$/i);
   if (equationPrompt) {
@@ -260,6 +270,32 @@ function commandify<T extends QuestionLike>(question: T): T {
   return prompt === question.q ? question : { ...question, q: prompt };
 }
 
+function addStandaloneContext<T extends QuestionLike>(question: T, topic: QuestionTopicContext): T {
+  let prompt = question.q.trim().replace(/\s+/g, " ");
+
+  if (/^Name the horizontal rows[.!?…]*$/i.test(prompt)) {
+    prompt = "Name the horizontal rows of the periodic table.";
+  } else if (/^Name the vertical columns[.!?…]*$/i.test(prompt)) {
+    prompt = "Name the vertical columns of the periodic table.";
+  } else if (/^(?:State|Name) the horizontal rows called[.!?…]*$/i.test(prompt)) {
+    prompt = "Name the horizontal rows of the periodic table.";
+  } else if (/^(?:State|Name) the vertical columns called[.!?…]*$/i.test(prompt)) {
+    prompt = "Name the vertical columns of the periodic table.";
+  }
+
+  if (topic.id === "y9-elements-compounds") {
+    prompt = prompt
+      .replace(/\ba formula\b/gi, "a chemical formula")
+      .replace(/\bthe formula\b/gi, "the chemical formula");
+  }
+
+  if (/^State what a chemical formula tells you first[.!?…]*$/i.test(prompt)) {
+    prompt = "State what a chemical formula tells you about the elements in a substance.";
+  }
+
+  return prompt === question.q ? question : { ...question, q: prompt };
+}
+
 export function clarifyQuestion<T extends QuestionLike>(question: T): T {
   const exact: Record<string, Partial<QuestionLike>> = {
     "what should be done with an anomalous solubility result?": {
@@ -275,6 +311,7 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
     "is melting ice a physical or chemical change?": { q: "Classify melting ice as a physical or chemical change.", a: "A physical change because no new substance forms." },
     "what type of respiration is studied in this year 7 topic?": { q: "Name the type of respiration that uses oxygen to release energy from glucose.", a: "Aerobic respiration." },
     "give one use of a halogen from the guide.": { q: "Give one use of a Group 17 element (halogen).", a: "For example, chlorine is used to disinfect water or iodine is used as an antiseptic." },
+    "what does a formula tell you first?": { q: "State what a chemical formula tells you about the elements in a substance." },
   };
 
   const refined = exact[question.q.trim().toLowerCase()];
@@ -287,4 +324,8 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
   if (/^what type of force can act without physical contact[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Name the type of force that can act without physical contact.", a: "non-contact force" };
 
   return commandify(base);
+}
+
+export function clarifyQuestionForTopic<T extends QuestionLike>(question: T, topic: QuestionTopicContext): T {
+  return addStandaloneContext(clarifyQuestion(question), topic);
 }
