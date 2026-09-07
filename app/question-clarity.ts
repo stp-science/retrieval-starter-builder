@@ -5,8 +5,10 @@ type QuestionLike = {
 };
 
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
+const commandOpening = /^(?:Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete)\b/i;
+const contextualCommandOpening = /^(?:At|In|For|When|During|Using|From|With)\b[^.!?]{0,120},\s*(?:define|state|name|identify|describe|explain|compare|calculate|determine|suggest|justify|evaluate|outline|write|give|classify|predict|select|label|draw|sketch|order|list|complete)\b/i;
+const linkingVerb = /^(?:is|are|was|were|contains?|controls?|describes?|allows?|provides?|measures?|has|have|uses?|causes?|produces?|forms?|shows?|links?|moves?|transports?|absorbs?|releases?|stores?|carries?|prevents?|detects?|responds?|occurs?|happens?|affects?|influences?|changes?|increases?|decreases?|requires?|needs?|must|can|will|would|should)$/i;
 
-/** Questions answered only with Yes or No do not require enough retrieval thinking. */
 export function isBareYesNoQuestion(question: QuestionLike) {
   return yesNoOpening.test(question.q.trim()) && /^(?:yes|no)[.!]?$/i.test(question.a.trim());
 }
@@ -23,221 +25,234 @@ function answerNeedsExplanation(answer: string) {
   return answer.trim().split(/\s+/).length > 4 || /[.;:]\s/.test(answer);
 }
 
-/**
- * Applies the platform-wide classroom wording rules without changing the
- * scientific content or stored answer. The result is used by previews and all
- * export formats, and is also checked by the question-language audit.
- */
-export function clarifyQuestion<T extends QuestionLike>(question: T): T {
-  let original = question.q.trim().replace(/\s+/g, " ");
+function thirdPersonSingular(verb: string) {
+  if (/^have$/i.test(verb)) return "has";
+  if (/[^aeiou]y$/i.test(verb)) return `${verb.slice(0, -1)}ies`;
+  if (/(?:s|sh|ch|x|z|o)$/i.test(verb)) return `${verb}es`;
+  return `${verb}s`;
+}
 
-  const exactRefinements: Record<string, Pick<QuestionLike, "q" | "a">> = {
-    "what should be done with an anomalous solubility result?": {
-      q: "What should you do with an anomalous result when calculating a mean?",
-      a: "Investigate it and repeat the measurement if possible. Exclude it from the mean only when there is evidence that it is invalid, and state what you did.",
-    },
-    "name the seven components of a balanced diet in this topic.": {
-      q: "Name the seven components of a balanced diet.",
-      a: "Carbohydrates, fats, proteins, vitamins, minerals, fibre and water.",
-    },
-    "what is crystallisation used for in this topic?": {
-      q: "What is crystallisation used for when separating a solution?",
-      a: "Recovering a dissolved solid as crystals from the solution.",
-    },
-    "which scientist is linked in the guide to early pressure investigations?": {
-      q: "Which scientist is the SI pressure unit, the pascal, named after?",
-      a: "Blaise Pascal.",
-    },
-    "name one common force used in the guide's force diagrams.": {
-      q: "Name one force that could be shown on a force diagram.",
-      a: "For example, an applied force, friction, weight, support force, tension or drag.",
-    },
-    "is friction an internal or external force on an object?": {
-      q: "Classify friction as an internal or external force on an object.",
-      a: "An external force.",
-    },
-    "is tension within a stretched rope internal or external to the rope?": {
-      q: "Classify tension as an internal or external force within a stretched rope.",
-      a: "An internal force.",
-    },
-    "is melting ice a physical or chemical change?": {
-      q: "Classify melting ice as a physical or chemical change.",
-      a: "A physical change because no new substance forms.",
-    },
-    "what type of respiration is studied in this year 7 topic?": {
-      q: "What type of respiration uses oxygen to release energy from glucose?",
-      a: "Aerobic respiration.",
-    },
-    "give one use of a halogen from the guide.": {
-      q: "Give one use of a Group 17 element (halogen).",
-      a: "For example, chlorine is used to disinfect water or iodine is used as an antiseptic.",
-    },
-  };
-  const exactRefinement = exactRefinements[original.toLowerCase()];
-  if (exactRefinement) return { ...question, ...exactRefinement };
+function declarativeFromAuxiliary(auxiliary: string, rest: string) {
+  const words = rest.trim().split(/\s+/);
+  if (!words.length) return rest.trim();
 
-  original = original
-    .replace(/\s+studied in this topic(?=[?.!]|$)/i, "")
-    .replace(/\s+in this topic(?=[?.!]|$)/i, "");
-  const stem = original.replace(/[?.!…]+$/, "");
-
-  // Targeted fixes for reported questions.
-  if (/^how can neutron number be calculated from nucleon number$/i.test(stem)) {
-    return {
-      ...question,
-      q: "How can you calculate the number of neutrons from the mass number?",
-      a: "Subtract the atomic number (number of protons) from the mass number.",
-    };
-  }
-
-  if (/^what permanent change in a DNA base sequence is called$/i.test(stem)) {
-    return { ...question, q: "What is a permanent change in a DNA base sequence called?" };
-  }
-
-  if (/^what type of force can act without physical contact$/i.test(stem)) {
-    return { ...question, a: "non-contact force" };
-  }
-
-  const meantBy = stem.match(/^what is meant by (.+)$/i);
-  if (meantBy) {
-    return { ...question, q: `What does ${lowerFirst(meantBy[1])} mean?` };
-  }
-
-  const namedSubjectTerm = stem.match(/^name the (biology|chemistry|physics) term described here:\s*(.+)$/i);
-  if (namedSubjectTerm) {
-    return {
-      ...question,
-      q: `What is the ${namedSubjectTerm[1]} term for “${lowerFirst(namedSubjectTerm[2])}”?`,
-    };
-  }
-
-  const subjectTermMeans = stem.match(/^which (biology|chemistry|physics) term means [“"]?(.+?)[”"]?$/i);
-  if (subjectTermMeans) {
-    return {
-      ...question,
-      q: `What is the ${subjectTermMeans[1]} term for “${lowerFirst(subjectTermMeans[2])}”?`,
-    };
-  }
-
-  const termDescription = stem.match(/^(?:what|which) (?:term|word) (?:describes|applies to) (.+)$/i);
-  if (termDescription) {
-    return { ...question, q: `What do we call ${lowerFirst(termDescription[1])}?` };
-  }
-
-  const ideaExplains = stem.match(/^which idea explains (.+)$/i);
-  if (ideaExplains) {
-    return { ...question, q: `What explains ${lowerFirst(ideaExplains[1])}?` };
-  }
-
-  const typeCategory = stem.match(/^which ([a-z-]+) category (.+)$/i);
-  if (typeCategory) {
-    return { ...question, q: `What type of ${typeCategory[1].toLowerCase()} ${lowerFirst(typeCategory[2])}?` };
-  }
-
-  const yesNo = stem.match(yesNoOpening);
-  if (yesNo) {
-    if (!/^(?:yes|no)\b/i.test(question.a.trim())) {
-      return original === question.q ? question : { ...question, q: original };
+  if (/^(?:do|does|did)$/i.test(auxiliary)) {
+    const verbIndex = words.findIndex((word) => linkingVerb.test(word));
+    if (verbIndex > 0) {
+      const subject = words.slice(0, verbIndex).join(" ");
+      const verb = words[verbIndex];
+      const tail = words.slice(verbIndex + 1).join(" ");
+      if (/^do$/i.test(auxiliary)) return `${subject} ${verb}${tail ? ` ${tail}` : ""}`;
+      if (/^does$/i.test(auxiliary)) return `${subject} ${thirdPersonSingular(verb)}${tail ? ` ${tail}` : ""}`;
+      return `${subject} did ${verb}${tail ? ` ${tail}` : ""}`;
     }
-    return {
-      ...question,
-      q: `Give a scientific explanation for your answer: ${finish(stem, "?")}`,
-      kind: "explain",
-    };
+  }
+
+  let subjectEnd = /^(?:the|a|an|this|that|these|those|its|their|his|her|our|your)$/i.test(words[0]) && words.length > 1 ? 2 : 1;
+  while (words[subjectEnd] === "of" && words.length > subjectEnd + 1) subjectEnd += 2;
+  const subject = words.slice(0, subjectEnd).join(" ");
+  const tail = words.slice(subjectEnd).join(" ");
+  return `${subject} ${auxiliary.toLowerCase()}${tail ? ` ${tail}` : ""}`;
+}
+
+function removeHiddenContext(prompt: string) {
+  return prompt
+    .replace(/\s+studied in this (?:year \d+ )?topic(?=[?.!]|$)/i, "")
+    .replace(/\s+in this (?:year \d+ )?topic(?=[?.!]|$)/i, "")
+    .replace(/\s+(?:named|listed|shown|given|used|linked) in the guide(?=[?.!]|$)/i, "")
+    .replace(/\s+from the guide(?=[?.!]|$)/i, "")
+    .replace(/\s+in the guide(?=[?.!]|$)/i, "")
+    .replace(/\bthe guide's\b/gi, "the")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function commandify<T extends QuestionLike>(question: T): T {
+  const prompt = removeHiddenContext(question.q.trim().replace(/\s+/g, " "));
+  const stem = prompt.replace(/[?.!…]+$/, "");
+  if (commandOpening.test(stem) || contextualCommandOpening.test(stem)) {
+    return prompt === question.q ? question : { ...question, q: prompt };
+  }
+
+  const scenarioWhich = stem.match(/^(.+?[.!])\s+Which (.+)$/i);
+  if (scenarioWhich) return { ...question, q: `${scenarioWhich[1]} Identify which ${lowerFirst(scenarioWhich[2])}.` };
+
+  const scenarioWhat = stem.match(/^(.+?[.!])\s+What (.+)$/i);
+  if (scenarioWhat) {
+    const tail = scenarioWhat[2];
+    const command = /^(?:does|do|did)\b/i.test(tail) ? "Describe" : "State";
+    return { ...question, q: `${scenarioWhat[1]} ${command} what ${lowerFirst(tail)}.` };
+  }
+
+  const contextRepresent = stem.match(/^(.+?),\s*what does (.+?) represent$/i);
+  if (contextRepresent) return { ...question, q: finish(`${contextRepresent[1]}, state what ${contextRepresent[2]} represents`) };
+
+  const contextHappens = stem.match(/^(.+?),\s*what happens (.+)$/i);
+  if (contextHappens) return { ...question, q: finish(`${contextHappens[1]}, describe what happens ${lowerFirst(contextHappens[2])}`) };
+
+  const contextWhich = stem.match(/^(.+?),\s*which (.+)$/i);
+  if (contextWhich) return { ...question, q: finish(`${contextWhich[1]}, identify which ${lowerFirst(contextWhich[2])}`) };
+
+  const contextChoice = stem.match(/^(.+?),\s*(is|are|was|were|can|could|will|would|should|has|have|had|does|do|did) (.+)$/i);
+  if (contextChoice) return { ...question, q: finish(`${contextChoice[1]}, state whether ${declarativeFromAuxiliary(contextChoice[2], contextChoice[3])}`) };
+
+  const whyAux = stem.match(/^why (is|are|was|were|can|could|will|would|should|has|have|had|does|do|did) (.+)$/i);
+  if (whyAux) return { ...question, q: finish(`Explain why ${declarativeFromAuxiliary(whyAux[1], whyAux[2])}`), kind: "explain" };
+
+  const why = stem.match(/^why (.+)$/i);
+  if (why) return { ...question, q: finish(`Explain why ${lowerFirst(why[1])}`), kind: "explain" };
+
+  const howMany = stem.match(/^how (many|much) (.+)$/i);
+  if (howMany) return { ...question, q: finish(`State how ${howMany[1].toLowerCase()} ${lowerFirst(howMany[2])}`) };
+
+  const howCompare = stem.match(/^how (?:does|do) (.+?) compare with (.+)$/i);
+  if (howCompare) return { ...question, q: finish(`Compare ${lowerFirst(howCompare[1])} with ${howCompare[2]}`) };
+
+  const howAux = stem.match(/^how (does|do|did|is|are|was|were|can|could|would|should|will|has|have|had) (.+)$/i);
+  if (howAux) {
+    const command = question.kind === "explain" || answerNeedsExplanation(question.a) ? "Explain" : "Describe";
+    return { ...question, q: finish(`${command} how ${declarativeFromAuxiliary(howAux[1], howAux[2])}`), kind: command === "Explain" ? "explain" : question.kind };
+  }
+
+  const where = stem.match(/^where (.+)$/i);
+  if (where) return { ...question, q: finish(`State where ${lowerFirst(where[1])}`) };
+
+  const when = stem.match(/^when (.+)$/i);
+  if (when) return { ...question, q: finish(`State when ${lowerFirst(when[1])}`) };
+
+  const whatDoesMean = stem.match(/^what does (.+) mean$/i);
+  if (whatDoesMean) return { ...question, q: finish(`Define ${lowerFirst(whatDoesMean[1])}`) };
+
+  const whatStandFor = stem.match(/^what does (.+) stand for$/i);
+  if (whatStandFor) return { ...question, q: finish(`State what ${whatStandFor[1]} stands for`) };
+
+  const whatHappens = stem.match(/^what happens (.+)$/i);
+  if (whatHappens) return { ...question, q: finish(`Describe what happens ${lowerFirst(whatHappens[1])}`) };
+
+  const whatCause = stem.match(/^what causes? (.+)$/i);
+  if (whatCause) return { ...question, q: finish(`Explain what causes ${lowerFirst(whatCause[1])}`), kind: "explain" };
+
+  const whatDoes = stem.match(/^what (?:does|do|did) (.+)$/i);
+  if (whatDoes) {
+    const command = question.kind === "explain" || answerNeedsExplanation(question.a) ? "Describe" : "State";
+    return { ...question, q: finish(`${command} what ${lowerFirst(whatDoes[1])}`) };
+  }
+
+  const whatModal = stem.match(/^what (?:can|could|would|should|will) (.+)$/i);
+  if (whatModal) return { ...question, q: finish(`State what ${lowerFirst(whatModal[1])}`) };
+
+  const equationPrompt = stem.match(/^(?:what|which) (equation|formula|relationship) (.+)$/i);
+  if (equationPrompt) {
+    const detail = lowerFirst(equationPrompt[2]);
+    const connector = /^(?:for|of|between|relating)\b/i.test(detail) ? "" : "that ";
+    return { ...question, q: finish(`Write the ${equationPrompt[1].toLowerCase()} ${connector}${detail}`) };
   }
 
   const formulaClue = stem.match(/^(?:what|which) (?:[a-z-]+ )*?(?:quantity|force|energy|speed|rate|total|value) (?:is|can be) calculated using (.+)$/i);
   if (formulaClue) {
     const equation = formulaClue[1].trim();
     const symbol = equation.split("=")[0]?.trim();
-    if (symbol) return { ...question, q: `In ${equation}, what does ${symbol} represent?` };
-  }
-
-  const equationPrompt = stem.match(/^(?:what|which) (equation|formula|relationship) (.+)$/i);
-  if (equationPrompt) {
-    const noun = equationPrompt[1].toLowerCase();
-    const detail = lowerFirst(equationPrompt[2]);
-    const connector = /^(?:for|of|between|relating)\b/i.test(detail) ? "" : "that ";
-    return { ...question, q: finish(`Write the ${noun} ${connector}${detail}`) };
+    if (symbol) return { ...question, q: `In ${equation}, state what ${symbol} represents.` };
   }
 
   const called = stem.match(/^what (?:is|are) (.+) called$/i);
   if (called) return { ...question, q: finish(`Name ${lowerFirst(called[1])}`) };
 
-  const means = stem.match(/^what does (.+) mean$/i);
-  if (means) return { ...question, q: finish(`What does ${lowerFirst(means[1])} mean`, "?") };
+  const meantBy = stem.match(/^what is meant by (.+)$/i);
+  if (meantBy) return { ...question, q: finish(`Define ${lowerFirst(meantBy[1])}`) };
 
-  const lawStatement = stem.match(/^what does (.+? law) state(.*)$/i);
-  if (lawStatement) return { ...question, q: finish(`State ${lowerFirst(lawStatement[1])}${lawStatement[2]}`) };
+  const subjectTerm = stem.match(/^(?:name the|which|what is the) (biology|chemistry|physics) term (?:described here:|that means|for)\s*[“"]?(.+?)[”"]?$/i);
+  if (subjectTerm) return { ...question, q: finish(`Name the ${subjectTerm[1]} term for “${lowerFirst(subjectTerm[2])}”`) };
 
-  const degenerate = stem.match(/^what does it mean that (.+)$/i);
-  if (degenerate) return { ...question, q: finish(`Explain what is meant by saying that ${lowerFirst(degenerate[1])}`) };
+  const scientificSkill = stem.match(/^(?:what|which) scientific skill (?:is described as|means) (.+)$/i);
+  if (scientificSkill) return { ...question, q: finish(`Name the scientific skill described as ${lowerFirst(scientificSkill[1])}`) };
 
-  const happens = stem.match(/^what happens (.+)$/i);
-  if (happens) return { ...question, q: finish(`Describe what happens ${lowerFirst(happens[1])}`) };
+  const termDescription = stem.match(/^(?:what|which) (?:term|word) (?:describes|applies to|means) (.+)$/i);
+  if (termDescription) return { ...question, q: finish(`Name the term for ${lowerFirst(termDescription[1])}`) };
 
-  const evidenceWould = stem.match(/^what evidence (would .+)$/i);
-  if (evidenceWould) return { ...question, q: finish(`State the evidence that ${lowerFirst(evidenceWould[1])}`) };
-
-  const criteriaOrObservations = stem.match(/^what (criteria|observations?) (define|indicate|show|support|demonstrate) (.+)$/i);
-  if (criteriaOrObservations) {
-    return {
-      ...question,
-      q: finish(`State the ${criteriaOrObservations[1].toLowerCase()} that ${criteriaOrObservations[2].toLowerCase()} ${lowerFirst(criteriaOrObservations[3])}`),
-    };
+  const whatType = stem.match(/^what (type|kind|category) of (.+)$/i);
+  if (whatType) {
+    const words = whatType[2].split(/\s+/);
+    const verbIndex = words.findIndex((word) => linkingVerb.test(word));
+    if (verbIndex > 0) return { ...question, q: finish(`Identify the ${whatType[1].toLowerCase()} of ${words.slice(0, verbIndex).join(" ")} that ${words.slice(verbIndex).join(" ")}`) };
+    return { ...question, q: finish(`Identify what ${whatType[1].toLowerCase()} of ${lowerFirst(whatType[2])}`) };
   }
 
-  const changes = question.kind === "explain" ? stem.match(/^what changes (.+)$/i) : null;
-  if (changes) return { ...question, q: finish(`Describe the changes ${lowerFirst(changes[1])}`) };
+  const whatNamedThing = stem.match(/^what (quantity|property|component|structure|process|method|instrument|device|material|substance|force|energy|unit|symbol|term|word|graph) (.+)$/i);
+  if (whatNamedThing) {
+    const words = whatNamedThing[2].split(/\s+/);
+    const verbIndex = words.findIndex((word) => linkingVerb.test(word));
+    if (verbIndex >= 0) return { ...question, q: finish(`Identify the ${whatNamedThing[1].toLowerCase()} that ${words.slice(verbIndex).join(" ")}`) };
+    return { ...question, q: finish(`Identify what ${whatNamedThing[1].toLowerCase()} ${lowerFirst(whatNamedThing[2])}`) };
+  }
 
-  const definition = stem.match(/^what is (.+)$/i);
-  if (definition) {
-    const subject = lowerFirst(definition[1]);
-    if (/^(?:reached|formed|produced|released|used|needed|found|measured|shown)\b/i.test(subject)) {
-      return { ...question, q: finish(`State what is ${subject}`) };
-    }
-    if (/^one [a-z-]+$/i.test(subject)) {
-      return { ...question, q: finish(`State what ${subject} represents`) };
-    }
-    if (/^(?:one|an example of|the first|the main|the primary|the overall|true about)\b/i.test(subject)) {
-      return { ...question, q: finish(`State ${subject}`) };
-    }
-    if (/^the (?:si )?(?:unit|value|symbol|formula|test|method|procedure|charge|mass|number|name|direction|colour|pH)\b/i.test(subject)) {
-      return { ...question, q: finish(`State ${subject}`) };
-    }
+  const inWhichAux = stem.match(/^in which (.+?) (is|are|was|were|can|could|will|would|should|has|have|had|does|do|did) (.+)$/i);
+  if (inWhichAux) return { ...question, q: finish(`Identify the ${lowerFirst(inWhichAux[1])} in which ${declarativeFromAuxiliary(inWhichAux[2], inWhichAux[3])}`) };
+
+  const which = stem.match(/^which (.+)$/i);
+  if (which) {
+    const words = which[1].split(/\s+/);
+    const verbIndex = words.findIndex((word) => linkingVerb.test(word));
+    if (verbIndex > 0) return { ...question, q: finish(`Identify the ${words.slice(0, verbIndex).join(" ")} that ${words.slice(verbIndex).join(" ")}`) };
+    return { ...question, q: finish(`Identify which ${lowerFirst(which[1])}`) };
+  }
+
+  const whatIs = stem.match(/^what is (.+)$/i);
+  if (whatIs) {
+    const subject = lowerFirst(whatIs[1]);
     if (/^the (?:difference|relationship|role|purpose|function|cause|effect|result|main purpose)\b/i.test(subject)) {
-      return { ...question, q: finish(`Describe ${subject}`) };
+      return { ...question, q: finish(`Describe ${subject}`), kind: answerNeedsExplanation(question.a) ? "explain" : question.kind };
     }
-    if (question.kind === "explain") {
-      return original === question.q ? question : { ...question, q: original };
+    if (/^(?:a |an )?[a-z][a-z0-9()'’+\-/ ]{0,70}$/i.test(subject) && (question.kind === "explain" || answerNeedsExplanation(question.a))) {
+      return { ...question, q: finish(`Define ${subject}`), kind: "explain" };
     }
-    return original === question.q ? question : { ...question, q: original };
+    return { ...question, q: finish(`State ${subject}`) };
   }
 
-  const pluralDefinition = stem.match(/^what are (.+)$/i);
-  if (pluralDefinition) {
-    const subject = lowerFirst(pluralDefinition[1]);
-    const asksForList = /^(?:(?:the )?(?:one|two|three|four|five|six|main|key|major|different)\b|the (?:[a-z-]+ )?(?:products|reactants|features|conditions|factors|parts|stages|steps|uses|causes|effects|requirements|limitations|advantages|disadvantages)\b)/i.test(subject);
-    if (asksForList) return { ...question, q: finish(`State ${subject}`) };
-    if (question.kind === "explain") return original === question.q ? question : { ...question, q: original };
-    return original === question.q ? question : { ...question, q: original };
+  const whatAre = stem.match(/^what are (.+)$/i);
+  if (whatAre) {
+    const subject = lowerFirst(whatAre[1]);
+    const list = /^(?:(?:the )?(?:one|two|three|four|five|six|main|key|major|different)\b|the (?:[a-z-]+ )?(?:products|reactants|features|conditions|factors|parts|stages|steps|uses|causes|effects|requirements|limitations|advantages|disadvantages)\b)/i.test(subject);
+    if (list) return { ...question, q: finish(`State ${subject}`) };
+    if (question.kind === "explain" || answerNeedsExplanation(question.a)) return { ...question, q: finish(`Define ${subject}`), kind: "explain" };
+    return { ...question, q: finish(`State ${subject}`) };
   }
 
-  const cause = stem.match(/^what causes? (.+)$/i);
-  if (cause) return { ...question, q: finish(`Explain what causes ${lowerFirst(cause[1])}`) };
-
-  const makes = stem.match(/^what makes (.+)$/i);
-  if (makes) return { ...question, q: finish(`Explain what makes ${lowerFirst(makes[1])}`) };
-
-  const moves = stem.match(/^what moves (.+)$/i);
-  if (moves) return { ...question, q: finish(`State what moves ${lowerFirst(moves[1])}`) };
-
-  const provides = stem.match(/^what provides (.+)$/i);
-  if (provides) return { ...question, q: finish(`State what provides ${lowerFirst(provides[1])}`) };
-
-  if (/^what should arrows in a complete diffusion model show$/i.test(stem)) {
-    return { ...question, q: "State what arrows in a complete diffusion model should show." };
+  const yesNo = stem.match(/^(is|are|can|could|do|does|did|will|would|should|has|have|had) (.+)$/i);
+  if (yesNo) {
+    const wording = declarativeFromAuxiliary(yesNo[1], yesNo[2]);
+    if (/^(?:yes|no)\b/i.test(question.a.trim())) return { ...question, q: finish(`Explain whether ${wording}`), kind: "explain" };
+    return { ...question, q: finish(`State whether ${wording}`) };
   }
 
-  return original === question.q ? question : { ...question, q: original };
+  return prompt === question.q ? question : { ...question, q: prompt };
+}
+
+export function clarifyQuestion<T extends QuestionLike>(question: T): T {
+  const exact: Record<string, Partial<QuestionLike>> = {
+    "what should be done with an anomalous solubility result?": {
+      q: "State what should be done with an anomalous result when calculating a mean.",
+      a: "Investigate it and repeat the measurement if possible. Exclude it from the mean only when there is evidence that it is invalid, and state what you did.",
+    },
+    "which scientist is linked in the guide to early pressure investigations?": {
+      q: "Name the scientist after whom the SI pressure unit, the pascal, is named.",
+      a: "Blaise Pascal.",
+    },
+    "is friction an internal or external force on an object?": { q: "Classify friction as an internal or external force on an object.", a: "An external force." },
+    "is tension within a stretched rope internal or external to the rope?": { q: "Classify tension as an internal or external force within a stretched rope.", a: "An internal force." },
+    "is melting ice a physical or chemical change?": { q: "Classify melting ice as a physical or chemical change.", a: "A physical change because no new substance forms." },
+    "what type of respiration is studied in this year 7 topic?": { q: "Name the type of respiration that uses oxygen to release energy from glucose.", a: "Aerobic respiration." },
+    "give one use of a halogen from the guide.": { q: "Give one use of a Group 17 element (halogen).", a: "For example, chlorine is used to disinfect water or iodine is used as an antiseptic." },
+  };
+
+  const refined = exact[question.q.trim().toLowerCase()];
+  const base = refined ? ({ ...question, ...refined } as T) : question;
+
+  if (/^how can neutron number be calculated from nucleon number[?.!…]*$/i.test(base.q.trim())) {
+    return { ...base, q: "State how to calculate the number of neutrons from the mass number.", a: "Subtract the atomic number (number of protons) from the mass number." };
+  }
+  if (/^what permanent change in a DNA base sequence is called[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Name a permanent change in a DNA base sequence." };
+  if (/^what type of force can act without physical contact[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Name the type of force that can act without physical contact.", a: "non-contact force" };
+
+  return commandify(base);
 }
