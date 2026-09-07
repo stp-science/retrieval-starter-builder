@@ -1,0 +1,69 @@
+/* Premium empty-state artwork overrides */
+
+@media screen {
+  .empty-preview .science-doodle-strip {
+    display: block;
+    width: min(108%, 940px) !important;
+    max-width: 940px !important;
+    height: auto;
+    margin: -18px auto -12px !important;
+    opacity: 1 !important;
+    filter: drop-shadow(0 22px 28px rgba(19, 48, 66, .18)) saturate(1.08) contrast(1.03) !important;
+    transform-origin: center;
+    animation: premiumScienceStrip 7s ease-in-out infinite;
+  }
+
+  .empty-preview .paper-stack {
+    display: block !important;
+    width: 238px !important;
+    height: 238px !important;
+    min-width: 238px;
+    min-height: 238px;
+    margin: -18px auto 6px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: url("./question-stack.svg") center / contain no-repeat !important;
+    box-shadow: none !important;
+    filter: drop-shadow(0 22px 25px rgba(21, 46, 61, .18));
+    transform: rotate(-1deg);
+    animation: premiumQuestionFloat 5.5s ease-in-out infinite;
+  }
+
+  .empty-preview .paper-stack > span {
+    display: none !important;
+  }
+
+  .empty-preview h2 {
+    margin-top: 2px !important;
+  }
+
+  @keyframes premiumScienceStrip {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-7px) scale(1.012); }
+  }
+
+  @keyframes premiumQuestionFloat {
+    0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); }
+    50% { transform: translateY(-8px) rotate(1deg) scale(1.018); }
+  }
+
+  @media (max-width: 780px) {
+    .empty-preview .science-doodle-strip {
+      width: min(112%, 760px) !important;
+      margin-top: -4px !important;
+    }
+    .empty-preview .paper-stack {
+      width: 210px !important;
+      height: 210px !important;
+      min-width: 210px;
+      min-height: 210px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .empty-preview .science-doodle-strip,
+    .empty-preview .paper-stack {
+      animation: none !important;
+    }
+  }
+}
