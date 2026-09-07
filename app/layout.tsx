@@ -7,6 +7,7 @@ import "./globals.css";
 import "./preview-wide.css";
 import "./activity-polish.css";
 import "./site-science.css";
+import "./image-upgrade.css";
 
 export const metadata: Metadata = {
   title: "Retrieval Starter Builder",
