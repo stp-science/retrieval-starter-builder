@@ -22,7 +22,7 @@
     margin: -18px auto 6px !important;
     border: 0 !important;
     border-radius: 0 !important;
-    background: url("./question-stack.svg") center / contain no-repeat !important;
+    background: url("/retrieval-starter-builder/question-stack.svg") center / contain no-repeat !important;
     box-shadow: none !important;
     filter: drop-shadow(0 22px 25px rgba(21, 46, 61, .18));
     transform: rotate(-1deg);
