@@ -1,63 +1,144 @@
-<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="720" height="460" viewBox="0 0 720 460" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="card" x1="60" y1="50" x2="580" y2="370" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#172033"/>
-      <stop offset="1" stop-color="#29445D"/>
+    <linearGradient id="panel" x1="76" y1="44" x2="638" y2="410" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101827"/>
+      <stop offset="0.52" stop-color="#173148"/>
+      <stop offset="1" stop-color="#244D61"/>
     </linearGradient>
-    <linearGradient id="liquid" x1="120" y1="238" x2="225" y2="340" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#77E2D4"/>
-      <stop offset="1" stop-color="#2BA4B5"/>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.045"/>
     </linearGradient>
-    <linearGradient id="dna" x1="412" y1="82" x2="505" y2="206" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFB253"/>
-      <stop offset="1" stop-color="#F06478"/>
+    <linearGradient id="bio" x1="420" y1="86" x2="560" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#74E1CF"/>
+      <stop offset="1" stop-color="#4BA7C1"/>
     </linearGradient>
-    <filter id="shadow" x="20" y="20" width="600" height="380" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#172033" flood-opacity="0.18"/>
+    <linearGradient id="chem" x1="128" y1="244" x2="238" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8D477"/>
+      <stop offset="1" stop-color="#F08A68"/>
+    </linearGradient>
+    <linearGradient id="physics" x1="416" y1="276" x2="588" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8FB7FF"/>
+      <stop offset="1" stop-color="#D28BFF"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientTransform="translate(590 86) rotate(130) scale(190 150)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#77E2D4" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#77E2D4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientTransform="translate(126 350) rotate(-30) scale(190 150)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CF082B" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#CF082B" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="26" y="10" width="668" height="440" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#07101C" flood-opacity="0.26"/>
     </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#07101C" flood-opacity="0.24"/>
+    </filter>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#FFFFFF" fill-opacity="0.08"/>
+    </pattern>
   </defs>
 
   <g filter="url(#shadow)">
-    <rect x="60" y="50" width="520" height="320" rx="36" fill="url(#card)"/>
-    <path d="M320 74V346" stroke="#FFFFFF" stroke-opacity="0.10" stroke-width="2"/>
-    <path d="M86 210H554" stroke="#FFFFFF" stroke-opacity="0.10" stroke-width="2"/>
+    <rect x="70" y="38" width="580" height="360" rx="42" fill="url(#panel)"/>
+    <rect x="70" y="38" width="580" height="360" rx="42" fill="url(#dots)"/>
+    <rect x="70" y="38" width="580" height="360" rx="42" fill="url(#glowA)"/>
+    <rect x="70" y="38" width="580" height="360" rx="42" fill="url(#glowB)"/>
+    <rect x="71" y="39" width="578" height="358" rx="41" stroke="#FFFFFF" stroke-opacity="0.13" stroke-width="2"/>
 
-    <!-- Atom: upper left -->
-    <g transform="translate(118 82)" stroke="#DCE8ED" stroke-width="5" stroke-linecap="round">
-      <ellipse cx="80" cy="60" rx="67" ry="24"/>
-      <ellipse cx="80" cy="60" rx="67" ry="24" transform="rotate(60 80 60)"/>
-      <ellipse cx="80" cy="60" rx="67" ry="24" transform="rotate(120 80 60)"/>
-      <circle cx="80" cy="60" r="10" fill="#CF082B" stroke="none"/>
-      <circle cx="147" cy="60" r="6" fill="#F7D789" stroke="none"/>
-      <circle cx="46" cy="7" r="6" fill="#6FE3D7" stroke="none"/>
+    <!-- central molecule network -->
+    <g opacity="0.42" stroke="#BCD4DE" stroke-width="2.4">
+      <path d="M287 181L349 139L408 176L389 240L318 252L287 181Z"/>
+      <path d="M349 139L357 92"/>
+      <path d="M408 176L459 151"/>
+      <path d="M389 240L431 279"/>
+      <path d="M318 252L285 303"/>
+      <path d="M287 181L238 153"/>
+    </g>
+    <g filter="url(#softShadow)">
+      <circle cx="349" cy="139" r="9" fill="#F8D477"/>
+      <circle cx="408" cy="176" r="10" fill="#77E2D4"/>
+      <circle cx="389" cy="240" r="8" fill="#8FB7FF"/>
+      <circle cx="318" cy="252" r="9" fill="#F08A68"/>
+      <circle cx="287" cy="181" r="8" fill="#D28BFF"/>
+      <circle cx="357" cy="92" r="6" fill="#FFFFFF" fill-opacity="0.8"/>
+      <circle cx="459" cy="151" r="6" fill="#FFFFFF" fill-opacity="0.8"/>
+      <circle cx="431" cy="279" r="6" fill="#FFFFFF" fill-opacity="0.8"/>
+      <circle cx="285" cy="303" r="6" fill="#FFFFFF" fill-opacity="0.8"/>
+      <circle cx="238" cy="153" r="6" fill="#FFFFFF" fill-opacity="0.8"/>
     </g>
 
-    <!-- DNA: upper right -->
-    <g transform="translate(402 82)" stroke-linecap="round">
-      <path d="M16 8C103 39 13 77 100 108C155 128 129 166 64 184" stroke="url(#dna)" stroke-width="9"/>
-      <path d="M104 8C17 39 107 77 20 108C-35 128 -9 166 56 184" stroke="#8CB7FF" stroke-width="9"/>
-      <g stroke="#F9FBFD" stroke-width="3.5" opacity="0.9">
-        <path d="M31 18H89"/><path d="M43 42H77"/><path d="M35 67H85"/>
-        <path d="M27 94H93"/><path d="M34 120H86"/><path d="M45 147H76"/><path d="M42 171H79"/>
+    <!-- biology glass card: cell + DNA -->
+    <g filter="url(#softShadow)">
+      <rect x="420" y="72" width="178" height="142" rx="24" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.16"/>
+      <circle cx="468" cy="132" r="34" fill="#0E2030" fill-opacity="0.62" stroke="#77E2D4" stroke-width="3"/>
+      <circle cx="468" cy="132" r="14" fill="#77E2D4" fill-opacity="0.9"/>
+      <path d="M446 120C453 112 460 110 467 113" stroke="#D9FFF8" stroke-width="3" stroke-linecap="round"/>
+      <path d="M448 149C457 153 467 154 477 149" stroke="#D9FFF8" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="489" cy="119" rx="6" ry="10" transform="rotate(36 489 119)" fill="#F8D477"/>
+      <ellipse cx="447" cy="139" rx="5" ry="8" transform="rotate(-34 447 139)" fill="#8FB7FF"/>
+      <g transform="translate(516 96)" stroke-linecap="round">
+        <path d="M8 0C48 14 7 32 47 48C72 57 58 78 31 86" stroke="url(#bio)" stroke-width="6"/>
+        <path d="M49 0C9 14 50 32 10 48C-15 57 -1 78 26 86" stroke="#8FB7FF" stroke-width="6"/>
+        <g stroke="#F8FBFD" stroke-width="2.2" opacity="0.9">
+          <path d="M17 8H40"/><path d="M21 23H36"/><path d="M16 39H42"/><path d="M14 55H44"/><path d="M20 71H37"/>
+        </g>
       </g>
     </g>
 
-    <!-- Flask: lower left -->
-    <g transform="translate(132 226)">
-      <path d="M48 0H92" stroke="#F9FBFD" stroke-width="9" stroke-linecap="round"/>
-      <path d="M58 0V38L21 116C16 127 24 139 36 139H104C116 139 124 127 119 116L82 38V0" stroke="#F9FBFD" stroke-width="7" stroke-linejoin="round"/>
-      <path d="M34 94C52 84 72 103 105 88L119 116C124 127 116 139 104 139H36C24 139 16 127 21 116L34 94Z" fill="url(#liquid)"/>
-      <circle cx="56" cy="105" r="6" fill="#D9FFF8"/>
-      <circle cx="84" cy="118" r="4" fill="#D9FFF8"/>
-      <circle cx="96" cy="98" r="4" fill="#D9FFF8"/>
+    <!-- chemistry glass card: flask -->
+    <g filter="url(#softShadow)">
+      <rect x="105" y="235" width="168" height="134" rx="24" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.16"/>
+      <g transform="translate(135 254)">
+        <path d="M37 0H79" stroke="#F8FBFD" stroke-width="7" stroke-linecap="round"/>
+        <path d="M48 0V30L17 91C12 101 19 111 31 111H86C98 111 105 101 100 91L69 30V0" stroke="#F8FBFD" stroke-width="5.5" stroke-linejoin="round"/>
+        <path d="M27 72C42 62 57 79 88 65L100 91C105 101 98 111 86 111H31C19 111 12 101 17 91L27 72Z" fill="url(#chem)"/>
+        <circle cx="45" cy="83" r="4.5" fill="#FFF6D8"/>
+        <circle cx="70" cy="91" r="3.5" fill="#FFF6D8"/>
+        <circle cx="82" cy="76" r="3" fill="#FFF6D8"/>
+      </g>
+      <circle cx="244" cy="259" r="8" fill="#F8D477" fill-opacity="0.9"/>
+      <circle cx="226" cy="279" r="4" fill="#F08A68"/>
     </g>
 
-    <!-- Wave: lower right -->
-    <g transform="translate(372 255)">
-      <path d="M0 58H150" stroke="#9BA9B9" stroke-width="2"/>
-      <path d="M3 58C18 24 32 24 47 58C62 92 77 92 92 58C107 24 121 24 136 58C143 74 148 75 150 58" stroke="#F7D789" stroke-width="6" stroke-linecap="round"/>
-      <path d="M76 14V103" stroke="#CF082B" stroke-width="3" stroke-dasharray="7 7" opacity="0.8"/>
-      <circle cx="76" cy="58" r="7" fill="#82ADBF"/>
+    <!-- physics glass card: wave graph -->
+    <g filter="url(#softShadow)">
+      <rect x="420" y="260" width="180" height="108" rx="24" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.16"/>
+      <path d="M443 322H577" stroke="#A9BBC8" stroke-opacity="0.5" stroke-width="2"/>
+      <path d="M510 282V347" stroke="#A9BBC8" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="5 6"/>
+      <path d="M441 322C454 291 467 291 480 322C493 353 506 353 519 322C532 291 545 291 558 322C567 344 574 340 579 322" stroke="url(#physics)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="510" cy="322" r="7" fill="#CF082B" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="2"/>
+    </g>
+
+    <!-- atom card -->
+    <g filter="url(#softShadow)">
+      <rect x="105" y="72" width="150" height="126" rx="24" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.16"/>
+      <g transform="translate(128 93)" stroke="#DCE8ED" stroke-width="3.5" stroke-linecap="round">
+        <ellipse cx="52" cy="42" rx="46" ry="16"/>
+        <ellipse cx="52" cy="42" rx="46" ry="16" transform="rotate(60 52 42)"/>
+        <ellipse cx="52" cy="42" rx="46" ry="16" transform="rotate(120 52 42)"/>
+        <circle cx="52" cy="42" r="8" fill="#CF082B" stroke="none"/>
+        <circle cx="98" cy="42" r="4.5" fill="#F8D477" stroke="none"/>
+        <circle cx="29" cy="6" r="4.5" fill="#77E2D4" stroke="none"/>
+      </g>
+    </g>
+
+    <!-- small circuit motif -->
+    <g opacity="0.92" stroke="#D9E6EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M302 346H351V327H386V346H414"/>
+      <path d="M320 337V355"/>
+      <path d="M329 332V360"/>
+      <circle cx="414" cy="346" r="10" fill="#77E2D4" stroke="none"/>
+      <path d="M408 346H420" stroke="#173148"/>
+    </g>
+
+    <!-- floating sparkles -->
+    <g fill="#FFFFFF">
+      <circle cx="605" cy="238" r="2.5" fill-opacity="0.78"/>
+      <circle cx="376" cy="64" r="2" fill-opacity="0.66"/>
+      <circle cx="93" cy="217" r="2.5" fill-opacity="0.58"/>
+      <circle cx="622" cy="335" r="2" fill-opacity="0.55"/>
     </g>
   </g>
 </svg>
