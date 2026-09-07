@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="440" viewBox="0 0 440 440" fill="none">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFDF8"/>
+      <stop offset=".55" stop-color="#FFFDFB"/>
+      <stop offset="1" stop-color="#F1ECE4"/>
+    </linearGradient>
+    <linearGradient id="paper2" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F8F5EF"/>
+      <stop offset="1" stop-color="#DED8CF"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF4C57"/>
+      <stop offset=".45" stop-color="#E20B31"/>
+      <stop offset="1" stop-color="#94001C"/>
+    </linearGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="200%">
+      <feDropShadow dx="0" dy="24" stdDeviation="18" flood-color="#10293B" flood-opacity=".28"/>
+    </filter>
+    <filter id="cardShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#5C5147" flood-opacity=".18"/>
+    </filter>
+    <filter id="markShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#680012" flood-opacity=".25"/>
+    </filter>
+    <radialGradient id="shine" cx="0" cy="0" r="1" gradientTransform="translate(130 105) rotate(48) scale(190)">
+      <stop stop-color="#FFFFFF" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="82" y="57" width="274" height="316" rx="28" transform="rotate(-8 82 57)" fill="url(#paper2)" stroke="#D6CEC4"/>
+    <rect x="62" y="78" width="292" height="312" rx="29" transform="rotate(6 62 78)" fill="#F8F6F1" stroke="#D8D0C8"/>
+    <rect x="95" y="52" width="276" height="320" rx="28" transform="rotate(3 95 52)" fill="#FFF9F1" stroke="#DED6CC"/>
+    <g filter="url(#cardShadow)">
+      <rect x="67" y="69" width="306" height="314" rx="30" fill="url(#paper)" stroke="#D7CEC4" stroke-width="1.5"/>
+      <rect x="76" y="78" width="288" height="296" rx="24" fill="url(#shine)" opacity=".52"/>
+      <path d="M92 92C141 70 270 70 346 95" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" opacity=".34"/>
+    </g>
+
+    <g transform="translate(159 122)" filter="url(#markShadow)">
+      <path d="M58 0C90 0 115 18 122 47C129 78 115 98 92 118C74 133 67 144 67 163V177H34V159C34 132 44 114 68 94C85 80 94 69 91 53C88 38 77 30 61 30C44 30 34 39 29 54L0 43C8 16 29 0 58 0Z" fill="url(#red)"/>
+      <ellipse cx="50" cy="207" rx="18" ry="19" fill="url(#red)"/>
+      <path d="M37 18C51 8 75 7 90 17" stroke="#FF9DA2" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+      <circle cx="44" cy="201" r="5" fill="#FF9AA1" opacity=".42"/>
+    </g>
+  </g>
+</svg>
