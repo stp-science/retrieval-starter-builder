@@ -129,6 +129,29 @@ function commandify<T extends QuestionLike>(question: T): T {
   const whatHappens = stem.match(/^what happens (.+)$/i);
   if (whatHappens) return { ...question, q: finish(`Describe what happens ${lowerFirst(whatHappens[1])}`) };
 
+  const evidenceWould = stem.match(/^what evidence (would .+)$/i);
+  if (evidenceWould) return { ...question, q: finish(`State the evidence that ${lowerFirst(evidenceWould[1])}`) };
+
+  const criteriaOrObservations = stem.match(/^what (criteria|observations?) (define|indicate|show|support|demonstrate) (.+)$/i);
+  if (criteriaOrObservations) {
+    return { ...question, q: finish(`State the ${criteriaOrObservations[1].toLowerCase()} that ${criteriaOrObservations[2].toLowerCase()} ${lowerFirst(criteriaOrObservations[3])}`) };
+  }
+
+  const whatUsedFor = stem.match(/^what is (.+?) used for(?: (.+))?$/i);
+  if (whatUsedFor) return { ...question, q: finish(`State what ${lowerFirst(whatUsedFor[1])} is used for${whatUsedFor[2] ? ` ${whatUsedFor[2]}` : ""}`) };
+
+  const whatChanges = stem.match(/^what changes (.+)$/i);
+  if (whatChanges) return { ...question, q: finish(`Describe the changes ${lowerFirst(whatChanges[1])}`), kind: question.kind === "explain" ? "explain" : question.kind };
+
+  const whatMakes = stem.match(/^what makes (.+)$/i);
+  if (whatMakes) return { ...question, q: finish(`Explain what makes ${lowerFirst(whatMakes[1])}`), kind: "explain" };
+
+  const whatMovesAnd = stem.match(/^what moves and what does not move (.+)$/i);
+  if (whatMovesAnd) return { ...question, q: finish(`Describe what moves and what does not move ${lowerFirst(whatMovesAnd[1])}`), kind: "explain" };
+
+  const whatProvides = stem.match(/^what provides (.+)$/i);
+  if (whatProvides) return { ...question, q: finish(`State what provides ${lowerFirst(whatProvides[1])}`) };
+
   const whatCause = stem.match(/^what causes? (.+)$/i);
   if (whatCause) return { ...question, q: finish(`Explain what causes ${lowerFirst(whatCause[1])}`), kind: "explain" };
 
@@ -200,6 +223,12 @@ function commandify<T extends QuestionLike>(question: T): T {
   const whatIs = stem.match(/^what is (.+)$/i);
   if (whatIs) {
     const subject = lowerFirst(whatIs[1]);
+    if (/^(?:one|an example of|the first|the main|the primary|the overall|true about)\b/i.test(subject)) {
+      return { ...question, q: finish(`State ${subject}`) };
+    }
+    if (/^the (?:si )?(?:unit|value|symbol|formula|test|method|procedure|charge|mass|number|name|direction|colour|pH)\b/i.test(subject)) {
+      return { ...question, q: finish(`State ${subject}`) };
+    }
     if (/^the (?:difference|relationship|role|purpose|function|cause|effect|result|main purpose)\b/i.test(subject)) {
       return { ...question, q: finish(`Describe ${subject}`), kind: answerNeedsExplanation(question.a) ? "explain" : question.kind };
     }
