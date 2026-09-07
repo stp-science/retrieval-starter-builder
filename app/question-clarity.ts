@@ -140,6 +140,9 @@ function commandify<T extends QuestionLike>(question: T): T {
   const whatUsedFor = stem.match(/^what is (.+?) used for(?: (.+))?$/i);
   if (whatUsedFor) return { ...question, q: finish(`State what ${lowerFirst(whatUsedFor[1])} is used for${whatUsedFor[2] ? ` ${whatUsedFor[2]}` : ""}`) };
 
+  const whatPluralUsedFor = stem.match(/^what are (.+?) used for(?: (.+))?$/i);
+  if (whatPluralUsedFor) return { ...question, q: finish(`State what ${lowerFirst(whatPluralUsedFor[1])} are used for${whatPluralUsedFor[2] ? ` ${whatPluralUsedFor[2]}` : ""}`) };
+
   const whatChanges = stem.match(/^what changes (.+)$/i);
   if (whatChanges) return { ...question, q: finish(`Describe the changes ${lowerFirst(whatChanges[1])}`), kind: question.kind === "explain" ? "explain" : question.kind };
 
