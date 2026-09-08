@@ -1,49 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="440" height="440" viewBox="0 0 440 440" fill="none">
+<svg width="560" height="560" viewBox="0 0 560 560" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#FFFDF8"/>
-      <stop offset=".55" stop-color="#FFFDFB"/>
-      <stop offset="1" stop-color="#F1ECE4"/>
+    <linearGradient id="paperBack" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F8FBFC"/>
+      <stop offset="1" stop-color="#DCE9EE"/>
     </linearGradient>
-    <linearGradient id="paper2" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#F8F5EF"/>
-      <stop offset="1" stop-color="#DED8CF"/>
+    <linearGradient id="paperMid" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF2F5"/>
+    </linearGradient>
+    <linearGradient id="paperFront" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset=".68" stop-color="#F6FAFB"/>
+      <stop offset="1" stop-color="#E6EEF2"/>
     </linearGradient>
     <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#FF4C57"/>
-      <stop offset=".45" stop-color="#E20B31"/>
-      <stop offset="1" stop-color="#94001C"/>
+      <stop stop-color="#FF6C88"/>
+      <stop offset=".48" stop-color="#EC2850"/>
+      <stop offset="1" stop-color="#B90831"/>
     </linearGradient>
-    <filter id="shadow" x="-40%" y="-40%" width="180%" height="200%">
-      <feDropShadow dx="0" dy="24" stdDeviation="18" flood-color="#10293B" flood-opacity=".28"/>
-    </filter>
-    <filter id="cardShadow" x="-40%" y="-40%" width="180%" height="180%">
-      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#5C5147" flood-opacity=".18"/>
-    </filter>
-    <filter id="markShadow" x="-40%" y="-40%" width="180%" height="180%">
-      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#680012" flood-opacity=".25"/>
-    </filter>
-    <radialGradient id="shine" cx="0" cy="0" r="1" gradientTransform="translate(130 105) rotate(48) scale(190)">
-      <stop stop-color="#FFFFFF" stop-opacity=".9"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    <linearGradient id="redEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF98AA"/>
+      <stop offset="1" stop-color="#8E0927"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+      <stop stop-color="#FF3158" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#FF3158" stop-opacity="0"/>
     </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%">
+      <feDropShadow dx="0" dy="26" stdDeviation="22" flood-color="#0A2031" flood-opacity=".25"/>
+    </filter>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="qShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#8B0924" flood-opacity=".35"/>
+    </filter>
   </defs>
 
+  <ellipse cx="280" cy="456" rx="160" ry="50" fill="#24485C" opacity=".12" filter="url(#soft)"/>
+  <circle cx="284" cy="275" r="182" fill="url(#glow)" opacity=".65"/>
+
   <g filter="url(#shadow)">
-    <rect x="82" y="57" width="274" height="316" rx="28" transform="rotate(-8 82 57)" fill="url(#paper2)" stroke="#D6CEC4"/>
-    <rect x="62" y="78" width="292" height="312" rx="29" transform="rotate(6 62 78)" fill="#F8F6F1" stroke="#D8D0C8"/>
-    <rect x="95" y="52" width="276" height="320" rx="28" transform="rotate(3 95 52)" fill="#FFF9F1" stroke="#DED6CC"/>
-    <g filter="url(#cardShadow)">
-      <rect x="67" y="69" width="306" height="314" rx="30" fill="url(#paper)" stroke="#D7CEC4" stroke-width="1.5"/>
-      <rect x="76" y="78" width="288" height="296" rx="24" fill="url(#shine)" opacity=".52"/>
-      <path d="M92 92C141 70 270 70 346 95" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" opacity=".34"/>
+    <g transform="rotate(-11 278 277)">
+      <rect x="124" y="132" width="318" height="286" rx="34" fill="url(#paperBack)" stroke="#FFFFFF" stroke-width="5"/>
+      <path d="M151 178h176" stroke="#B9D4DE" stroke-opacity=".55" stroke-width="11" stroke-linecap="round"/>
+      <path d="M151 211h126" stroke="#D1E2E8" stroke-width="9" stroke-linecap="round"/>
     </g>
 
-    <g transform="translate(159 122)" filter="url(#markShadow)">
-      <path d="M58 0C90 0 115 18 122 47C129 78 115 98 92 118C74 133 67 144 67 163V177H34V159C34 132 44 114 68 94C85 80 94 69 91 53C88 38 77 30 61 30C44 30 34 39 29 54L0 43C8 16 29 0 58 0Z" fill="url(#red)"/>
-      <ellipse cx="50" cy="207" rx="18" ry="19" fill="url(#red)"/>
-      <path d="M37 18C51 8 75 7 90 17" stroke="#FF9DA2" stroke-width="6" stroke-linecap="round" opacity=".55"/>
-      <circle cx="44" cy="201" r="5" fill="#FF9AA1" opacity=".42"/>
+    <g transform="rotate(8 282 278)">
+      <rect x="118" y="128" width="324" height="292" rx="35" fill="url(#paperMid)" stroke="#FFFFFF" stroke-width="5"/>
+      <path d="M153 360h114" stroke="#C7DBE3" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+      <path d="M153 390h154" stroke="#D9E7EC" stroke-width="8" stroke-linecap="round" opacity=".7"/>
     </g>
+
+    <rect x="111" y="116" width="338" height="304" rx="38" fill="url(#paperFront)" stroke="#FFFFFF" stroke-width="6"/>
+  </g>
+
+  <rect x="129" y="134" width="302" height="268" rx="28" stroke="#DCE9EE" stroke-width="2" opacity=".85"/>
+  <path d="M158 162h72" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" opacity=".75"/>
+  <circle cx="406" cy="157" r="7" fill="#6CF0D2" opacity=".8"/>
+  <circle cx="428" cy="179" r="4" fill="#59D7FF" opacity=".75"/>
+
+  <g filter="url(#qShadow)">
+    <path d="M239 233c7-47 44-75 94-75 53 0 93 31 93 78 0 39-22 58-54 77-22 13-32 23-32 46v10h-67v-18c0-38 15-57 48-77 24-15 34-25 34-41 0-17-13-29-32-29-22 0-35 14-38 38l-46-9z" fill="url(#red)" stroke="url(#redEdge)" stroke-width="3"/>
+    <circle cx="304" cy="408" r="34" fill="url(#red)" stroke="url(#redEdge)" stroke-width="3"/>
+  </g>
+
+  <path d="M276 181c34-18 84-8 104 21" stroke="#FFB2C0" stroke-width="10" stroke-linecap="round" opacity=".72"/>
+  <ellipse cx="289" cy="391" rx="12" ry="7" fill="#FF9FB0" opacity=".65"/>
+
+  <g opacity=".65">
+    <path d="M102 218l8 15 15 8-15 8-8 15-8-15-15-8 15-8 8-15z" fill="#59D7FF"/>
+    <path d="M462 274l6 11 11 6-11 6-6 11-6-11-11-6 11-6 6-11z" fill="#FFD36A"/>
+    <circle cx="455" cy="344" r="6" fill="#6CF0D2"/>
+    <circle cx="105" cy="342" r="5" fill="#9B7CFF"/>
   </g>
 </svg>
