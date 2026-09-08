@@ -1,148 +1,118 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="330" viewBox="0 0 1200 330" fill="none">
+<svg width="1200" height="330" viewBox="0 0 1200 330" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#FFFFFF"/>
-      <stop offset="0.48" stop-color="#F5FAFD"/>
-      <stop offset="1" stop-color="#DDEAF2"/>
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".98"/>
+      <stop offset=".48" stop-color="#EAF7FB" stop-opacity=".96"/>
+      <stop offset="1" stop-color="#CFE8F0" stop-opacity=".92"/>
     </linearGradient>
-    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#FFFFFF" stop-opacity=".95"/>
-      <stop offset="1" stop-color="#BFD4E0" stop-opacity=".95"/>
+    <linearGradient id="tileRed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".52" stop-color="#FFF1F4"/>
+      <stop offset="1" stop-color="#F3D7DE"/>
     </linearGradient>
-    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#163F58"/>
-      <stop offset="0.48" stop-color="#2C7192"/>
-      <stop offset="1" stop-color="#0B2E45"/>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#8BF5FF"/>
+      <stop offset=".55" stop-color="#3ED5E8"/>
+      <stop offset="1" stop-color="#1799C0"/>
     </linearGradient>
-    <linearGradient id="blueHi" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#74C7E7"/>
-      <stop offset="1" stop-color="#1D5E80"/>
+    <linearGradient id="aqua" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#B0FFE8"/>
+      <stop offset=".55" stop-color="#62E5C4"/>
+      <stop offset="1" stop-color="#25B79E"/>
     </linearGradient>
     <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#FF5A57"/>
-      <stop offset=".5" stop-color="#E31333"/>
-      <stop offset="1" stop-color="#8F001C"/>
+      <stop stop-color="#FF7A91"/>
+      <stop offset=".5" stop-color="#EF3154"/>
+      <stop offset="1" stop-color="#B90732"/>
     </linearGradient>
     <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#FFF0A0"/>
-      <stop offset=".45" stop-color="#F1B735"/>
-      <stop offset="1" stop-color="#B56E08"/>
+      <stop stop-color="#FFE7A1"/>
+      <stop offset=".5" stop-color="#F5C75B"/>
+      <stop offset="1" stop-color="#C98A1E"/>
     </linearGradient>
-    <linearGradient id="liquid" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#FF695D"/>
-      <stop offset=".55" stop-color="#E5172D"/>
-      <stop offset="1" stop-color="#F29A21"/>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#203F5B"/>
+      <stop offset="1" stop-color="#0A1728"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(88 66) rotate(48) scale(150)">
-      <stop stop-color="#FFFFFF" stop-opacity=".85"/>
-      <stop offset="1" stop-color="#A9D3E7" stop-opacity="0"/>
-    </radialGradient>
-    <filter id="shadow" x="-40%" y="-40%" width="180%" height="200%">
-      <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#173345" flood-opacity=".24"/>
-      <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#FFFFFF" flood-opacity=".8"/>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#0B2234" flood-opacity=".20"/>
     </filter>
-    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="5"/>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <filter id="iconShadow" x="-40%" y="-40%" width="180%" height="180%">
-      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#0B2E45" flood-opacity=".22"/>
-    </filter>
-    <g id="tileBase">
-      <rect width="170" height="170" rx="42" fill="url(#tile)" stroke="url(#edge)" stroke-width="2"/>
-      <rect x="8" y="8" width="154" height="154" rx="35" fill="url(#glow)" opacity=".7"/>
-      <path d="M28 20C58 5 112 5 145 22" stroke="white" stroke-width="8" stroke-linecap="round" opacity=".34"/>
-    </g>
   </defs>
 
-  <g transform="translate(20 52)" filter="url(#shadow)">
-    <use href="#tileBase"/>
-    <g transform="translate(26 24)" filter="url(#iconShadow)">
-      <ellipse cx="59" cy="59" rx="53" ry="18" stroke="url(#blueHi)" stroke-width="7"/>
-      <ellipse cx="59" cy="59" rx="53" ry="18" transform="rotate(60 59 59)" stroke="url(#blue)" stroke-width="7"/>
-      <ellipse cx="59" cy="59" rx="53" ry="18" transform="rotate(120 59 59)" stroke="url(#gold)" stroke-width="7"/>
-      <circle cx="59" cy="59" r="17" fill="url(#red)" stroke="#FFF" stroke-opacity=".55" stroke-width="2"/>
-      <circle cx="103" cy="50" r="8" fill="url(#gold)"/>
-      <circle cx="31" cy="20" r="8" fill="url(#blueHi)"/>
-      <circle cx="84" cy="103" r="8" fill="url(#blue)"/>
-      <circle cx="52" cy="50" r="5" fill="#FF9290" opacity=".55"/>
-    </g>
+  <g filter="url(#shadow)">
+    <rect x="20" y="38" width="170" height="210" rx="38" fill="url(#tile)" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="215" y="58" width="170" height="210" rx="38" fill="url(#tileRed)" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="410" y="28" width="170" height="210" rx="38" fill="url(#tile)" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="605" y="62" width="170" height="210" rx="38" fill="url(#tile)" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="800" y="34" width="170" height="210" rx="38" fill="url(#tileRed)" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="995" y="54" width="170" height="210" rx="38" fill="url(#tile)" stroke="#FFFFFF" stroke-width="3"/>
   </g>
 
-  <g transform="translate(218 52)" filter="url(#shadow)">
-    <use href="#tileBase"/>
-    <g transform="translate(36 20)" filter="url(#iconShadow)">
-      <path d="M34 8H66" stroke="url(#blue)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M41 8V42L13 96C8 106 15 118 27 118H74C86 118 93 106 88 96L59 42V8" fill="#EAF8FD" fill-opacity=".72" stroke="url(#blue)" stroke-width="6" stroke-linejoin="round"/>
-      <path d="M21 82C36 73 49 88 78 74L89 97C94 107 86 118 74 118H27C15 118 8 106 13 96L21 82Z" fill="url(#liquid)"/>
-      <ellipse cx="53" cy="92" rx="31" ry="7" fill="#FFAA55" opacity=".26"/>
-      <circle cx="44" cy="76" r="5" fill="#FFBB70"/>
-      <circle cx="62" cy="94" r="4" fill="#FFDF9A"/>
-      <circle cx="53" cy="62" r="4" fill="#F23D4A"/>
-      <path d="M29 28C28 52 24 66 18 78" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity=".6"/>
-    </g>
+  <g opacity=".38" fill="#fff">
+    <ellipse cx="78" cy="74" rx="38" ry="15"/>
+    <ellipse cx="272" cy="94" rx="36" ry="14"/>
+    <ellipse cx="470" cy="64" rx="38" ry="15"/>
+    <ellipse cx="662" cy="98" rx="36" ry="14"/>
+    <ellipse cx="858" cy="70" rx="36" ry="14"/>
+    <ellipse cx="1053" cy="90" rx="38" ry="15"/>
   </g>
 
-  <g transform="translate(416 52)" filter="url(#shadow)">
-    <use href="#tileBase"/>
-    <g transform="translate(43 20)" filter="url(#iconShadow)">
-      <path d="M15 4C93 34 2 69 78 106C96 115 86 129 66 136" stroke="url(#blue)" stroke-width="11" stroke-linecap="round"/>
-      <path d="M75 4C-3 34 88 69 12 106C-6 115 4 129 24 136" stroke="url(#red)" stroke-width="11" stroke-linecap="round"/>
-      <g stroke="url(#gold)" stroke-width="5" stroke-linecap="round">
-        <path d="M29 19H61"/><path d="M20 42H70"/><path d="M23 66H67"/><path d="M18 91H72"/><path d="M27 116H63"/>
-      </g>
-      <circle cx="66" cy="18" r="5" fill="#FF7171"/>
-      <circle cx="25" cy="111" r="5" fill="#65C7E7"/>
-    </g>
+  <!-- atom -->
+  <g transform="translate(105 143)" stroke="url(#cyan)" stroke-width="8" stroke-linecap="round" fill="none">
+    <ellipse rx="56" ry="22" transform="rotate(18)"/>
+    <ellipse rx="56" ry="22" transform="rotate(78)"/>
+    <ellipse rx="56" ry="22" transform="rotate(138)"/>
+  </g>
+  <circle cx="105" cy="143" r="12" fill="url(#red)" filter="url(#glow)"/>
+  <circle cx="158" cy="160" r="7" fill="#FFD36A"/>
+
+  <!-- flask -->
+  <g transform="translate(300 159)">
+    <path d="M-22 -71h44M-12 -70v52L-52 49c-10 18 2 37 23 37h58c21 0 33-19 23-37L12-18v-52" stroke="url(#navy)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M-41 39c20-8 38 7 58 2 9-2 17-6 25-11l12 21c8 14-1 29-18 29h-72c-17 0-26-15-18-29l13-22z" fill="url(#red)" opacity=".96"/>
+    <circle cx="18" cy="26" r="8" fill="#FFD6DE"/>
+    <circle cx="-11" cy="14" r="6" fill="#FFF" opacity=".8"/>
   </g>
 
-  <g transform="translate(614 52)" filter="url(#shadow)">
-    <use href="#tileBase"/>
-    <g transform="translate(18 28)" filter="url(#iconShadow)">
-      <path d="M5 64H129" stroke="#8EB0C1" stroke-width="3" opacity=".55"/>
-      <path d="M68 12V115" stroke="#7B9AAF" stroke-width="2.5" stroke-dasharray="6 7" opacity=".72"/>
-      <path d="M5 64C19 28 34 28 48 64C62 100 78 100 92 64C106 28 120 28 135 64" stroke="url(#blueHi)" stroke-width="9" stroke-linecap="round"/>
-      <path d="M49 64C58 85 64 93 71 89C78 85 84 72 92 64" stroke="url(#red)" stroke-width="7" stroke-linecap="round" opacity=".9"/>
-      <circle cx="68" cy="64" r="11" fill="url(#red)" stroke="white" stroke-opacity=".7" stroke-width="2"/>
-      <circle cx="68" cy="14" r="7" fill="url(#gold)"/>
-      <circle cx="68" cy="114" r="7" fill="url(#gold)"/>
-    </g>
+  <!-- DNA -->
+  <g transform="translate(495 133)" stroke-linecap="round" stroke-width="9" fill="none">
+    <path d="M-40-72C35-48 35 48-40 72" stroke="url(#cyan)"/>
+    <path d="M40-72C-35-48-35 48 40 72" stroke="url(#aqua)"/>
+    <path d="M-22-51H22M-31-22H31M-33 10H33M-26 41H26" stroke="url(#gold)" stroke-width="7"/>
   </g>
 
-  <g transform="translate(812 52)" filter="url(#shadow)">
-    <use href="#tileBase"/>
-    <g transform="translate(28 35)" filter="url(#iconShadow)" stroke-linejoin="round" stroke-linecap="round">
-      <path d="M10 50H31V29H88V50H112" stroke="url(#blue)" stroke-width="9"/>
-      <path d="M10 50V98H104V78" stroke="url(#blue)" stroke-width="9"/>
-      <path d="M56 38V62" stroke="#123E57" stroke-width="7"/>
-      <path d="M70 32V68" stroke="#123E57" stroke-width="7"/>
-      <path d="M35 50H45" stroke="#E51B38" stroke-width="8"/>
-      <path d="M82 50H92" stroke="#E51B38" stroke-width="8"/>
-      <circle cx="11" cy="50" r="9" fill="url(#gold)" stroke="none"/>
-      <circle cx="112" cy="50" r="9" fill="url(#gold)" stroke="none"/>
-    </g>
+  <!-- waveform -->
+  <g transform="translate(690 164)">
+    <path d="M-64 0h18l13-38 18 78 19-104 18 128 17-88 14 34h25" stroke="url(#cyan)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M-67 72h134" stroke="#153147" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="-46" cy="0" r="5" fill="#FF3158"/>
+    <circle cx="53" cy="10" r="5" fill="#FFD36A"/>
   </g>
 
-  <g transform="translate(1010 52)" filter="url(#shadow)">
-    <use href="#tileBase"/>
-    <g transform="translate(34 19)" filter="url(#iconShadow)">
-      <path d="M63 7L87 20L66 59L42 46L63 7Z" fill="url(#blue)"/>
-      <rect x="63" y="0" width="28" height="12" rx="6" transform="rotate(28 63 0)" fill="url(#gold)"/>
-      <rect x="39" y="43" width="31" height="12" rx="6" transform="rotate(28 39 43)" fill="url(#red)"/>
-      <path d="M74 51C93 68 96 94 84 112C77 122 66 128 55 130" stroke="url(#blue)" stroke-width="13" stroke-linecap="round"/>
-      <circle cx="80" cy="59" r="10" fill="url(#gold)" stroke="#F9E9A4" stroke-width="2"/>
-      <rect x="19" y="89" width="61" height="9" rx="4.5" fill="url(#blueHi)"/>
-      <rect x="28" y="102" width="16" height="19" rx="5" fill="url(#blue)"/>
-      <path d="M12 130H92" stroke="url(#blue)" stroke-width="12" stroke-linecap="round"/>
-      <path d="M30 126C31 109 40 99 56 94" stroke="url(#blue)" stroke-width="11" stroke-linecap="round"/>
-    </g>
+  <!-- circuit -->
+  <g transform="translate(885 140)" stroke="url(#navy)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M-62-35h34v-34h58v36h36v76H28v37h-60V43h-34z"/>
+    <circle cx="-62" cy="-35" r="10" fill="url(#red)" stroke="none"/>
+    <circle cx="66" cy="43" r="10" fill="url(#aqua)" stroke="none"/>
+    <circle cx="28" cy="80" r="10" fill="url(#gold)" stroke="none"/>
+    <rect x="-22" y="-13" width="44" height="28" rx="7" fill="url(#cyan)" stroke="none"/>
   </g>
 
-  <g opacity=".22" filter="url(#soft)">
-    <ellipse cx="105" cy="267" rx="75" ry="13" fill="#173345"/>
-    <ellipse cx="303" cy="267" rx="75" ry="13" fill="#173345"/>
-    <ellipse cx="501" cy="267" rx="75" ry="13" fill="#173345"/>
-    <ellipse cx="699" cy="267" rx="75" ry="13" fill="#173345"/>
-    <ellipse cx="897" cy="267" rx="75" ry="13" fill="#173345"/>
-    <ellipse cx="1095" cy="267" rx="75" ry="13" fill="#173345"/>
+  <!-- microscope -->
+  <g transform="translate(1080 157)" stroke="url(#navy)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M-8-75l33 27-21 27-34-27z" fill="url(#cyan)" stroke="none"/>
+    <path d="M-16-39c27 17 38 43 22 67-12 18-35 22-54 11"/>
+    <path d="M-40 38h78M-55 76h102"/>
+    <path d="M12-10l27 24M31 9l-20 26"/>
+  </g>
+  <circle cx="1083" cy="180" r="9" fill="url(#red)"/>
+
+  <g fill="#FFFFFF" opacity=".75">
+    <circle cx="52" cy="72" r="4"/><circle cx="358" cy="93" r="4"/><circle cx="558" cy="61" r="4"/>
+    <circle cx="748" cy="100" r="4"/><circle cx="941" cy="72" r="4"/><circle cx="1140" cy="92" r="4"/>
   </g>
 </svg>
