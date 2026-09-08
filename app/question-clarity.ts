@@ -1,3 +1,6 @@
+import { commandWordPrompts } from "./command-word-prompts";
+import { standaloneRefinements } from "./standalone-refinements";
+
 type QuestionLike = {
   q: string;
   a: string;
@@ -11,8 +14,8 @@ export type QuestionTopicContext = {
 };
 
 const yesNoOpening = /^(?:is|are|can|could|do|does|did|will|would|should|has|have|had)\b/i;
-const commandOpening = /^(?:Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete)\b/i;
-const contextualCommandOpening = /^(?:At|In|For|When|During|Using|From|With)\b[^.!?]{0,120},\s*(?:define|state|name|identify|describe|explain|compare|calculate|determine|suggest|justify|evaluate|outline|write|give|classify|predict|select|label|draw|sketch|order|list|complete)\b/i;
+const commandOpening = /^(?:Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete|Distinguish|Convert|Analyse|Design|Estimate|Derive|Link|Put|Use|Correct|Express)\b/i;
+const contextualCommandOpening = /^(?:At|In|For|When|During|Using|From|With)\b[^.!?]{0,120},\s*(?:define|state|name|identify|describe|explain|compare|calculate|determine|suggest|justify|evaluate|outline|write|give|classify|predict|select|label|draw|sketch|order|list|complete|distinguish|convert|analyse|design|estimate|derive|link|put|use|correct|express)\b/i;
 const linkingVerb = /^(?:is|are|was|were|contains?|controls?|describes?|allows?|provides?|measures?|has|have|uses?|causes?|produces?|forms?|shows?|tells?|means?|represents?|indicates?|links?|moves?|transports?|absorbs?|releases?|stores?|carries?|prevents?|detects?|responds?|occurs?|happens?|affects?|influences?|changes?|increases?|decreases?|requires?|needs?|gives?|determines?|defines?|identifies?|explains?|predicts?|depends?|works?|reaches?|becomes?|stays?|remains?|reacts?|travels?|flows?|falls?|rises?|equals?|acts?|must|can|will|would|should)$/i;
 
 export function isBareYesNoQuestion(question: QuestionLike) {
@@ -29,6 +32,13 @@ function lowerFirst(value: string) {
 
 function answerNeedsExplanation(answer: string) {
   return answer.trim().split(/\s+/).length > 4 || /[.;:]\s/.test(answer);
+}
+
+function applyReviewedWording<T extends QuestionLike>(question: T): T {
+  const refinement = standaloneRefinements[question.q];
+  if (refinement) return { ...question, ...refinement };
+  const prompt = commandWordPrompts[question.q];
+  return prompt ? { ...question, q: prompt } : question;
 }
 
 function thirdPersonSingular(verb: string) {
@@ -79,6 +89,18 @@ function commandify<T extends QuestionLike>(question: T): T {
   if (commandOpening.test(stem) || contextualCommandOpening.test(stem)) {
     return prompt === question.q ? question : { ...question, q: prompt };
   }
+
+  const subjectTermCall = stem.match(/^In (Biology|Chemistry|Physics), what do we call (.+)$/i);
+  if (subjectTermCall) return { ...question, q: `Name the ${subjectTermCall[1].toLowerCase()} term for “${subjectTermCall[2]}”.` };
+
+  const termCall = stem.match(/^What do we call (.+)$/i);
+  if (termCall) return { ...question, q: `Name the term for “${termCall[1]}”.` };
+
+  const scientificDefinition = stem.match(/^In scientific work, what does (.+) mean$/i);
+  if (scientificDefinition) return { ...question, q: `Define ${scientificDefinition[1]} in a scientific investigation.` };
+
+  const scientificTerm = stem.match(/^In science, which term means (.+)$/i);
+  if (scientificTerm) return { ...question, q: `Name the scientific term that means ${scientificTerm[1]}.` };
 
   const scenarioWhich = stem.match(/^(.+?[.!])\s+Which (.+)$/i);
   if (scenarioWhich) return { ...question, q: `${scenarioWhich[1]} Identify which ${lowerFirst(scenarioWhich[2])}.` };
@@ -312,6 +334,10 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
     "what type of respiration is studied in this year 7 topic?": { q: "Name the type of respiration that uses oxygen to release energy from glucose.", a: "Aerobic respiration." },
     "give one use of a halogen from the guide.": { q: "Give one use of a Group 17 element (halogen).", a: "For example, chlorine is used to disinfect water or iodine is used as an antiseptic." },
     "what does a formula tell you first?": { q: "State what a chemical formula tells you about the elements in a substance." },
+    "what does structure-property relationship allow?": { q: "Explain how the relationship between microscopic structure and macroscopic properties helps predict a material's uses." },
+    "state what structure-property relationship allows.": { q: "Explain how the relationship between microscopic structure and macroscopic properties helps predict a material's uses." },
+    "what is needed for current to flow in a simple circuit?": { q: "State the two conditions needed for current to flow in a simple circuit." },
+    "what is produced by mitosis?": { q: "State what mitosis produces." },
   };
 
   const refined = exact[question.q.trim().toLowerCase()];
@@ -322,8 +348,9 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
   }
   if (/^what permanent change in a DNA base sequence is called[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Name a permanent change in a DNA base sequence." };
   if (/^what type of force can act without physical contact[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Name the type of force that can act without physical contact.", a: "non-contact force" };
+  if (/^what does (?:a )?structure-property relationship allow[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Explain how the relationship between microscopic structure and macroscopic properties helps predict a material's uses." };
 
-  return commandify(base);
+  return applyReviewedWording(commandify(applyReviewedWording(base)));
 }
 
 export function clarifyQuestionForTopic<T extends QuestionLike>(question: T, topic: QuestionTopicContext): T {

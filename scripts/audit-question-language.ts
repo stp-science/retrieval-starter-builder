@@ -66,9 +66,9 @@ const topics: AuditTopic[] = [
   })),
   ...(ibTopics as AuditTopic[]).map((topic) => ({
     ...topic,
-    questions: uniqueQuestionWording(topic.questions.map(clarifyQuestion)),
+    questions: uniqueQuestionWording(topic.questions.filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? uniqueQuestionWording(topic.oneWordQuestions.map(clarifyQuestion))
+      ? uniqueQuestionWording(topic.oneWordQuestions.filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion))
       : [],
   })),
 ];
@@ -109,7 +109,7 @@ const awkwardPatterns: Array<[RegExp, string]> = [
   [/^Answer yes or no\b/i, "replace low-thinking yes-no wording"],
 ];
 
-const commandWords = "Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete|Use|Choose|Plot|Measure";
+const commandWords = "Define|State|Name|Identify|Describe|Explain|Compare|Calculate|Determine|Suggest|Justify|Evaluate|Outline|Write|Give|Classify|Predict|Select|Label|Draw|Sketch|Order|List|Complete|Use|Choose|Plot|Measure|Distinguish|Convert|Analyse|Design|Estimate|Derive|Link|Put|Correct|Express";
 const directCommand = new RegExp(`^(?:${commandWords})\\b`, "i");
 const contextualCommand = new RegExp(`^(?:At|In|For|When|During|Using|From|With|After|Before)\\b[^.!?]{0,160},\\s*(?:${commandWords})\\b`, "i");
 const scenarioCommand = new RegExp(`^[^?]{3,180}[.!]\\s+(?:${commandWords})\\b`, "i");
@@ -120,12 +120,12 @@ const vagueFormulaPrompt = /^(?:What is|How is|How are)\b/i;
 const explicitFormulaCommand = /\b(?:define|equation|relationship|related|calculate|calculated|found|link|mean|state|write|express)\b/i;
 
 const vagueNoun = /^(?:State|Name|Identify|Describe|Explain|Write|Give|List)\s+(?:what\s+)?(?:the\s+|a\s+|an\s+)?(formula|equation|symbol|graph|diagram|value|number|direction|colour|products?|reactants?|role|function|process|method|structure|part|stage|step|trend|relationship|result|feature|factor|unit|rows?|columns?)\b/i;
-const qualifier = /\b(?:of|for|when|in|from|between|that|which|where|using|on|with|to|during|after|before|under|at|by)\b/i;
+const qualifier = /\b(?:of|for|when|in|from|between|that|which|where|using|linking|relating|on|with|to|during|after|before|under|at|by)\b/i;
 const malformedSingularWhat = /\bwhat (?:a|an|the) (?:formula|arrowhead|graph|symbol|equation|indicator|force|object|cell|particle|solution|reaction|element|atom|gene|allele|chromosome|enzyme|wave|current|voltage|resistance|temperature|pressure|mass|weight|speed|velocity|acceleration) (?:tell|show|mean|represent|indicate|affect|change|act|react|move|flow|increase|decrease|depend|carry|allow|provide|cause|produce|form|require|need)\b/i;
 const unsupportedGraphReference = /\b(?:the|this) graph\b/i;
 const graphQualifier = /\bgraph (?:of|showing|for|where|that|with)\b|\b(?:distance[-– ]time|velocity[-– ]time|speed[-– ]time|force[-– ]extension|solubility|cooling|heating|energy[- ]profile|bar|line|scatter|histogram) graph\b/i;
 const unsupportedDiagramReference = /\b(?:the|this) diagram\b/i;
-const diagramQualifier = /\b(?:particle|force|circuit|ray|energy[- ]level|energy[- ]profile|cell|wave|free[- ]body|Punnett|Venn) diagram\b|\bdiagram (?:of|showing|for|where|that|with)\b/i;
+const diagramQualifier = /\b(?:particle|force|circuit|ray|energy[- ]level|energy[- ]profile|cell|wave|free[- ]body|Punnett|Venn) diagram\b|\bdiagram (?:of|showing|for|where|that|with|used)\b/i;
 const hiddenReference = /\b(?:shown above|shown below|given above|given below|the previous question|the question above|the question below)\b/i;
 const vaguePronounCommand = /^(?:State|Name|Identify|Describe|Explain)\s+(?:what|why|how)?\s*(?:it|they|this|these|those)\b/i;
 
@@ -135,6 +135,15 @@ for (const { topic, question, bank } of entries) {
   const location = `${topic.id} (${bank})`;
   const prompt = question.q.trim();
   const answer = question.a.trim();
+
+  if (/\b(?:this (?:course|standard|topic|unit)|in the guide|the graph below|this diagram|these results|AS 91531|NCEA Level [123]|Level [123] (?:course|standard|assessment|titration)|Excellence-level)\b/i.test(prompt)) {
+    violations.push(`${location}: prompt depends on unstated curriculum or classroom context: ${prompt}`);
+  }
+
+  const processedAgain = clarifyQuestion(question);
+  if (processedAgain.q !== prompt || processedAgain.a !== answer || processedAgain.kind !== question.kind) {
+    violations.push(`${location}: wording is not stable when processed again: ${prompt}`);
+  }
 
   if (!prompt || !answer) violations.push(`${location}: blank question or answer`);
   if (!/[?.…]$/.test(prompt)) violations.push(`${location}: missing end punctuation: ${prompt}`);

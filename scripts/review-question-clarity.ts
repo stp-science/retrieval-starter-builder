@@ -7,7 +7,7 @@ import { year11Topics } from "../app/year11-question-bank";
 import { seniorTopics } from "../app/year12-question-bank";
 import { year13Topics } from "../app/year13-question-bank";
 import { expandedOneWordQuestions, expandedQuestions } from "../app/year-group-expansion";
-import { clarifyQuestion } from "../app/question-clarity";
+import { clarifyQuestion, isBareYesNoQuestion } from "../app/question-clarity";
 
 type Question = { q: string; a: string; kind: "short" | "explain" };
 type Topic = {
@@ -41,16 +41,26 @@ const yearGroupTopics = [
 const topics = [
   ...yearGroupTopics.map((topic) => ({
     ...topic,
-    questions: unique([...topic.questions, ...(expandedQuestions[topic.id] ?? [])].map(clarifyQuestion)),
+    questions: unique([
+      ...topic.questions,
+      ...(typeof topic.year === "number" && topic.year >= 7 && topic.year <= 9
+        ? []
+        : (expandedQuestions[topic.id] ?? [])),
+    ].filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? unique([...topic.oneWordQuestions, ...(expandedOneWordQuestions[topic.id] ?? [])].map(clarifyQuestion))
+      ? unique([
+          ...topic.oneWordQuestions,
+          ...(typeof topic.year === "number" && topic.year >= 7 && topic.year <= 9
+            ? []
+            : (expandedOneWordQuestions[topic.id] ?? [])),
+        ].filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion))
       : [],
   })),
   ...(ibTopics as Topic[]).map((topic) => ({
     ...topic,
-    questions: unique(topic.questions.map(clarifyQuestion)),
+    questions: unique(topic.questions.filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion)),
     oneWordQuestions: topic.oneWordQuestions?.length
-      ? unique(topic.oneWordQuestions.map(clarifyQuestion))
+      ? unique(topic.oneWordQuestions.filter((question) => !isBareYesNoQuestion(question)).map(clarifyQuestion))
       : [],
   })),
 ];
