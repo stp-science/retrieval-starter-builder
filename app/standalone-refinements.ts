@@ -2,6 +2,49 @@ type Refinement = { q: string; a?: string; kind?: "short" | "explain" };
 
 /** Questions whose task, missing context or answer needs more than a wording change. */
 export const standaloneRefinements: Record<string, Refinement> = {
+  "Do all arteries carry oxygenated blood?": {
+    q: "Explain why it is incorrect to say that all arteries carry oxygenated blood.",
+    a: "The pulmonary artery carries deoxygenated blood from the heart to the lungs.",
+    kind: "explain",
+  },
+  "Do all veins carry deoxygenated blood?": {
+    q: "Explain why it is incorrect to say that all veins carry deoxygenated blood.",
+    a: "The pulmonary vein carries oxygenated blood from the lungs to the heart.",
+    kind: "explain",
+  },
+  "How can a model help explain diffusion?": {
+    q: "Describe how a model can help explain diffusion.",
+  },
+  "How can appearance help distinguish a solution from a suspension?": {
+    q: "Describe how appearance can help distinguish a solution from a suspension.",
+  },
+  "How can increased particle motion help explain greater solid solubility at higher temperature?": {
+    q: "Describe how increased particle motion can help explain greater solid solubility at higher temperature.",
+  },
+  "How can an epidemic curve help identify a pattern of transmission?": {
+    q: "Describe how an epidemic curve can help identify a pattern of transmission.",
+  },
+  "Which three processes transfer thermal energy?": {
+    q: "Name the three processes that transfer thermal energy.",
+  },
+  "What does the arrow in a chemical equation mean?": {
+    q: "State what the arrow in a chemical equation means.",
+  },
+  "What occurs in a displacement reaction?": {
+    q: "Describe what occurs in a displacement reaction.",
+  },
+  "What controls the opening and closing of stomata?": {
+    q: "State what controls the opening and closing of stomata.",
+  },
+  "What stays the same about the substance during melting and freezing?": {
+    q: "State what stays the same about the substance during melting and freezing.",
+  },
+  "What unusual change happens to water as it freezes?": {
+    q: "State what unusual change happens to water as it freezes.",
+  },
+  "What evidence can compare conduction through different materials?": {
+    q: "State what evidence can be used to compare conduction through different materials.",
+  },
   "Describe what happens to electrons when static electricity is produced by friction.": {
     q: "Describe how rubbing two materials can make them electrically charged.",
     a: "Electrons transfer from one material to the other. The material gaining electrons becomes negative; the material losing electrons becomes positive.",
