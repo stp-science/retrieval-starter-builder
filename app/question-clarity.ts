@@ -52,13 +52,17 @@ function declarativeFromAuxiliary(auxiliary: string, rest: string) {
   const words = rest.trim().split(/\s+/);
   if (!words.length) return rest.trim();
 
-  if (/^(?:do|does|did)$/i.test(auxiliary)) {
+  // With plural/base-form “do” questions, removing the fronted auxiliary
+  // already produces the correct embedded declarative clause:
+  // “Do all arteries carry …?” -> “all arteries carry …”.
+  if (/^do$/i.test(auxiliary)) return rest.trim();
+
+  if (/^(?:does|did)$/i.test(auxiliary)) {
     const verbIndex = words.findIndex((word) => linkingVerb.test(word));
     if (verbIndex > 0) {
       const subject = words.slice(0, verbIndex).join(" ");
       const verb = words[verbIndex];
       const tail = words.slice(verbIndex + 1).join(" ");
-      if (/^do$/i.test(auxiliary)) return `${subject} ${verb}${tail ? ` ${tail}` : ""}`;
       if (/^does$/i.test(auxiliary)) return `${subject} ${thirdPersonSingular(verb)}${tail ? ` ${tail}` : ""}`;
       return `${subject} did ${verb}${tail ? ` ${tail}` : ""}`;
     }
