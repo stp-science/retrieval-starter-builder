@@ -84,7 +84,7 @@ const malformedPatterns: Array<[RegExp, string]> = [
     "misplaced auxiliary verb after a quantifier",
   ],
   [
-    /\b(?:help|affect|change|increase|decrease|move|react|form|show|identify|explain|compare)\s+(?:can|could|will|would|should)\b/i,
+    /\b(?:help|affect|identify|explain|compare)\s+(?:can|could|will|would|should)\b/i,
     "modal verb is in the wrong position",
   ],
   [
