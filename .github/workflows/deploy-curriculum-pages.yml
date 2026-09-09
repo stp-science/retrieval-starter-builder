@@ -29,6 +29,9 @@ jobs:
       - name: Audit question wording
         run: npm run audit:questions
 
+      - name: Audit question grammar
+        run: npx tsx scripts/audit-question-grammar.ts
+
       - name: Check activity wiring
         run: node --test tests/activity-integrity.test.mjs
 
