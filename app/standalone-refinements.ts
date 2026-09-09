@@ -3,12 +3,12 @@ type Refinement = { q: string; a?: string; kind?: "short" | "explain" };
 /** Questions whose task, missing context or answer needs more than a wording change. */
 export const standaloneRefinements: Record<string, Refinement> = {
   "Do all arteries carry oxygenated blood?": {
-    q: "Explain why it is incorrect to say that all arteries carry oxygenated blood.",
+    q: "Explain why the statement 'all arteries carry oxygenated blood' is incorrect.",
     a: "The pulmonary artery carries deoxygenated blood from the heart to the lungs.",
     kind: "explain",
   },
   "Do all veins carry deoxygenated blood?": {
-    q: "Explain why it is incorrect to say that all veins carry deoxygenated blood.",
+    q: "Explain why the statement 'all veins carry deoxygenated blood' is incorrect.",
     a: "The pulmonary vein carries oxygenated blood from the lungs to the heart.",
     kind: "explain",
   },
