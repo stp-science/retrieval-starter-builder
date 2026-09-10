@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b10">
+  <title>Basketball Review Shootout</title>
+  <meta name="description" content="A fast classroom basketball review game: choose a numbered ball, take the shot and score.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f8fa;
+      --muted: #a9b0bc;
+      --panel: rgba(7, 10, 15, .94);
+      --panel-soft: rgba(17, 22, 31, .86);
+      --line: rgba(255, 255, 255, .13);
+      --orange: #ff7a18;
+      --orange-bright: #ff9b42;
+      --green: #55e38c;
+      --red: #ff6a64;
+      --shadow: 0 22px 70px rgba(0, 0, 0, .5);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: #05070a;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    button { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(340px, 42%) minmax(0, 58%);
+      background:
+        radial-gradient(circle at 65% 18%, rgba(255, 142, 53, .12), transparent 23rem),
+        #07090d;
+    }
+
+    .controls {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: clamp(1.5rem, 3.5vw, 4rem);
+      background:
+        linear-gradient(145deg, rgba(255, 122, 24, .08), transparent 38%),
+        var(--panel);
+      border-right: 1px solid var(--line);
+      box-shadow: 16px 0 60px rgba(0, 0, 0, .25);
+    }
+
+    .eyebrow {
+      margin: 0 0 .5rem;
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(3.1rem, 7vw, 7rem);
+      font-weight: 900;
+      line-height: .82;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    h1 span {
+      display: block;
+      margin-top: .13em;
+      color: var(--orange);
+      text-shadow: 0 0 32px rgba(255, 122, 24, .28);
+    }
+
+    .tagline {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: clamp(1.1rem, 2.4vh, 1.8rem) 0 0;
+      color: #dfe3e9;
+      font-size: .9rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .tagline::before {
+      width: 2.8rem;
+      height: 3px;
+      content: "";
+      background: var(--orange);
+      box-shadow: 0 0 16px rgba(255, 122, 24, .5);
+    }
+
+    .instruction {
+      margin: clamp(1.5rem, 3vh, 2.6rem) 0 1rem;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .instruction strong { color: var(--ink); }
+
+    .ball-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(3.5rem, 1fr));
+      gap: clamp(.55rem, 1vw, .9rem);
+      width: min(100%, 36rem);
+    }
+
+    .ball-button {
+      position: relative;
+      display: grid;
+      aspect-ratio: 1;
+      place-items: center;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 50%;
+      background: #11151d;
+      color: white;
+      cursor: pointer;
+      isolation: isolate;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .34);
+      transition: transform .18s ease, border-color .18s ease, opacity .18s ease, filter .18s ease;
+    }
+
+    .ball-button::before {
+      position: absolute;
+      inset: -8%;
+      z-index: -1;
+      display: grid;
+      place-items: center;
+      content: "🏀";
+      font-size: clamp(3.6rem, 6.6vw, 6.4rem);
+      filter: saturate(1.12) contrast(1.04);
+      transform: rotate(-7deg);
+    }
+
+    .ball-button span {
+      display: grid;
+      width: 43%;
+      aspect-ratio: 1;
+      place-items: center;
+      border: 2px solid rgba(255, 255, 255, .82);
+      border-radius: 50%;
+      background: rgba(4, 6, 9, .78);
+      font-size: clamp(1rem, 2.2vw, 1.45rem);
+      font-weight: 950;
+      line-height: 1;
+      text-shadow: 0 2px 4px #000;
+    }
+
+    .ball-button:hover:not(:disabled) {
+      border-color: var(--orange-bright);
+      transform: translateY(-4px) scale(1.04);
+    }
+
+    .ball-button:focus-visible {
+      outline: 4px solid white;
+      outline-offset: 4px;
+    }
+
+    .ball-button:disabled { cursor: default; }
+
+    .ball-button.missed {
+      opacity: .34;
+      filter: grayscale(.75);
+      transform: scale(.92);
+    }
+
+    .ball-button.made {
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(85, 227, 140, .18), 0 0 32px rgba(85, 227, 140, .28);
+      transform: scale(1.08);
+    }
+
+    .status-card {
+      width: min(100%, 36rem);
+      margin-top: clamp(1.2rem, 2.5vh, 2rem);
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--orange);
+      border-radius: .65rem;
+      background: var(--panel-soft);
+      box-shadow: inset 0 1px rgba(255, 255, 255, .04);
+    }
+
+    #status {
+      min-height: 1.6em;
+      margin: 0;
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .round-note {
+      margin: .35rem 0 0;
+      color: var(--muted);
+      font-size: .87rem;
+      line-height: 1.4;
+    }
+
+    .control-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: min(100%, 36rem);
+      margin-top: auto;
+      padding-top: 1.5rem;
+    }
+
+    .round-label {
+      color: var(--muted);
+      font-size: .85rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .round-label strong {
+      display: block;
+      color: white;
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+
+    .reset-button,
+    .audio-button {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      background: rgba(9, 12, 18, .82);
+      color: white;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .reset-button {
+      padding: .7rem 1rem;
+      font-size: .88rem;
+      font-weight: 850;
+    }
+
+    .reset-button:hover,
+    .audio-button:hover { border-color: var(--orange-bright); }
+
+    .reset-button:active,
+    .audio-button:active { transform: translateY(1px); }
+
+    .reset-button:focus-visible,
+    .audio-button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 3px;
+    }
+
+    .arena {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow: hidden;
+      background:
+        linear-gradient(to top, rgba(3, 5, 8, .72), transparent 42%),
+        linear-gradient(90deg, rgba(3, 5, 8, .38), transparent 35%),
+        url("assets/arena-clean.jpg") center / cover no-repeat,
+        radial-gradient(circle at 50% 32%, #55321f, #12151c 55%, #080a0e);
+    }
+
+    .arena::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, .07), transparent 15% 78%, rgba(255, 255, 255, .04)),
+        radial-gradient(circle at 50% 36%, transparent 0 25%, rgba(0, 0, 0, .16) 66%, rgba(0, 0, 0, .58));
+    }
+
+    .arena-topbar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: clamp(1rem, 2vw, 1.6rem);
+    }
+
+    .scoreboard {
+      min-width: 12rem;
+      padding: .75rem 1rem .65rem;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: .45rem;
+      background: rgba(3, 6, 10, .85);
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .42), inset 0 0 22px rgba(255, 122, 24, .07);
+      backdrop-filter: blur(12px);
+    }
+
+    .scoreboard small {
+      display: block;
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    #scoreboardMessage {
+      display: block;
+      margin-top: .2rem;
+      color: white;
+      font-family: "Arial Narrow", Impact, sans-serif;
+      font-size: clamp(1.25rem, 2.5vw, 2rem);
+      font-weight: 950;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: .55rem;
+    }
+
+    .audio-button {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .62rem .75rem;
+      font-size: .78rem;
+      font-weight: 800;
+      backdrop-filter: blur(12px);
+    }
+
+    .audio-button[aria-pressed="false"] { color: #8f96a0; }
+
+    .audio-icon {
+      display: grid;
+      width: 1.5rem;
+      height: 1.5rem;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255, 122, 24, .16);
+      color: var(--orange-bright);
+      font-size: .88rem;
+    }
+
+    .court-copy {
+      position: absolute;
+      right: clamp(1rem, 3vw, 3rem);
+      bottom: clamp(1rem, 3vw, 3rem);
+      z-index: 1;
+      margin: 0;
+      color: rgba(255, 255, 255, .7);
+      font-size: clamp(.75rem, 1vw, .95rem);
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .court-copy strong {
+      display: block;
+      margin-bottom: .2rem;
+      color: white;
+      font-family: Impact, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(1.8rem, 3.8vw, 4.1rem);
+      letter-spacing: .04em;
+      line-height: .86;
+    }
+
+    .shot-ball {
+      position: absolute;
+      z-index: 5;
+      display: none;
+      width: clamp(4rem, 8vw, 7.5rem);
+      aspect-ratio: 1;
+      place-items: center;
+      font-size: clamp(4rem, 8vw, 7.5rem);
+      line-height: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 15px 12px rgba(0, 0, 0, .42));
+      will-change: left, top, transform, opacity;
+    }
+
+    .flash-message {
+      position: absolute;
+      left: 50%;
+      bottom: 10%;
+      z-index: 6;
+      max-width: min(88%, 34rem);
+      padding: .85rem 1.2rem;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: .55rem;
+      background: rgba(3, 6, 10, .88);
+      color: white;
+      font-family: Impact, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(1.3rem, 3.5vw, 2.6rem);
+      letter-spacing: .05em;
+      opacity: 0;
+      pointer-events: none;
+      text-align: center;
+      text-transform: uppercase;
+      transform: translate(-50%, 18px) scale(.96);
+      transition: opacity .22s ease, transform .22s ease;
+      backdrop-filter: blur(12px);
+    }
+
+    .flash-message.show {
+      opacity: 1;
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .flash-message.success {
+      border-color: rgba(85, 227, 140, .65);
+      color: var(--green);
+      box-shadow: 0 0 38px rgba(85, 227, 140, .18);
+    }
+
+    .flash-message.miss {
+      border-color: rgba(255, 106, 100, .55);
+      color: #ffd0ce;
+    }
+
+    .spark {
+      position: absolute;
+      z-index: 4;
+      width: .55rem;
+      height: .55rem;
+      border-radius: 50%;
+      background: var(--spark-color, var(--orange));
+      box-shadow: 0 0 12px currentColor;
+      pointer-events: none;
+    }
+
+    @media (max-width: 920px) {
+      .app { grid-template-columns: 1fr; }
+
+      .controls {
+        min-height: auto;
+        padding-bottom: 1.6rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        max-width: none;
+        font-size: clamp(3rem, 12vw, 6rem);
+      }
+
+      h1 span { display: inline; margin-left: .12em; }
+
+      .ball-grid,
+      .status-card,
+      .control-footer { width: 100%; }
+
+      .control-footer { margin-top: 0; }
+
+      .arena { min-height: 66vh; min-height: 66svh; }
+    }
+
+    @media (max-width: 560px) {
+      .controls { padding: 1.3rem 1rem 1.4rem; }
+      .eyebrow { font-size: .7rem; }
+      h1 { font-size: clamp(2.8rem, 15vw, 4.6rem); line-height: .88; }
+      h1 span { display: block; margin-left: 0; }
+      .tagline { font-size: .72rem; }
+      .ball-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .38rem; }
+      .ball-button span { font-size: .88rem; }
+      .arena-topbar { align-items: stretch; }
+      .scoreboard { min-width: 0; flex: 1; }
+      .audio-controls { flex-direction: column; }
+      .audio-button { min-height: 38px; padding: .4rem .5rem; }
+      .audio-button .audio-label { display: none; }
+      .court-copy strong { font-size: 2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Basketball Review Shootout game">
+    <section class="controls" aria-labelledby="gameTitle">
+      <p class="eyebrow">Classroom review game</p>
+      <h1 id="gameTitle">Basketball <span>Review Shootout</span></h1>
+      <p class="tagline">Answer. Shoot. Score!</p>
+
+      <p class="instruction"><strong>Choose a basketball (1–10)</strong> to take the shot. One ball will go in.</p>
+
+      <div class="ball-grid" id="ballGrid" aria-label="Choose a numbered basketball"></div>
+
+      <div class="status-card" aria-live="polite" aria-atomic="true">
+        <p id="status">Pick a ball to take your first shot.</p>
+        <p class="round-note">Score and the next round begins with a different winning number.</p>
+      </div>
+
+      <div class="control-footer">
+        <div class="round-label">Current round <strong id="roundNumber">1</strong></div>
+        <button class="reset-button" id="resetButton" type="button">Restart game</button>
+      </div>
+    </section>
+
+    <section class="arena" id="arena" aria-label="Basketball court">
+      <div class="arena-topbar">
+        <div class="scoreboard" aria-hidden="true">
+          <small>Arena board</small>
+          <span id="scoreboardMessage">Good luck!</span>
+        </div>
+
+        <div class="audio-controls">
+          <button class="audio-button" id="musicButton" type="button" aria-pressed="true">
+            <span class="audio-icon" aria-hidden="true">♫</span>
+            <span class="audio-label">Music</span> <span id="musicState">ON</span>
+          </button>
+          <button class="audio-button" id="soundButton" type="button" aria-pressed="true">
+            <span class="audio-icon" aria-hidden="true">◖</span>
+            <span class="audio-label">Sound</span> <span id="soundState">ON</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="court-copy"><strong>Dream<br>Learn<br>Achieve</strong>Better questions. Brighter futures.</p>
+      <div class="shot-ball" id="shotBall" aria-hidden="true">🏀</div>
+      <div class="flash-message" id="flashMessage" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const TOTAL_BALLS = 10;
+      const ballGrid = document.getElementById("ballGrid");
+      const status = document.getElementById("status");
+      const roundNumber = document.getElementById("roundNumber");
+      const scoreboardMessage = document.getElementById("scoreboardMessage");
+      const resetButton = document.getElementById("resetButton");
+      const musicButton = document.getElementById("musicButton");
+      const soundButton = document.getElementById("soundButton");
+      const musicState = document.getElementById("musicState");
+      const soundState = document.getElementById("soundState");
+      const arena = document.getElementById("arena");
+      const shotBall = document.getElementById("shotBall");
+      const flashMessage = document.getElementById("flashMessage");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      let winningNumber = 0;
+      let previousWinner = 0;
+      let round = 1;
+      let locked = false;
+      let musicOn = true;
+      let soundOn = true;
+      let audioContext = null;
+      let musicTimer = null;
+      let musicStep = 0;
+
+      function randomWinner(excluding = 0) {
+        let next;
+        do {
+          next = Math.floor(Math.random() * TOTAL_BALLS) + 1;
+        } while (next === excluding);
+        return next;
+      }
+
+      function renderBalls() {
+        ballGrid.replaceChildren();
+        for (let number = 1; number <= TOTAL_BALLS; number += 1) {
+          const button = document.createElement("button");
+          button.className = "ball-button";
+          button.type = "button";
+          button.dataset.number = String(number);
+          button.setAttribute("aria-label", `Take a shot with basketball ${number}`);
+          button.innerHTML = `<span>${number}</span>`;
+          button.addEventListener("click", () => takeShot(number, button));
+          ballGrid.append(button);
+        }
+      }
+
+      function ensureAudio() {
+        if (!audioContext) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioContext = new AudioContext();
+        }
+        if (audioContext?.state === "suspended") audioContext.resume();
+      }
+
+      function tone(frequency, duration, type = "sine", delay = 0, gainValue = .035) {
+        if (!soundOn || !audioContext) return;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const start = audioContext.currentTime + delay;
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, start);
+        gain.gain.setValueAtTime(gainValue, start);
+        gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + duration);
+      }
+
+      function playLaunchSound() {
+        tone(130, .12, "triangle", 0, .05);
+      }
+
+      function playImpactSound(scored) {
+        if (!scored) {
+          tone(205, .18, "square", 0, .04);
+          tone(138, .26, "triangle", .025, .035);
+          return;
+        }
+        tone(520, .16, "sine", 0, .045);
+        tone(660, .2, "sine", .12, .04);
+        tone(880, .28, "sine", .26, .035);
+      }
+
+      function musicTone(frequency, duration, type = "triangle", delay = 0, gainValue = .012) {
+        if (!musicOn || !audioContext) return;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const start = audioContext.currentTime + delay;
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, start);
+        gain.gain.setValueAtTime(gainValue, start);
+        gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + duration);
+      }
+
+      function musicKick() {
+        if (!musicOn || !audioContext) return;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const start = audioContext.currentTime;
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(92, start);
+        oscillator.frequency.exponentialRampToValueAtTime(46, start + .12);
+        gain.gain.setValueAtTime(.026, start);
+        gain.gain.exponentialRampToValueAtTime(.0001, start + .15);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + .16);
+      }
+
+      function startMusic() {
+        if (!musicOn || musicTimer || !audioContext) return;
+        const notes = [110, 0, 110, 146.83, 130.81, 0, 98, 146.83];
+        const beat = () => {
+          if (!musicOn || !audioContext) return;
+          const note = notes[musicStep % notes.length];
+          if (musicStep % 2 === 0) musicKick();
+          if (note) {
+            musicTone(note, .25, "triangle", 0, .013);
+            musicTone(note * 1.5, .18, "sine", .045, .006);
+          }
+          musicStep += 1;
+        };
+        beat();
+        musicTimer = window.setInterval(beat, 360);
+      }
+
+      function stopMusic() {
+        if (musicTimer) window.clearInterval(musicTimer);
+        musicTimer = null;
+      }
+
+      function setFlash(message, type) {
+        flashMessage.textContent = message;
+        flashMessage.className = `flash-message ${type} show`;
+      }
+
+      function clearFlash() {
+        flashMessage.className = "flash-message";
+      }
+
+      function celebrate() {
+        if (reduceMotion.matches) return;
+        const colors = ["#ff7a18", "#ffbd59", "#55e38c", "#ffffff"];
+        for (let index = 0; index < 24; index += 1) {
+          const spark = document.createElement("i");
+          spark.className = "spark";
+          spark.style.left = `${46 + Math.random() * 10}%`;
+          spark.style.top = `${28 + Math.random() * 8}%`;
+          spark.style.setProperty("--spark-color", colors[index % colors.length]);
+          arena.append(spark);
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 70 + Math.random() * 190;
+          spark.animate([
+            { transform: "translate(0, 0) scale(1)", opacity: 1 },
+            { transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(.15)`, opacity: 0 }
+          ], { duration: 800 + Math.random() * 500, easing: "cubic-bezier(.16,.72,.34,1)" })
+            .finished.finally(() => spark.remove());
+        }
+      }
+
+      async function animateShot(scored, missDirection) {
+        shotBall.style.display = "grid";
+        const duration = reduceMotion.matches ? 40 : 1650;
+        const impactLeft = 50 + (missDirection * 4);
+        const reboundLeft = 50 + (missDirection * 20);
+        const finishLeft = 50 + (missDirection * 31);
+        const frames = scored ? [
+          { left: "8%", top: "80%", transform: "translate(-50%, -50%) rotate(0deg) scale(1)", opacity: 1 },
+          { left: "34%", top: "10%", transform: "translate(-50%, -50%) rotate(250deg) scale(.72)", opacity: 1, offset: .55 },
+          { left: "50%", top: "20%", transform: "translate(-50%, -50%) rotate(430deg) scale(.54)", opacity: 1, offset: .76 },
+          { left: "50%", top: "32%", transform: "translate(-50%, -50%) rotate(525deg) scale(.46)", opacity: .9, offset: .9 },
+          { left: "50%", top: "40%", transform: "translate(-50%, -50%) rotate(570deg) scale(.4)", opacity: 0 }
+        ] : [
+          { left: "8%", top: "80%", transform: "translate(-50%, -50%) rotate(0deg) scale(1)", opacity: 1 },
+          { left: "36%", top: "9%", transform: "translate(-50%, -50%) rotate(280deg) scale(.68)", opacity: 1, offset: .56 },
+          { left: `${impactLeft}%`, top: "20%", transform: "translate(-50%, -50%) rotate(420deg) scale(.55)", opacity: 1, offset: .73 },
+          { left: `${reboundLeft}%`, top: "28%", transform: `translate(-50%, -50%) rotate(${330 + (missDirection * 70)}deg) scale(.56)`, opacity: 1, offset: .83 },
+          { left: `${finishLeft}%`, top: "64%", transform: `translate(-50%, -50%) rotate(${190 + (missDirection * 120)}deg) scale(.5)`, opacity: 0 }
+        ];
+        window.setTimeout(() => playImpactSound(scored), reduceMotion.matches ? 0 : duration * .72);
+        const animation = shotBall.animate(frames, { duration, easing: "cubic-bezier(.18,.76,.26,1)", fill: "forwards" });
+        try { await animation.finished; } catch (_) { /* animation was cancelled */ }
+        shotBall.style.display = "none";
+      }
+
+      function disableAllBalls(disabled) {
+        ballGrid.querySelectorAll("button").forEach((button) => {
+          if (!button.classList.contains("missed")) button.disabled = disabled;
+        });
+      }
+
+      async function takeShot(number, button) {
+        if (locked || button.disabled) return;
+        locked = true;
+        ensureAudio();
+        startMusic();
+        disableAllBalls(true);
+
+        const scored = number === winningNumber;
+        status.textContent = `Ball ${number} is in the air…`;
+        scoreboardMessage.textContent = "Shot up!";
+        playLaunchSound();
+        await animateShot(scored, number % 2 === 0 ? 1 : -1);
+
+        if (scored) {
+          button.classList.add("made");
+          status.textContent = `Swish! Basketball ${number} scores.`;
+          scoreboardMessage.textContent = "Swish!";
+          setFlash("Swish! New round", "success");
+          celebrate();
+          window.setTimeout(() => beginNextRound(), reduceMotion.matches ? 120 : 1500);
+          return;
+        }
+
+        button.classList.add("missed");
+        button.disabled = true;
+        status.textContent = `Basketball ${number} missed. Choose another ball.`;
+        scoreboardMessage.textContent = "Try again";
+        setFlash("Off the rim — try again!", "miss");
+        window.setTimeout(clearFlash, reduceMotion.matches ? 100 : 850);
+        locked = false;
+        disableAllBalls(false);
+      }
+
+      function beginNextRound() {
+        previousWinner = winningNumber;
+        winningNumber = randomWinner(previousWinner);
+        round += 1;
+        locked = false;
+        roundNumber.textContent = String(round);
+        scoreboardMessage.textContent = "Good luck!";
+        status.textContent = "New round. Pick a ball to take the shot.";
+        clearFlash();
+        renderBalls();
+        ballGrid.querySelector("button")?.focus({ preventScroll: true });
+      }
+
+      function restartGame() {
+        winningNumber = randomWinner();
+        previousWinner = 0;
+        round = 1;
+        locked = false;
+        roundNumber.textContent = "1";
+        scoreboardMessage.textContent = "Good luck!";
+        status.textContent = "Game restarted. Pick a ball to take the shot.";
+        clearFlash();
+        renderBalls();
+      }
+
+      function updateAudioButton(button, stateNode, enabled) {
+        button.setAttribute("aria-pressed", String(enabled));
+        stateNode.textContent = enabled ? "ON" : "OFF";
+      }
+
+      musicButton.addEventListener("click", () => {
+        musicOn = !musicOn;
+        updateAudioButton(musicButton, musicState, musicOn);
+        if (musicOn) {
+          ensureAudio();
+          startMusic();
+        } else {
+          stopMusic();
+        }
+      });
+
+      soundButton.addEventListener("click", () => {
+        soundOn = !soundOn;
+        updateAudioButton(soundButton, soundState, soundOn);
+        if (soundOn) {
+          ensureAudio();
+          tone(520, .14, "sine", 0, .025);
+        }
+      });
+
+      resetButton.addEventListener("click", restartGame);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopMusic();
+        else if (musicOn && audioContext) startMusic();
+      });
+
+      winningNumber = randomWinner();
+      renderBalls();
+    })();
+  </script>
+</body>
+</html>
