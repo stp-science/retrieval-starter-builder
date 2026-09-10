@@ -38,6 +38,9 @@ jobs:
       - name: Build static site
         run: npx next build
 
+      - name: Include Basketball Review Shootout
+        run: cp -R basketball-review-shootout out/basketball-review-shootout
+
       - name: Disable Jekyll processing
         run: touch out/.nojekyll
 
