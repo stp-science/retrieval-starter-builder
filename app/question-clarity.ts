@@ -1,3 +1,4 @@
+import { polishStudentWording } from "./student-friendly-wording";
 import { commandWordPrompts } from "./command-word-prompts";
 import { standaloneRefinements } from "./standalone-refinements";
 
@@ -354,7 +355,7 @@ export function clarifyQuestion<T extends QuestionLike>(question: T): T {
   if (/^what type of force can act without physical contact[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Name the type of force that can act without physical contact.", a: "non-contact force" };
   if (/^what does (?:a )?structure-property relationship allow[?.!…]*$/i.test(base.q.trim())) return { ...base, q: "Explain how the relationship between microscopic structure and macroscopic properties helps predict a material's uses." };
 
-  return applyReviewedWording(commandify(applyReviewedWording(base)));
+  return polishStudentWording(applyReviewedWording(commandify(applyReviewedWording(base))));
 }
 
 export function clarifyQuestionForTopic<T extends QuestionLike>(question: T, topic: QuestionTopicContext): T {

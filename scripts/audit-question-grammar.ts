@@ -79,6 +79,16 @@ const entries = topics.flatMap((topic) => [
 ]);
 
 const malformedPatterns: Array<[RegExp, string]> = [
+  [/^State (?:reached|true)\b/i, "incomplete statement command"],
+  [/when carrying out or evaluating a scientific investigation/i, "use concise investigation wording"],
+  [/^Explain whether\b/i, "state the judgement and explicitly request an explanation"],
+  [/\b(?:is|are|can|should) (?:material|particle|sample|object|clouds|blood|arrow|whole trait)\b/i, "auxiliary misplaced inside a noun phrase"],
+  [/\bises\b/i, "invalid verb created by automatic conversion"],
+  [/^Name (?:two|three|four) (?:reactants|regions|component directions) (?:is|are)\b/i, "missing relative clause after naming command"],
+  [/^State the approximate percentage of dry air is\b/i, "missing link between percentage and gas name"],
+  [/^Describe the two contrasting features of .+ stated in\b/i, "question relies on a hidden statement rather than asking a specific comparison"],
+  [/^Explain why orbital speed[.!]$/i, "explanation command has no complete proposition"],
+  [/^State what (?:a lower|energy transfer|inserting control|fuel, moderator, control|sensors and control)[.!]$/i, "truncated generated scientific question"],
   [
     /\b(?:whether|why|how)\s+(?:all|both|most|many|some|few)\s+(?:do|does|did)\s+(?:arteries|veins|cells|particles|objects|materials|elements|atoms|molecules|ions|genes|organisms|plants|animals|waves|forces|circuits|reactions)\b/i,
     "misplaced auxiliary verb after a quantifier",
