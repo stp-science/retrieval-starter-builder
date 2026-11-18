@@ -1,0 +1,38 @@
+// Prototype rules. Review and validate against the selected Firebase project before launch.
+// Data model: teachers/{uid}/classes/{classId}/questions/{questionId}
+// Required fields only: count integer 0..100000; lastUsed timestamp or null;
+// revisit boolean. UID ownership comes from the document path, never a writable field.
+// Class IDs are encoded normalised names (maximum 180 characters).
+// No profile, student names, or shared teacher data are stored.
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function isAuthenticated() { return request.auth != null; }
+  function isOwner(uid) {
+   return isAuthenticated() && request.auth.uid == uid &&
+    request.auth.token.email_verified == true &&
+    request.auth.token.firebase.sign_in_provider == 'google.com' &&
+    request.auth.token.email.matches('.*@stpeters[.]school[.]nz$');
+  }
+  function isValidHistory(data) {
+   return data.keys().hasAll(['count', 'lastUsed', 'revisit']) &&
+    data.keys().hasOnly(['count', 'lastUsed', 'revisit']) &&
+    data.count is int && data.count >= 0 && data.count <= 100000 &&
+    data.revisit is bool &&
+    ((data.count == 0 && data.lastUsed == null) ||
+     (data.count > 0 && data.lastUsed is timestamp && data.lastUsed <= request.time));
+  }
+  match /teachers/{uid}/classes/{classId}/questions/{questionId} {
+   function validPath() { return classId.size() > 0 && classId.size() <= 180 && questionId.matches('y(7|8|9|10)-u[0-9]{2}-f[0-9]+-[ks][0-9]+'); }
+   allow read: if isOwner(uid);
+   allow create: if isOwner(uid) && validPath() && isValidHistory(request.resource.data) &&
+    ((request.resource.data.count == 1 && request.resource.data.lastUsed == request.time) ||
+     (request.resource.data.count == 0 && request.resource.data.lastUsed == null));
+   allow update: if isOwner(uid) && validPath() && isValidHistory(request.resource.data) &&
+    ((request.resource.data.count == resource.data.count + 1 && request.resource.data.lastUsed == request.time && request.resource.data.revisit == resource.data.revisit) ||
+     (request.resource.data.count == resource.data.count && request.resource.data.lastUsed == resource.data.lastUsed));
+   allow delete: if isOwner(uid);
+  }
+  match /{document=**} { allow read, write: if false; }
+ }
+}

@@ -1,0 +1,1 @@
+{"name": "stp-retrieval-2027-tests", "private": true, "type": "module", "scripts": {"test": "node --test selection.test.js", "test:rules": "npx firebase-tools emulators:exec --only firestore --project demo-stp-retrieval \"node --test rules.test.js\""}, "devDependencies": {"firebase": "13.4.0", "@firebase/rules-unit-testing": "6.0.0"}}
