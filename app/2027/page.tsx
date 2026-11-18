@@ -1144,6 +1144,7 @@ export default function Home() {
 
   function generate() {
     if (!selectedTopics.length) return;
+    staff.notify("Starter ready. Mark it as used after teaching. History remains on this device until Firebase is connected.");
     const pool = selectedTopics.flatMap((topic) => {
       const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
         ? topic.oneWordQuestions
