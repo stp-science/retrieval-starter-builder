@@ -38,6 +38,9 @@ jobs:
       - name: Build static site
         run: npx next build
 
+      - name: Verify 2027 activity coverage
+        run: node --test tests/staff-2027.test.mjs
+
       - name: Include Basketball Review Shootout
         run: cp -R basketball-review-shootout out/basketball-review-shootout
 

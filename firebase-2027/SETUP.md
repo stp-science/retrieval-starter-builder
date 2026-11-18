@@ -6,7 +6,7 @@ New staff builder for the October 2026 STP 2027 Years 7–10 unit-plan sequence.
 
 - 29 core topics and two labelled optional topics; 119 learning focuses.
 - Original knowledge statements retained as source evidence. Questions use short answers and missing-word recall, with stable identifiers.
-- Five activity layouts, classroom presentation, answer reveal and browser print/PDF.
+- All 24 original activity implementations, the random activity wheel, the shared original design and preview, and original presentation, print/PDF, Word and PowerPoint controls.
 - Unused-first selection, oldest-used fallback, explicit previously-used browsing, teacher-selected questions and revisit flags.
 - Per-teacher, per-class history with Google authentication and Firestore, once configured. Activity generation does not mark questions as used. Press Mark activity as used after teaching.
 - Device-only preview when Firebase is unconfigured. This is clearly labelled and never presented as cloud sync. Preview history is separate from signed-in history.
@@ -36,3 +36,7 @@ Fields: `count` (integer), `lastUsed` (server timestamp or null), `revisit` (boo
 Run `node --test selection.test.js` with `curriculum.json` and `selection.js` in the same directory. The suite checks curriculum order, all-focus question coverage, cloze reconstruction, unique IDs, strict history filtering and unused-first/oldest-used selection.
 
 The Firestore emulator compiles the prototype rules. Live Google OAuth and the school's Firebase deployment still require verification. Review questions before use; source knowledge is visible in each card. Automatic missing-word questions are deliberately labelled.
+
+## Original-layout restoration
+
+The live 2027 route is now implemented in `app/2027/page.tsx`, sharing the original global styles and export enhancers. Its active question bank is `app/2027/curriculum.json`; the old standalone `public/2027/index.html` entrypoint has been removed. Public `config.js` and `firebase-store.js` are still used for Firebase setup. Run `node --test tests/staff-2027.test.mjs` after a static build to verify catalogue parity and curriculum coverage. Fixed-size boards require sufficient matching questions; the builder asks teachers to select more topics instead of producing incomplete boards.

@@ -6,6 +6,12 @@ A classroom retrieval-practice generator for St Peter's School, Cambridge.
 
 Teachers choose a year group, one or more previously taught topics, and an activity format. The app selects from a checked question bank and creates a ready-to-use starter with answers. It does not require an AI account or generate questions with AI.
 
+## Staff builder for the 2027 curriculum
+
+**2027 staff version:** [Open the staff builder](https://stp-science.github.io/retrieval-starter-builder/2027/)
+
+The 2027 route reuses the original interface, all 24 activities, random wheel and export controls. It uses the new 29 core and two optional unit plans, with per-class question history and revisit flags. It runs in clearly labelled device-only preview until the school Firebase project is connected. Setup notes are in `firebase-2027/SETUP.md`.
+
 ## Features
 
 - 1,240 topic-guide-checked questions across 31 Year 7-9 Science topics
