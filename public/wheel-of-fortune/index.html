@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#110b2c">
+  <meta name="description" content="Answer Year 9 science questions, earn a spin and chase the highest score in five minutes. Hosted by cartoon Mr Talbot.">
+  <title>Mr Talbot’s Wheel of Fortune</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="spotlight spotlight-one" aria-hidden="true"></div>
+  <div class="spotlight spotlight-two" aria-hidden="true"></div>
+  <div class="stage-grid" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="school-brand"><span class="atom" aria-hidden="true">✦</span><span>ST PETER’S <b>SCIENCE</b></span></div>
+    <div class="top-actions"><span class="on-air"><i></i> ON AIR</span><button id="sound" class="icon-button" aria-pressed="true">Sound on</button><button id="fullscreen" class="icon-button">Full screen</button></div>
+  </header>
+  <main class="show">
+    <div class="show-heading"><div class="presenter">MR TALBOT’S</div><h1>WHEEL <span>OF</span> FORTUNE</h1><div class="show-subtitle">THE YEAR 9 SCIENCE SHOWDOWN</div></div>
+    <section id="intro" class="intro-layout" aria-label="Welcome to the show">
+      <div class="hero-stage">
+        <div class="hero-orbit" aria-hidden="true"></div>
+        <img class="hero-host" src="./assets/mr-talbot.webp" alt="Cartoon Mr Talbot with black hair, holding a microphone in a navy and gold jacket">
+        <div class="host-plaque"><small>YOUR HOST</small><strong>MR TALBOT</strong></div>
+        <div class="hero-bubble">“Big brains.<br>Big spins.<br><em>Big points!</em>”</div>
+      </div>
+      <div class="welcome marquee">
+        <div class="eyebrow">YOUR FIVE MINUTES OF FAME</div>
+        <h2>Know it.<br>Spin it.<br><em>Win it.</em></h2>
+        <p class="intro-copy">Answer correctly to earn a spin. Build the biggest score you can before the five-minute clock runs out.</p>
+        <div class="wheel-teasers"><span>+1,500</span><span class="teaser-double">×2</span><span class="teaser-triple">×3</span><span class="teaser-loss">−500</span></div>
+        <form id="start-form"><label for="name">CONTESTANT NAME</label><div class="start-row"><input id="name" autocomplete="off" maxlength="24" placeholder="Your first name or nickname" required><button class="primary" type="submit">LET’S PLAY!</button></div></form>
+        <p class="fine-print">Correct answer = one spin. Wrong answer = learn it and move on. The clock keeps running. Highest score in class wins!</p>
+        <details class="how-to"><summary>How to play & question topics</summary><p>Start on 0 points. Answer each question once. A correct answer unlocks the wheel. A wrong answer shows the correct answer. Spin wedges add or subtract points, or multiply your current total. Your score never goes below 0.</p><p>Any spin earned before the timer ends will count. Everyone plays their own five-minute game; compare final score screens to find the class winner. This game does not share scores between devices.</p><p><strong id="bank-count"></strong> multiple-choice questions adapted from the existing Year 9 retrieval bank: elements and compounds, periodic table, organism traits, reactions, forces, fluids and pressure, human transport, Earth’s spheres, and Ecosystems through LP4. Later ecosystem content is excluded.</p><p>Keys: 1–4 or A–D to answer; Space to spin or continue. Sound starts when you play and can be muted.</p><a href="https://stp-science.github.io/retrieval-starter-builder/" target="_blank" rel="noopener">Original retrieval website</a></details>
+        <button id="show-records" class="text-button">Scores on this device</button>
+      </div>
+    </section>
+    <section id="game" hidden aria-label="Five-minute game">
+      <div class="scoreboard">
+        <div class="contestant"><span class="eyebrow">ON THE PODIUM</span><strong id="contestant-name"></strong></div>
+        <div class="timer-box"><span class="eyebrow">TIME LEFT</span><strong id="timer">5:00</strong><div class="timer-track"><i id="timer-fill"></i></div></div>
+        <div class="score-box"><span class="eyebrow">YOUR TOTAL</span><strong id="score">0</strong><span class="points-label">POINTS</span></div>
+        <div class="correct-box"><span class="eyebrow">CORRECT</span><strong id="correct-count">0 / 0</strong></div>
+      </div>
+      <div class="game-layout">
+        <div class="wheel-stage">
+          <div class="wheel-assembly"><div class="pointer" aria-hidden="true"></div><canvas id="wheel" width="1000" height="1000" role="img" aria-label="24-section fortune wheel: point values, losses, two doubles and one triple"></canvas><button id="spin" class="spin-button" disabled><span id="spin-label">ANSWER<br>TO SPIN</span><small id="spin-hint">EARN YOUR SHOT</small></button></div>
+          <div id="wheel-result" class="wheel-result" aria-live="polite">THE WHEEL IS WAITING…</div>
+          <div class="host-corner"><img src="./assets/mr-talbot.webp" alt="Mr Talbot, your game-show host"><div class="host-comment"><small>MR TALBOT SAYS</small><p id="host-line">“Let’s see what you know!”</p></div></div>
+        </div>
+        <div class="question-stage marquee">
+          <div class="question-meta"><span id="topic">YEAR 9 SCIENCE</span><span id="question-number">QUESTION 1</span></div>
+          <h2 id="question"></h2>
+          <div id="answers" class="answers" role="group" aria-label="Choose one answer"></div>
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <button id="next" class="primary next-button" hidden>NEXT QUESTION</button>
+          <div class="question-foot"><span id="instruction">Choose your answer to earn a spin.</span><span class="keyboard-hint">KEYS 1–4</span></div>
+        </div>
+      </div>
+      <div class="bottom-strip"><span>KNOWLEDGE EARNS THE SPIN. THE WHEEL DECIDES THE POINTS.</span><button id="end-round" class="text-button">End round</button></div>
+    </section>
+    <section id="results" class="results-layout" hidden aria-label="Final score">
+      <div class="results-host"><img src="./assets/mr-talbot.webp" alt="Mr Talbot presenting your final score"><p>“That’s a wrap!<br>Show me your score!”</p></div>
+      <div class="result-panel marquee"><div class="eyebrow">THE FINAL REVEAL</div><h2>TIME’S UP!</h2><p id="result-name"></p><div id="final-score" class="final-score">0</div><div class="points-label">POINTS ON THE BOARD</div><p id="result-stats"></p><p class="compare-note">Keep this screen open for Mr Talbot.<br>The highest final score in class wins!</p><div class="result-actions"><button id="again" class="primary">PLAY AGAIN</button><button id="review-toggle" class="secondary">REVIEW ANSWERS</button></div><div id="review" class="review" hidden></div><div class="local-records"><h3>TOP SCORES ON THIS DEVICE</h3><ol id="records"></ol></div></div>
+    </section>
+    <dialog id="records-dialog"><button id="close-records" class="secondary">Close</button><h2>Scores on this device</h2><p>For class results, compare everyone’s final score screen.</p><ol id="dialog-records"></ol></dialog>
+    <dialog id="end-dialog"><h2>Finish this round?</h2><p>Your current score will be saved as an early finish. It won’t count as a completed five-minute round.</p><div class="result-actions"><button id="keep-playing" class="primary">KEEP PLAYING</button><button id="confirm-end" class="secondary">END ROUND</button></div></dialog>
+  </main>
+  <footer id="site-footer">MR TALBOT’S WHEEL OF FORTUNE <span>YEAR 9 RETRIEVAL · FIVE MINUTES · ONE BIG SCORE</span></footer>
+  <div id="celebration" class="celebration" aria-hidden="true"></div>
+  <script type="module" src="./game.mjs"></script>
+</body>
+</html>
