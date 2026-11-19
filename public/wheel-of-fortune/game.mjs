@@ -1,6 +1,7 @@
 import { QUESTIONS } from './questions.mjs';
 import { DURATION_MS, SEGMENTS, applySegment, shuffle, balancedDeck, remainingMs, timeLabel, targetRotation, pointedSegment } from './core.mjs?v=negative-scores-1';
 import { createMusicPlayer } from './music.mjs?v=quiet-autoplay-2';
+import { assessAnswerPattern, rapidAnswerLimit, RUSH_PENALTY } from './fair-play.mjs';
 
 const $ = id => document.getElementById(id);
 const bank = new Map(QUESTIONS.map(q => [q.id, q]));
@@ -94,6 +95,8 @@ function renderQuestion(){
     const l=document.createElement('span');l.className='letter';l.textContent='ABCD'[i];
     const t=document.createElement('span');t.textContent=text;b.append(l,t);b.onclick=()=>answer(i);$('answers').append(b);
   });
+  if(state.phase==='question'&&!Number.isFinite(state.questionShownAt))state.questionShownAt=Date.now();
+  $('fair-play-note').hidden=true;
   $('next').hidden=true;$('feedback').textContent='';$('feedback').className='feedback';
   $('instruction').textContent='Choose your answer to earn a spin.';setSpin(false);
   if(state.phase!=='question') renderAnswered();
@@ -114,6 +117,16 @@ function renderAnswered(){
     $('feedback').textContent='The correct answer is: '+q.a;
     $('next').hidden=false;$('instruction').textContent='Read the answer, then keep going.';
   }
+  renderFairPlay(h.rushEvent);
+}
+function renderFairPlay(event) {
+  const note=$('fair-play-note');
+  note.hidden=!event;
+  if(!event)return;
+  note.className='fair-play-note '+event.kind;
+  note.textContent=event.kind==='warning'
+    ? 'SLOW DOWN: Several answers were chosen almost immediately and most were incorrect. Read the question and all four options. Another pattern like this costs '+RUSH_PENALTY+' points.'
+    : '−'+RUSH_PENALTY+' POINTS: Another pattern of very fast, mostly incorrect answers. Take time to read before choosing.';
 }
 function setSpin(ready){
   $('spin').disabled=!ready;$('spin').classList.toggle('ready',ready);
@@ -122,7 +135,7 @@ function setSpin(ready){
 }
 function startGame(name){
   clearInterval(timerHandle);cancelAnimationFrame(spinFrame);finishing=false;nextTick=0;
-  state={id:crypto.randomUUID?.()||String(Date.now()),name:name.trim().slice(0,24)||'Contestant',score:0,correct:0,attempts:0,index:0,phase:'question',deadline:Date.now()+DURATION_MS,deck:balancedDeck(QUESTIONS).map(q=>q.id),history:[],rotation:0,pending:null};
+  state={id:crypto.randomUUID?.()||String(Date.now()),name:name.trim().slice(0,24)||'Contestant',score:0,correct:0,attempts:0,index:0,phase:'question',deadline:Date.now()+DURATION_MS,deck:balancedDeck(QUESTIONS).map(q=>q.id),history:[],rotation:0,pending:null,questionShownAt:null,fairPlay:{warned:false,lastEventAttempt:0,penalties:0}};
   rotation=0;createChoices();showGame();renderQuestion();drawWheel();
   $('wheel-result').textContent='THE WHEEL IS WAITING…';say('Welcome, '+state.name+'! Let’s spin some science.');
   musicPlayer.startRound();startAudio();fanfare();storeRound();tick();timerHandle=setInterval(tick,100);
@@ -133,10 +146,23 @@ function answer(index){
   if(remainingMs(state.deadline,Date.now())<=0){timeout();return;}
   startAudio();const q=currentQuestion(),right=state.choices[index]===q.a;
   state.attempts++;if(right)state.correct++;
-  state.history.push({id:q.id,choice:index,selected:state.choices[index],correct:right});
+  const responseMs=Math.max(0,Date.now()-(state.questionShownAt??Date.now()));
+  const attempt={id:q.id,choice:index,selected:state.choices[index],correct:right,responseMs,rapidLimitMs:rapidAnswerLimit(q)};
+  state.history.push(attempt);
+  const checked=assessAnswerPattern(state.history,state.fairPlay);
+  state.fairPlay=checked.guard;attempt.rushEvent=checked.event;
+  if(checked.event?.kind==='penalty')state.score=applySegment(state.score,{value:-checked.event.points});
   state.phase=right?'spinReady':'feedback';updateScore();renderAnswered();
   if(right){tone(660,.13);tone(880,.18,.08,'sine',.09);say(shuffle(['That’s the one! Give that wheel a spin.','Correct! Let’s see what the wheel has for you.','Science sorted. Now for the spin!'])[0]);$('wheel-result').textContent='YOU’VE EARNED A SPIN!';}
   else {tone(200,.2,.07,'triangle');say('Take a look at the answer. The next one’s yours!');$('wheel-result').textContent='NEXT QUESTION, FRESH CHANCE.';}
+  if(checked.event){
+    tone(220,.22,.08,'triangle');
+    say(checked.event.kind==='warning'?'Take time to read. Repeated rapid guessing will cost '+RUSH_PENALTY+' points.':'That’s '+RUSH_PENALTY+' points deducted. Slow down and make your next answer count.');
+    if(checked.event.kind==='penalty'){
+      $('wheel-result').textContent='−'+RUSH_PENALTY+' · QUICK-ANSWER PENALTY';
+      $('score').classList.remove('score-flash');void $('score').offsetWidth;$('score').classList.add('score-flash');
+    }
+  }
   storeRound();
 }
 function nextQuestion(){
@@ -144,7 +170,7 @@ function nextQuestion(){
   if(remainingMs(state.deadline,Date.now())<=0){timeout();return;}
   state.index++;
   if(state.index>=state.deck.length){finish(false,true);return;}
-  state.phase='question';state.pending=null;createChoices();renderQuestion();storeRound();
+  state.phase='question';state.pending=null;state.questionShownAt=null;createChoices();renderQuestion();storeRound();
 }
 function spin(){
   if(!state||state.phase!=='spinReady')return;
@@ -211,6 +237,7 @@ function finish(early=false,exhausted=false){
   $('result-name').textContent=state.name;$('final-score').textContent=format(state.score);
   $('results').querySelector('h2').textContent=early?'ROUND ENDED':exhausted?'BANK COMPLETE!':'TIME’S UP!';
   $('result-stats').textContent=state.correct+' correct out of '+state.attempts+' answered'+(state.attempts?' · '+Math.round(state.correct/state.attempts*100)+'% accuracy':'')+(early?' · Early finish (unranked)':'');
+  if(state.fairPlay?.penalties)$('result-stats').textContent+=' · '+state.fairPlay.penalties+' quick-answer '+(state.fairPlay.penalties===1?'penalty':'penalties');
   $('review').hidden=true;$('review-toggle').textContent='REVIEW ANSWERS';$('review').replaceChildren();
   for(const h of state.history){const q=bank.get(h.id);if(!q)continue;const p=document.createElement('p');if(!h.correct)p.className='missed';const b=document.createElement('strong');b.textContent=(h.correct?'✓ ':'✕ ')+q.q;p.append(b,document.createElement('br'),document.createTextNode('Correct answer: '+q.a));if(!h.correct)p.append(document.createElement('br'),document.createTextNode('Your answer: '+h.selected));$('review').append(p);}
   if(!state.history.length)$('review').textContent='No questions answered this round.';
