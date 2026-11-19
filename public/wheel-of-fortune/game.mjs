@@ -1,5 +1,6 @@
 import { QUESTIONS } from './questions.mjs';
 import { DURATION_MS, SEGMENTS, applySegment, shuffle, balancedDeck, remainingMs, timeLabel, targetRotation, pointedSegment } from './core.mjs';
+import { createGameShowMusic } from './soundtrack.mjs';
 
 const $ = id => document.getElementById(id);
 const bank = new Map(QUESTIONS.map(q => [q.id, q]));
@@ -9,6 +10,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const format = n => new Intl.NumberFormat('en-NZ').format(n);
 let state = null, rotation = 0, timerHandle, spinFrame, audio, master;
 let sound = true, nextTick = 0, lastDisplayedTime = '', finishing = false;
+let musicEnabled = true, soundtrack;
 
 function storeRound() { try { sessionStorage.setItem(ACTIVE_KEY, JSON.stringify(state)); } catch {} }
 function readRecords() { try { const r = JSON.parse(localStorage.getItem(RECORDS_KEY) || '[]'); return Array.isArray(r) ? r.filter(x => typeof x.name === 'string' && Number.isFinite(x.score)).slice(0,10) : []; } catch { return []; } }
@@ -24,16 +26,24 @@ function tone(freq, duration = .12, level = .07, type = 'sine', delay = 0) {
   o.onended = () => { o.disconnect(); gain.disconnect(); };
 }
 function startAudio() {
-  if (!sound) return;
+  if (!sound && !musicEnabled) return;
   try {
     if (!audio) {
       const Audio = window.AudioContext || window.webkitAudioContext;
       if (!Audio) return;
       audio = new Audio(); master = audio.createGain(); master.gain.value=.65;
       const comp = audio.createDynamicsCompressor(); master.connect(comp); comp.connect(audio.destination);
+      soundtrack = createGameShowMusic(audio, comp);
     }
-    audio.resume().catch(()=>{});
+    master.gain.value=sound?.65:0;
+    audio.resume().then(syncMusic).catch(()=>{});
+    syncMusic();
   } catch {}
+}
+function syncMusic() {
+  if(!soundtrack)return;
+  if(musicEnabled && state && state.phase!=='results' && !document.hidden && audio.state==='running')soundtrack.start();
+  else soundtrack.stop();
 }
 function fanfare(big = false) { [523.25,659.25,783.99,big?1046.5:880].forEach((f,i)=>tone(f,.2,.1,'triangle',i*.09)); }
 function say(line) { $('host-line').textContent = '“'+line+'”'; }
@@ -199,6 +209,7 @@ function finish(early=false,exhausted=false){
   // Resolve an already-earned spin once before an early finish.
   if(state.phase==='spinning'&&state.pending){const s=SEGMENTS[state.pending.index];state.score=applySegment(state.score,s);state.history[state.history.length-1].spin=s.label;state.pending=null;}
   state.phase='results';state.early=early;state.finishedAt=Date.now();
+  syncMusic();
   try{sessionStorage.removeItem(ACTIVE_KEY);}catch{}
   let records=readRecords();
   if(!early){records=records.filter(r=>r.id!==state.id);records.push({id:state.id,name:state.name,score:state.score,correct:state.correct,attempts:state.attempts,date:state.finishedAt});records.sort((a,b)=>b.score-a.score||b.correct-a.correct);try{localStorage.setItem(RECORDS_KEY,JSON.stringify(records.slice(0,10)));}catch{}}
@@ -232,7 +243,8 @@ function resume(){
 $('bank-count').textContent=QUESTIONS.length;
 $('start-form').onsubmit=e=>{e.preventDefault();if($('name').value.trim())startGame($('name').value);else $('name').focus();};
 $('spin').onclick=spin;$('next').onclick=nextQuestion;
-$('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'Sound on':'Sound off';$('sound').setAttribute('aria-pressed',String(sound));if(sound){startAudio();tone(660);}else if(master)master.gain.value=0;if(sound&&master)master.gain.value=.65;};
+$('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'Effects on':'Effects off';$('sound').setAttribute('aria-pressed',String(sound));if(sound){startAudio();tone(660);}else if(master)master.gain.value=0;};
+$('music').onclick=()=>{musicEnabled=!musicEnabled;$('music').textContent=musicEnabled?'Music on':'Music off';$('music').setAttribute('aria-pressed',String(musicEnabled));if(musicEnabled)startAudio();else syncMusic();};
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('fullscreen').textContent='Use browser full screen';}};
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen';});
 $('again').onclick=()=>{state=null;$('results').hidden=true;$('intro').hidden=false;$('name').focus();};
@@ -248,6 +260,6 @@ document.addEventListener('keydown',e=>{
   if((i>=0||j>=0)&&state.phase==='question'){e.preventDefault();answer(i>=0?i:j);}
   if(e.code==='Space'){e.preventDefault();if(state.phase==='spinReady')spin();else if(state.phase==='feedback')nextQuestion();}
 });
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();if(sound&&audio)audio.resume().catch(()=>{});}});
-window.addEventListener('pagehide',()=>{if(state&&state.phase!=='results')storeRound();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();if(audio)startAudio();}else syncMusic();});
+window.addEventListener('pagehide',()=>{soundtrack?.stop();if(state&&state.phase!=='results')storeRound();});
 drawWheel();resume();
