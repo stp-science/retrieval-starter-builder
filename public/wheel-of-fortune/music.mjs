@@ -2,7 +2,7 @@
 // media path. play() is called directly from the player's click or form submit.
 export function createMusicPlayer(media, button, isHidden = () => document.hidden) {
   let enabled = true, preview = false, inRound = false;
-  media.volume = .6;
+  media.volume = .25;
   media.loop = true;
   const wanted = () => enabled && (inRound || preview) && !isHidden();
   function update() {
@@ -39,6 +39,7 @@ export function createMusicPlayer(media, button, isHidden = () => document.hidde
   });
   update();
   return {
+    autoplay() { preview = true; return sync(); },
     startRound() { inRound = true; preview = false; return sync(); },
     finishRound() { inRound = false; preview = false; return sync(); },
     toggle() {

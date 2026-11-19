@@ -10,7 +10,7 @@ export const SEGMENTS = [
   {label:'+450',value:450}, {label:'+1,000',value:1000}, {label:'+500',value:500},
 ];
 export function applySegment(score, segment) {
-  return Math.min(Number.MAX_SAFE_INTEGER, Math.max(0,
+  return Math.min(Number.MAX_SAFE_INTEGER, Math.max(Number.MIN_SAFE_INTEGER,
     segment.multiplier ? score * segment.multiplier : score + segment.value));
 }
 export function shuffle(items, random = Math.random) {

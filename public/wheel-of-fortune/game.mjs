@@ -1,6 +1,6 @@
 import { QUESTIONS } from './questions.mjs';
-import { DURATION_MS, SEGMENTS, applySegment, shuffle, balancedDeck, remainingMs, timeLabel, targetRotation, pointedSegment } from './core.mjs';
-import { createMusicPlayer } from './music.mjs?v=audio-file-1';
+import { DURATION_MS, SEGMENTS, applySegment, shuffle, balancedDeck, remainingMs, timeLabel, targetRotation, pointedSegment } from './core.mjs?v=negative-scores-1';
+import { createMusicPlayer } from './music.mjs?v=quiet-autoplay-2';
 
 const $ = id => document.getElementById(id);
 const bank = new Map(QUESTIONS.map(q => [q.id, q]));
@@ -173,7 +173,7 @@ function settleSpin(){
   state.pending=null;state.phase='feedback';updateScore();setSpin(false);
   $('score').classList.remove('score-flash');void $('score').offsetWidth;$('score').classList.add('score-flash');
   $('wheel-result').textContent=s.multiplier?(s.multiplier===3?'TRIPLE POINTS!':'DOUBLE POINTS!'):change<0?format(change)+' POINTS': '+'+format(change)+' POINTS';
-  if(s.multiplier){fanfare(true);celebrate(true);say(before===0?'A multiplier! Build a total and the next one could be huge.':s.multiplier===3?'Triple! Now that’s a game changer!':'Double points! That’s how you climb the board.');}
+  if(s.multiplier){if(before<0){tone(196,.2);say('That multiplier also multiplies negative scores. Time for a comeback!');}else{fanfare(true);celebrate(true);say(before===0?'A multiplier! Build a total and the next one could be huge.':s.multiplier===3?'Triple! Now that’s a game changer!':'Double points! That’s how you climb the board.');}}
   else if(s.value<0){tone(330,.2);tone(196,.25,.07,'triangle',.12);say(state.score===0?'A tough spin. You’re still in the game!':'A few points gone. Plenty more to win back!');}
   else {tone(784,.12);tone(1046,.2,.08,'triangle',.09);if(s.value>=1000)celebrate();say(s.value>=1000?'Big points! That’s a beautiful spin.':'Points on the board. Keep that science coming!');}
   $('next').hidden=false;$('instruction').textContent='Ready for another question?';storeRound();
@@ -255,4 +255,12 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();if(audio)startAudio();}musicPlayer.sync();});
 window.addEventListener('pagehide',()=>{musicPlayer.stop();if(state&&state.phase!=='results')storeRound();});
-drawWheel();resume();
+// If the browser requires a gesture, any normal click or keypress starts the
+// enabled music. Leave the music button's own explicit toggle in control.
+function unlockMusic(event) {
+  if(event.target?.closest?.('#music'))return;
+  if($('background-music').paused)musicPlayer.sync();
+}
+document.addEventListener('click',unlockMusic,{capture:true});
+document.addEventListener('keydown',unlockMusic,{capture:true});
+drawWheel();musicPlayer.autoplay();resume();

@@ -11,7 +11,11 @@ test('wheel has the requested losses, doubles and exactly one triple',()=>{
 test('wheel scoring adds, subtracts and multiplies the total',()=>{
  assert.equal(applySegment(1000,{value:500}),1500);
  assert.equal(applySegment(1000,{value:-250}),750);
- assert.equal(applySegment(100,{value:-500}),0);
+ assert.equal(applySegment(100,{value:-500}),-400);
+ assert.equal(applySegment(0,{value:-250}),-250);
+ assert.equal(applySegment(-250,{value:100}),-150);
+ assert.equal(applySegment(-250,{multiplier:2}),-500);
+ assert.equal(applySegment(-250,{multiplier:3}),-750);
  assert.equal(applySegment(1250,{multiplier:2}),2500);
  assert.equal(applySegment(1250,{multiplier:3}),3750);
  assert.equal(applySegment(0,{multiplier:3}),0);

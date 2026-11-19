@@ -14,12 +14,23 @@ test('welcome screen offers a real Play music button and starts playback on clic
   const {player,media,button}=setup();
   assert.equal(button.textContent,'Play music');assert.equal(media.paused,true);
   await player.toggle();assert.equal(media.paused,false);assert.equal(button.textContent,'Music on');
-  assert.equal(button.attributes['aria-pressed'],'true');assert.equal(media.loop,true);assert.ok(media.volume>=.5);
+  assert.equal(button.attributes['aria-pressed'],'true');assert.equal(media.loop,true);assert.equal(media.volume,.25);
 });
 test('a game starts the track automatically and a finish pauses it',async()=>{
   const {player,media,button}=setup();
   await player.startRound();assert.equal(media.paused,false);
   await player.finishRound();assert.equal(media.paused,true);assert.equal(button.textContent,'Play music');
+});
+test('welcome-screen autoplay starts music without a dedicated music-button click',async()=>{
+  const {player,media,button}=setup();
+  await player.autoplay();assert.equal(media.paused,false);assert.equal(button.textContent,'Music on');
+});
+test('autoplay retries on an ordinary gesture and still respects a later mute',async()=>{
+  const {player,media}=setup({blocked:true});
+  await player.autoplay();assert.equal(media.paused,true);
+  media.play=function(){this.paused=false;return Promise.resolve();};
+  await player.sync();assert.equal(media.paused,false);
+  await player.toggle();await player.sync();assert.equal(media.paused,true);
 });
 test('browser autoplay rejection never leaves a false Music on state',async()=>{
   const {player,media,button}=setup({blocked:true});
