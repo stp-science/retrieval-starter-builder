@@ -1,36 +1,40 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createGameShowMusic} from '../public/wheel-of-fortune/soundtrack.mjs';
+import {createMusicPlayer} from '../public/wheel-of-fortune/music.mjs';
 
-function fakeAudio() {
-  const events=[];
-  const param=()=>({value:0,setValueAtTime(){},exponentialRampToValueAtTime(){},cancelScheduledValues(){},setTargetAtTime(){}});
-  const node=()=>({connect(){},disconnect(){},gain:param(),frequency:param(),start(t){events.push({kind:'start',t})},stop(t){events.push({kind:'stop',t})}});
-  const context={currentTime:0,sampleRate:48000,createGain:node,createOscillator:node,createBiquadFilter:node,createBufferSource:node,createBuffer:(c,len)=>({getChannelData:()=>new Float32Array(len)})};
-  let scheduled=null,intervals=0,clears=0;
-  const timers={setInterval(fn){scheduled=fn;intervals++;return intervals},clearInterval(){clears++;scheduled=null}};
-  return {context,timers,events,pump:()=>scheduled?.(),counts:()=>({intervals,clears})};
+function setup({blocked=false}={}) {
+  let hidden=false;
+  const calls=[];
+  const media={paused:true,ended:false,error:null,addEventListener(){},play(){calls.push('play');if(blocked)return Promise.reject(new Error('Autoplay blocked'));this.paused=false;return Promise.resolve();},pause(){calls.push('pause');this.paused=true;},load(){calls.push('load');}};
+  const button={textContent:'',attributes:{},setAttribute(k,v){this.attributes[k]=v;}};
+  const player=createMusicPlayer(media,button,()=>hidden);
+  return {player,media,button,calls,hide:value=>hidden=value};
 }
-test('soundtrack starts on request and repeated starts never duplicate its loop',()=>{
-  const a=fakeAudio(),music=createGameShowMusic(a.context,{},a.timers);
-  assert.equal(music.playing,false);assert.equal(a.events.length,0);
-  music.start();music.start();
-  assert.equal(music.playing,true);assert.equal(a.counts().intervals,1);
-  assert.ok(a.events.some(e=>e.kind==='start'));
+test('welcome screen offers a real Play music button and starts playback on click',async()=>{
+  const {player,media,button}=setup();
+  assert.equal(button.textContent,'Play music');assert.equal(media.paused,true);
+  await player.toggle();assert.equal(media.paused,false);assert.equal(button.textContent,'Music on');
+  assert.equal(button.attributes['aria-pressed'],'true');assert.equal(media.loop,true);assert.ok(media.volume>=.5);
 });
-test('stop clears the scheduler and stops queued voices; restart creates one loop',()=>{
-  const a=fakeAudio(),music=createGameShowMusic(a.context,{},a.timers);
-  music.start();const before=a.events.length;music.stop();
-  assert.equal(music.playing,false);assert.equal(a.counts().clears,1);
-  assert.ok(a.events.slice(before).some(e=>e.kind==='stop'));
-  music.start();assert.equal(a.counts().intervals,2);assert.equal(music.playing,true);
+test('a game starts the track automatically and a finish pauses it',async()=>{
+  const {player,media,button}=setup();
+  await player.startRound();assert.equal(media.paused,false);
+  await player.finishRound();assert.equal(media.paused,true);assert.equal(button.textContent,'Play music');
 });
-test('a hidden or suspended tab cannot cause an unbounded catch-up audio burst',()=>{
-  const a=fakeAudio(),music=createGameShowMusic(a.context,{},a.timers);
-  music.start();const before=a.events.filter(e=>e.kind==='start').length;
-  a.context.currentTime=200;a.pump();
-  a.context.currentTime=200.1;a.pump();
-  const added=a.events.filter(e=>e.kind==='start').length-before;
-  assert.ok(added>0 && added<30);
-  assert.ok(a.events.filter(e=>e.kind==='start'&&e.t>100).every(e=>e.t>=200));
+test('browser autoplay rejection never leaves a false Music on state',async()=>{
+  const {player,media,button}=setup({blocked:true});
+  await player.startRound();assert.equal(media.paused,true);
+  assert.equal(button.textContent,'Play music');assert.equal(button.attributes['aria-pressed'],'false');
+});
+test('music mute persists across a round and can be reenabled',async()=>{
+  const {player,media,button}=setup();
+  await player.startRound();await player.toggle();assert.equal(media.paused,true);assert.equal(button.textContent,'Music off');
+  await player.startRound();assert.equal(media.paused,true);
+  await player.toggle();assert.equal(media.paused,false);assert.equal(button.textContent,'Music on');
+});
+test('switching tabs pauses music and returning resumes a live round',async()=>{
+  const {player,media,hide}=setup();await player.startRound();
+  hide(true);await player.sync();assert.equal(media.paused,true);
+  hide(false);await player.sync();assert.equal(media.paused,false);
+  await player.finishRound();hide(true);await player.sync();hide(false);await player.sync();assert.equal(media.paused,true);
 });

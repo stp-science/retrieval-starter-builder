@@ -15,7 +15,7 @@
   <div class="stage-grid" aria-hidden="true"></div>
   <header class="topbar">
     <div class="school-brand"><span class="atom" aria-hidden="true">✦</span><span>ST PETER’S <b>SCIENCE</b></span></div>
-    <div class="top-actions"><span class="on-air"><i></i> ON AIR</span><button id="music" class="icon-button" aria-pressed="true">Music on</button><button id="sound" class="icon-button" aria-pressed="true">Effects on</button><button id="fullscreen" class="icon-button">Full screen</button></div>
+    <div class="top-actions"><span class="on-air"><i></i> ON AIR</span><button id="music" class="icon-button" aria-pressed="false">Play music</button><button id="sound" class="icon-button" aria-pressed="true">Effects on</button><button id="fullscreen" class="icon-button">Full screen</button></div>
   </header>
   <main class="show">
     <div class="show-heading"><div class="presenter">MR TALBOT’S</div><h1>WHEEL <span>OF</span> FORTUNE</h1><div class="show-subtitle">THE YEAR 9 SCIENCE SHOWDOWN</div></div>
@@ -33,7 +33,7 @@
         <div class="wheel-teasers"><span>+1,500</span><span class="teaser-double">×2</span><span class="teaser-triple">×3</span><span class="teaser-loss">−500</span></div>
         <form id="start-form"><label for="name">CONTESTANT NAME</label><div class="start-row"><input id="name" autocomplete="off" maxlength="24" placeholder="Your first name or nickname" required><button class="primary" type="submit">LET’S PLAY!</button></div></form>
         <p class="fine-print">Correct answer = one spin. Wrong answer = learn it and move on. The clock keeps running. Highest score in class wins!</p>
-        <details class="how-to"><summary>How to play & question topics</summary><p>Start on 0 points. Answer each question once. A correct answer unlocks the wheel. A wrong answer shows the correct answer. Spin wedges add or subtract points, or multiply your current total. Your score never goes below 0.</p><p>Any spin earned before the timer ends will count. Everyone plays their own five-minute game; compare final score screens to find the class winner. This game does not share scores between devices.</p><p><strong id="bank-count"></strong> multiple-choice questions adapted from the existing Year 9 retrieval bank: elements and compounds, periodic table, organism traits, reactions, forces, fluids and pressure, human transport, Earth’s spheres, and Ecosystems through LP4. Later ecosystem content is excluded.</p><p>Keys: 1–4 or A–D to answer; Space to spin or continue. The cheesy game-show backing track starts when you play. Music and sound effects have separate mute buttons.</p><a href="https://stp-science.github.io/retrieval-starter-builder/" target="_blank" rel="noopener">Original retrieval website</a></details>
+        <details class="how-to"><summary>How to play & question topics</summary><p>Start on 0 points. Answer each question once. A correct answer unlocks the wheel. A wrong answer shows the correct answer. Spin wedges add or subtract points, or multiply your current total. Your score never goes below 0.</p><p>Any spin earned before the timer ends will count. Everyone plays their own five-minute game; compare final score screens to find the class winner. This game does not share scores between devices.</p><p><strong id="bank-count"></strong> multiple-choice questions adapted from the existing Year 9 retrieval bank: elements and compounds, periodic table, organism traits, reactions, forces, fluids and pressure, human transport, Earth’s spheres, and Ecosystems through LP4. Later ecosystem content is excluded.</p><p>Keys: 1–4 or A–D to answer; Space to spin or continue. The cheesy game-show backing track starts when you play. Click Play music to listen on the welcome screen. Music and sound effects have separate mute buttons.</p><a href="https://stp-science.github.io/retrieval-starter-builder/" target="_blank" rel="noopener">Original retrieval website</a></details>
         <button id="show-records" class="text-button">Scores on this device</button>
       </div>
     </section>
@@ -70,6 +70,7 @@
   </main>
   <footer id="site-footer">MR TALBOT’S WHEEL OF FORTUNE <span>YEAR 9 RETRIEVAL · FIVE MINUTES · ONE BIG SCORE</span></footer>
   <div id="celebration" class="celebration" aria-hidden="true"></div>
-  <script type="module" src="./game.mjs?v=gameshow-music-1"></script>
+  <audio id="background-music" src="./assets/gameshow-theme.mp3?v=1" preload="auto" loop hidden></audio>
+  <script type="module" src="./game.mjs?v=audio-file-2"></script>
 </body>
 </html>
