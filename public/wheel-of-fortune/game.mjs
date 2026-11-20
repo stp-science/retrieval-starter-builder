@@ -176,14 +176,14 @@ function spin(){
   if(!state||state.phase!=='spinReady')return;
   startAudio();state.phase='spinning';setSpin(false);$('next').hidden=true;
   const index=Math.floor(Math.random()*SEGMENTS.length);
-  const end=targetRotation(rotation,index,4);
+  const end=targetRotation(rotation,index,reducedMotion?1:3);
   state.pending={index,end};storeRound();
   $('wheel-result').textContent='COME ON, BIG POINTS…';say('Round and round… where will it land?');
-  const began=performance.now(),from=rotation,duration=reducedMotion?100:1850;
+  const began=performance.now(),from=rotation,duration=5000;
   let lastWedge=-1,lastSound=0;
   const step=now=>{
     if(!state||state.phase!=='spinning')return;
-    const t=Math.min(1,(now-began)/duration),eased=1-Math.pow(1-t,4);
+    const t=Math.min(1,(now-began)/duration),eased=1-Math.pow(1-t,3);
     rotation=from+(end-from)*eased;drawWheel();
     const wedge=pointedSegment(rotation);
     if(wedge!==lastWedge&&now-lastSound>45){tone(1100,.018,.03,'triangle');lastSound=now;lastWedge=wedge;}
