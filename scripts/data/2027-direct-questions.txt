@@ -1,0 +1,779 @@
+# Format: focus | answer style (term/short/explain) | question | answer
+# Authored against the knowledge statements in app/2027/curriculum.json.
+y7-u01-f1|term|What is the name for anything that has mass and occupies space?|Matter
+y7-u01-f1|term|Which state of matter has a fixed shape and a fixed volume?|Solid
+y7-u01-f1|term|Which state has a fixed volume but takes the shape of its container?|Liquid
+y7-u01-f1|term|Which state spreads out to fill its container?|Gas
+y7-u01-f1|short|Name the three common states of matter.|Solid, liquid and gas.
+y7-u01-f1|explain|Why can a liquid flow while a solid keeps its shape?|Liquid particles can move past one another; solid particles vibrate about fixed positions.
+y7-u01-f1|explain|Why is a gas easier to compress than a liquid?|Gas particles have much larger spaces between them.
+y7-u01-f2|term|What is the change from solid to liquid called?|Melting
+y7-u01-f2|term|What is the change from liquid to solid called?|Freezing
+y7-u01-f2|term|What is the change from gas to liquid called?|Condensation
+y7-u01-f2|term|What is the change directly from solid to gas called?|Sublimation
+y7-u01-f2|term|What is the change directly from gas to solid called?|Deposition
+y7-u01-f2|term|What process changes liquid water at its surface into water vapour?|Evaporation
+y7-u01-f2|explain|What happens to particle movement when thermal energy is removed?|Particles move more slowly as their kinetic energy decreases.
+y7-u01-f3|term|Which quantity is conserved when ice melts in a sealed container?|Mass
+y7-u01-f3|short|Does melting change the type of particles in a substance?|No. The particle type stays the same.
+y7-u01-f3|short|A sealed bag contains 40 g of ice. What mass of water forms when all the ice melts?|40 g.
+y7-u01-f3|explain|Why is melting described as a reversible physical change?|The same substance remains and can be returned to a solid by freezing.
+y7-u01-f4|term|What is the increase in a material’s size when heated called?|Expansion
+y7-u01-f4|term|What is the decrease in a material’s size when cooled called?|Contraction
+y7-u01-f4|explain|Why does a metal rod usually get longer when heated?|Its particles move more vigorously and their average spacing increases.
+y7-u01-f4|short|When a solid expands, do its individual particles become bigger?|No. The average spacing between particles increases.
+y7-u01-f5|term|Which is less dense: solid ice or liquid water?|Ice
+y7-u01-f5|explain|Why can freezing water split a full, sealed bottle?|Water expands as it freezes, pushing against the bottle.
+y7-u01-f5|short|What happens to the volume of a fixed mass of water as it freezes?|Its volume increases.
+y7-u01-f5|explain|How is freezing water unusual compared with most substances?|Water expands and becomes less dense; most substances become denser on freezing.
+y7-u02-f1|term|What type of energy is associated with motion?|Kinetic energy
+y7-u02-f1|term|What quantity measures the average kinetic energy of particles?|Temperature
+y7-u02-f1|term|What instrument is used to measure temperature?|Thermometer
+y7-u02-f1|short|Which has faster-moving particles on average: water at 20°C or water at 60°C?|Water at 60°C.
+y7-u02-f1|explain|Two samples of water have the same temperature. What can you say about their average particle kinetic energy?|It is the same in both samples.
+y7-u02-f1|explain|Why are temperature and thermal energy different quantities?|Temperature concerns average particle kinetic energy; thermal energy also depends on the amount of matter and particle interactions.
+y7-u02-f2|term|Which transfer process passes thermal energy through a material by particle interactions?|Conduction
+y7-u02-f2|term|Which thermal transfer process involves the movement of a fluid?|Convection
+y7-u02-f2|term|Which thermal transfer process can carry energy through empty space?|Radiation
+y7-u02-f2|short|Name the three ways thermal energy can transfer.|Conduction, convection and radiation.
+y7-u02-f2|explain|Why does the handle of a metal spoon get warm in hot soup?|Thermal energy is conducted along the metal from the hotter end.
+y7-u02-f2|short|In conduction, does the material itself travel from the hot end to the cold end?|No. Energy transfers through the material.
+y7-u02-f3|term|What property measures how effectively a material transfers thermal energy by conduction?|Thermal conductivity
+y7-u02-f3|term|What is a material that slows thermal energy transfer called?|Insulator
+y7-u02-f3|short|Should a good thermal insulator have high or low thermal conductivity?|Low thermal conductivity.
+y7-u02-f3|short|Which type of graph is useful for showing how temperature changes over time?|A time-series line graph.
+y7-u02-f3|explain|Why should starting temperatures be the same when comparing two insulating materials?|So differences in cooling can be attributed to the materials rather than different starting conditions.
+y7-u02-f3|explain|In a fair cooling test, which material is the better insulator: one with a 5°C drop or one with a 15°C drop?|The material with a 5°C drop, because it allows less thermal energy to escape over the same time.
+y7-u02-f4|term|Where on a graph should the unit of temperature be shown?|Axis label
+y7-u02-f4|short|Name two graph features you should check before comparing insulation results.|Axis labels and units, scales, title or key.
+y7-u02-f4|explain|Why can a graph with no time scale be difficult to use to compare cooling rates?|You cannot tell how much temperature changed per unit of time.
+y7-u02-f4|explain|How can a misleading vertical scale exaggerate a small temperature difference?|A very narrow scale can make a small numerical difference look large.
+y7-u02-f4|short|What must be kept the same when comparing temperature drops on two graphs?|The time interval and comparable scales and conditions.
+y7-u02-f4|short|What evidence supports a choice of insulation in a cooling test?|Measured temperature changes over the same time under controlled conditions.
+y7-u03-f1|term|What quantity describes how fast an object moves?|Speed
+y7-u03-f1|short|How do you calculate average speed from distance and time?|Average speed = distance ÷ time.
+y7-u03-f1|term|What does the unit m/s stand for?|Metres per second
+y7-u03-f1|short|A runner covers 30 m in 6 s. What is their average speed?|5 m/s.
+y7-u03-f1|short|Two runners travel the same distance. Which has the greater average speed?|The runner who takes less time.
+y7-u03-f1|short|At 3 m/s, how far does an object travel in 4 s?|12 m.
+y7-u03-f2|term|Which average is calculated by adding values and dividing by their number?|Mean
+y7-u03-f2|term|Which average is the middle value in an ordered data set?|Median
+y7-u03-f2|term|Which average is the most frequent value?|Mode
+y7-u03-f2|term|What is the difference between the highest and lowest values called?|Range
+y7-u03-f2|term|What is a value much larger or smaller than the rest of a data set called?|Outlier
+y7-u03-f2|short|What is the mean of speeds 2, 3 and 4 m/s?|3 m/s.
+y7-u03-f2|short|What is the range of speeds 2, 5 and 8 m/s?|6 m/s.
+y7-u03-f3|term|What describes forces that cancel to give zero net force?|Balanced
+y7-u03-f3|term|What describes forces that do not cancel?|Unbalanced
+y7-u03-f3|short|What is the net force when forces are balanced?|Zero.
+y7-u03-f3|explain|Can an object keep moving when the forces on it are balanced?|Yes. It can continue at constant speed in a straight line.
+y7-u03-f3|short|Name two ways an unbalanced force can change motion.|Change speed or change direction.
+y7-u03-f4|short|Which needs a larger force for the same change in motion: a full trolley or an empty trolley?|The full trolley, because it has greater mass.
+y7-u03-f4|explain|Why does the same push change an empty trolley’s motion more than a full trolley’s motion?|The empty trolley has less mass, so the same force produces a greater change in motion.
+y7-u03-f5|term|What simple machine is a seesaw an example of?|Lever
+y7-u03-f5|term|What is the turning point of a seesaw called?|Pivot
+y7-u03-f5|short|Name the two factors that determine a force’s turning effect.|The force and its distance from the pivot.
+y7-u03-f5|explain|How can a lighter person balance a heavier person on a seesaw?|The lighter person can sit farther from the pivot.
+y7-u04-f1|term|What instrument made the first observations of cells possible?|Microscope
+y7-u04-f1|term|Which scientist first described cells in cork?|Robert Hooke
+y7-u04-f1|term|Which scientist developed early observations of living microorganisms?|Antonie van Leeuwenhoek
+y7-u04-f1|short|Why are microscopes useful when studying cells?|They make structures too small to see unaided visible.
+y7-u04-f1|explain|How did microscopes change scientific explanations of living things?|They provided evidence that organisms are made of cells.
+y7-u04-f1|short|Would a microscope image be an observation or a prediction?|An observation.
+y7-u04-f2|term|What is the fundamental unit of a living organism?|Cell
+y7-u04-f2|term|What are specialised structures within a cell called?|Organelles
+y7-u04-f2|term|What describes an organism made of one cell?|Unicellular
+y7-u04-f2|term|What describes an organism made of many cells?|Multicellular
+y7-u04-f2|short|Name one group that includes single-celled microorganisms.|Bacteria, fungi or algae.
+y7-u04-f2|short|Are all living things made of many cells?|No. Some organisms consist of one cell.
+y7-u04-f2|explain|How can one cell be a complete organism?|Its structures carry out the functions needed to stay alive.
+y7-u04-f2|short|Are microorganisms always animals?|No. They include bacteria and some fungi and algae.
+y7-u04-f3|term|What is a group of similar cells working together called?|Tissue
+y7-u04-f3|term|What is a structure made of different tissues working together called?|Organ
+y7-u04-f3|term|What is a group of organs working together called?|Organ system
+y7-u04-f3|short|Put cell, organ, tissue and organ system in order from smallest level to largest.|Cell, tissue, organ, organ system.
+y7-u04-f3|short|Is the stomach a cell, tissue or organ?|An organ.
+y7-u04-f3|short|Is the digestive system made of one organ or several organs?|Several organs working together.
+y7-u04-f3|explain|Why do multicellular organisms have specialised cells?|Different cells perform different functions efficiently.
+y7-u04-f3|explain|What does it mean to say a cell is specialised?|Its features suit a particular function, such as movement or storage.
+y7-u05-f1|term|What is a group of the same species living in the same place at the same time called?|Population
+y7-u05-f1|term|What is a group of interacting populations called?|Community
+y7-u05-f1|term|What includes a community and its physical environment interacting together?|Ecosystem
+y7-u05-f1|term|What word describes the living components of an ecosystem?|Biotic
+y7-u05-f1|term|What word describes the non-living components of an ecosystem?|Abiotic
+y7-u05-f1|term|Is soil temperature a categorical or continuous numerical variable?|Continuous
+y7-u05-f1|term|Is the number of worms counted a discrete or continuous numerical variable?|Discrete
+y7-u05-f2|term|What is an organism that makes glucose by photosynthesis called?|Producer
+y7-u05-f2|term|What is an organism that gets nutrients by feeding on other organisms called?|Consumer
+y7-u05-f2|term|What breaks down dead organisms and releases nutrients?|Decomposer
+y7-u05-f2|term|What is an animal that hunts and eats another organism called?|Predator
+y7-u05-f2|term|What is an organism hunted and eaten by a predator called?|Prey
+y7-u05-f2|term|What relationship benefits both organisms?|Mutualism
+y7-u05-f2|term|What relationship benefits one organism while harming the other?|Parasitism
+y7-u05-f2|explain|Why can removing a producer affect several consumers in a food web?|Those consumers depend directly or indirectly on the producer for food and energy.
+y7-u05-f3|short|Name four components of soil.|Rock particles, organic matter, air and water; living organisms are also present.
+y7-u05-f3|explain|How do decomposers in soil support plant growth?|They break down dead matter and release nutrients that plants can use.
+y7-u05-f3|short|Is soil made only from broken rock?|No. It also contains organic matter, organisms, air and water.
+y7-u05-f4|term|Which graph type can compare the numbers of different species?|Bar graph
+y7-u05-f4|short|Name two abiotic conditions that could be measured in a habitat.|Light intensity, temperature, moisture, pH or water availability.
+y7-u05-f4|explain|Why should a sampling conclusion include measurements?|Measurements provide evidence to support the claim about the habitat.
+y7-u05-f4|short|What should a graph of worm counts show on its axes?|The sampled groups or sites and the number of worms counted.
+y7-u06-f1|term|What type of adaptation is a physical body feature?|Structural
+y7-u06-f1|term|What type of adaptation is an action an organism performs?|Behavioural
+y7-u06-f1|term|What type of adaptation is an internal body process?|Physiological
+y7-u06-f1|term|What adaptation helps an organism blend into its surroundings?|Camouflage
+y7-u06-f1|short|Are webbed feet a structural or behavioural adaptation?|Structural.
+y7-u06-f1|short|Name one function that an adaptation can help an organism carry out.|Obtain resources, avoid hazards or reproduce.
+y7-u06-f1|explain|How do webbed feet help a duck in water?|They provide a larger surface to push against water when swimming.
+y7-u06-f2|term|What word describes differences in traits between individuals of the same species?|Variation
+y7-u06-f2|short|Why might dark colouring help an insect on dark bark?|It can make the insect harder for predators to see.
+y7-u06-f2|explain|Why might the same dark colouring be less helpful on pale bark?|It may make the insect stand out more to predators.
+y7-u06-f2|short|Do all individuals of a species have exactly the same traits?|No. Individuals show variation.
+y7-u06-f2|term|What type of graph can compare paired categorical data in separate groups?|Clustered bar graph
+y7-u06-f2|explain|Why must an adaptation be considered in the context of the habitat?|Its usefulness depends on the environmental conditions and hazards there.
+y7-u06-f3|short|Does having an adaptation guarantee an organism will survive?|No. It can increase the chance of survival but does not guarantee it.
+y7-u06-f3|short|Besides survival, what must an organism achieve to pass on inherited traits?|Reproduction.
+y7-u06-f3|explain|How can caring for young improve reproductive success?|It can increase the chance that offspring survive.
+y7-u06-f3|explain|Why can a well-camouflaged animal still be eaten?|Camouflage reduces risk but does not remove every danger.
+y7-u06-f3|short|How could an adaptation that helps find food affect reproduction?|Better access to resources may support survival and the production of offspring.
+y7-u06-f4|term|Which scientist proposed that acquired traits could be inherited?|Lamarck
+y7-u06-f4|short|What is an acquired trait?|A characteristic gained during an individual’s lifetime.
+y7-u06-f4|short|Does building stronger muscles mean a person’s children inherit those stronger muscles?|No. Acquired muscle development is not automatically inherited.
+y7-u06-f4|explain|Why should scientists compare an explanation of inheritance with evidence?|Evidence can support, challenge or lead to changes in the explanation.
+y7-u06-f4|short|What is the key difference between an inherited trait and an acquired trait?|An inherited trait is passed through genetic information; an acquired trait develops during an individual’s lifetime.
+y7-u07-f1|term|What is the solid physical part of Earth called?|Geosphere
+y7-u07-f1|term|What is Earth’s outermost main layer called?|Crust
+y7-u07-f1|term|Which main layer lies between Earth’s crust and core?|Mantle
+y7-u07-f1|term|Which part of Earth’s core is liquid?|Outer core
+y7-u07-f1|term|Which part of Earth’s core is solid?|Inner core
+y7-u07-f1|short|Put Earth’s four main layers in order from the surface inward.|Crust, mantle, outer core, inner core.
+y7-u07-f1|short|What are rocks made from?|One or more minerals.
+y7-u07-f1|short|Name two properties useful for comparing rocks.|Colour, texture, hardness, crystal structure or layering.
+y7-u07-f2|term|What type of rock forms when molten rock cools and solidifies?|Igneous
+y7-u07-f2|term|What type of rock forms from deposited material that becomes compacted and cemented?|Sedimentary
+y7-u07-f2|term|What type of rock forms when existing rock is changed by heat and pressure without melting?|Metamorphic
+y7-u07-f2|term|What model describes how the main rock types change over time?|Rock cycle
+y7-u07-f2|short|Does a rock have to remain the same type forever?|No. Geological processes can change it into another type.
+y7-u07-f2|short|What rock type results when melted rock later cools and solidifies?|Igneous rock.
+y7-u07-f3|term|What are preserved remains or traces of past organisms called?|Fossils
+y7-u07-f3|short|What often buries an organism at the start of fossil formation?|Sediment.
+y7-u07-f3|short|What can replace an organism’s original material during fossil formation?|Minerals.
+y7-u07-f3|short|Name two living groups that may be present in soil.|Plants, animals, fungi or microorganisms.
+y7-u07-f3|explain|Why does finding a fossil provide evidence of past life?|It preserves remains or traces of an organism that lived in the past.
+y7-u07-f4|term|What property describes how much mass is packed into a given volume?|Density
+y7-u07-f4|short|Which is generally less dense: iron or aluminium?|Aluminium.
+y7-u07-f4|explain|Why is aluminium useful when an object needs to be strong but light?|It combines useful strength with relatively low density.
+y7-u07-f4|short|What should guide the choice of an Earth material for a product?|Whether its properties suit the intended use.
+y7-u07-f4|short|Name one property that can make iron useful in construction.|Strength.
+y7-u08-f1|term|What are naturally occurring solid materials with regular internal patterns called?|Minerals
+y7-u08-f1|term|What is a natural material made from one or more minerals called?|Rock
+y7-u08-f1|term|What property describes resistance to being scratched?|Hardness
+y7-u08-f1|term|What feature describes a rock’s grain size and feel?|Texture
+y7-u08-f1|short|Name three properties used to compare rocks.|Colour, hardness, texture, crystal structure or layering.
+y7-u08-f1|short|Can two rocks contain the same minerals but have different arrangements?|Yes. Their mineral arrangements and textures can differ.
+y7-u08-f1|explain|Why is colour alone not always enough to identify a material?|Different materials may share a colour, so several properties are needed.
+y7-u08-f1|short|What may repeated internal patterns in minerals produce?|Characteristic crystal shapes.
+y7-u08-f2|term|What property describes how readily thermal energy is conducted through a material?|Thermal conductivity
+y7-u08-f2|term|What name is given to a material that slows thermal energy transfer?|Insulator
+y7-u08-f2|term|What name is given to a material that transfers thermal energy readily by conduction?|Conductor
+y7-u08-f2|short|Would low or high thermal conductivity suit a warm coat’s insulation?|Low thermal conductivity.
+y7-u08-f2|short|Would high or low thermal conductivity suit the base of a cooking pan?|High thermal conductivity.
+y7-u08-f2|explain|Why is a metal saucepan often fitted with a handle made from a different material?|The pan conducts energy well, while an insulating handle reduces transfer to the hand.
+y7-u08-f2|short|What property should be compared when choosing materials to reduce heat loss?|Thermal conductivity.
+y7-u08-f2|explain|Why does an insulator slow cooling without stopping it completely?|It reduces the rate of thermal energy transfer but does not eliminate every transfer pathway.
+y7-u08-f3|short|Which material is generally less dense: iron or aluminium?|Aluminium.
+y7-u08-f3|short|Name one reason to choose iron for a structure.|Its strength.
+y7-u08-f3|explain|Why should the intended purpose be identified before selecting a material?|The purpose determines which properties are most important.
+y7-u08-f3|short|Name two properties important for a strong, lightweight object.|Strength and low density.
+y7-u08-f3|explain|Why might the strongest material not always be the best choice?|Other needs, such as mass, conductivity, durability or cost, can also matter.
+y7-u08-f3|short|What evidence can support a claim that one material is a better insulator?|A fair comparison showing less thermal energy transfer or a slower temperature change.
+y7-u08-f3|short|Should materials for a product be selected only by appearance?|No. Their functional properties must also suit the purpose.
+y7-u08-f3|explain|Why is a dense metal less suitable when minimising mass is essential?|For the same volume, a denser metal adds more mass.
+y8-u09-f1|term|What is a physical combination of substances that are not chemically joined called?|Mixture
+y8-u09-f1|term|What type of mixture contains insoluble solid particles dispersed in a liquid?|Suspension
+y8-u09-f1|term|Which separation method uses a barrier with holes to separate particles by size?|Sieving
+y8-u09-f1|term|Which separation method traps an insoluble solid in filter paper?|Filtration
+y8-u09-f1|term|What is carefully pouring liquid off a settled solid called?|Decanting
+y8-u09-f1|short|Are the substances in a mixture chemically bonded together?|No. They are physically mixed.
+y8-u09-f1|short|Name a suitable method for separating gravel from fine sand.|Sieving.
+y8-u09-f1|explain|Why can a suspension sometimes be separated by settling?|The insoluble particles can sink, leaving liquid above them.
+y8-u09-f2|term|Which method recovers a solvent by evaporation followed by condensation?|Distillation
+y8-u09-f2|term|Which method can recover solid salt from salt water by removing water vapour?|Evaporation
+y8-u09-f2|term|What is the liquid that dissolves a solute called?|Solvent
+y8-u09-f2|short|Can ordinary filter paper remove dissolved salt from water?|No. Dissolved salt passes through with the water.
+y8-u09-f2|short|Which method could recover both water and salt from salt water?|Simple distillation, collecting the condensed water and leaving salt behind.
+y8-u09-f2|short|What happens to water vapour in a distillation condenser?|It cools and condenses into liquid water.
+y8-u09-f2|explain|Why is filtration suitable for sand and water but not salt and water?|Sand is insoluble and is trapped; dissolved salt is not trapped by the filter.
+y8-u09-f2|short|What remains in the original flask when a non-volatile solute solution is distilled?|The dissolved solid solute.
+y8-u09-f3|term|Which method separates the colours in a mixture of inks?|Chromatography
+y8-u09-f3|term|In paper chromatography, what acts as the stationary phase?|Paper
+y8-u09-f3|short|What carries soluble dyes along chromatography paper?|The moving solvent.
+y8-u09-f3|short|What does it suggest if an ink separates into three coloured spots?|The ink contains at least three coloured components under those conditions.
+y8-u09-f3|explain|Why do different dyes move different distances in chromatography?|They differ in solubility in the solvent and attraction to the stationary phase.
+y8-u09-f3|short|Name the two properties that affect separation by chromatography.|Solubility and affinity for the stationary phase.
+y8-u09-f3|explain|Why must the starting ink spots be above the solvent level?|Otherwise the dyes may dissolve into the solvent pool rather than travel up the paper.
+y8-u09-f3|short|What could comparing separated colour patterns help identify?|Whether samples may contain the same dyes.
+y8-u10-f1|term|What is a substance that dissolves in a solvent called?|Solute
+y8-u10-f1|term|What is the liquid that dissolves a solute called?|Solvent
+y8-u10-f1|term|What is the mixture formed when a solute dissolves in a solvent called?|Solution
+y8-u10-f1|term|What word describes a solution with less solute in a given volume?|Dilute
+y8-u10-f1|short|In a sugar solution, identify the solute.|Sugar.
+y8-u10-f1|short|What happens to concentration when more water is added to a salt solution?|The concentration decreases.
+y8-u10-f2|term|What word describes a solution that cannot dissolve more solute at a given temperature?|Saturated
+y8-u10-f2|term|What property describes the maximum amount of a solute that can dissolve under specified conditions?|Solubility
+y8-u10-f2|short|What happens to extra salt added to a saturated salt solution at the same temperature?|It remains undissolved.
+y8-u10-f2|short|Name two substances whose identities can affect solubility.|The solute and the solvent.
+y8-u10-f2|explain|Why should temperature be stated when giving a solubility value?|Solubility can change with temperature.
+y8-u10-f3|term|What graph shows how solubility changes with temperature?|Solubility curve
+y8-u10-f3|short|How does heating affect the solubility of many solid solutes?|Their solubility increases.
+y8-u10-f3|short|Does every solid become more soluble as temperature rises?|No. The pattern depends on the substance.
+y8-u10-f3|explain|Why should a solubility curve be checked rather than assuming all solids behave identically?|Different solutes can show different relationships with temperature.
+y8-u10-f3|short|What should be held constant when comparing how much solute dissolves at different temperatures?|The amount and type of solvent and the type of solute.
+y8-u10-f4|term|What solid structures may form when a saturated solution cools?|Crystals
+y8-u10-f4|short|Why can cooling a saturated solution cause a solid to appear?|The solubility may fall, leaving more solute than can remain dissolved.
+y8-u10-f4|short|At the same pressure, are many gases more soluble in cold or warm water?|Cold water.
+y8-u10-f4|explain|Why can warming a fizzy drink encourage gas to escape?|Many gases become less soluble as water warms at the same pressure.
+y8-u10-f4|short|Can a gas be a solute in a liquid?|Yes. Gases can dissolve in liquids.
+y8-u10-f5|short|Name two ways to make sugar dissolve faster without changing the temperature.|Stir it or use smaller grains.
+y8-u10-f5|short|Does stirring necessarily increase the final amount of salt that can dissolve?|No. It can increase dissolving speed without changing solubility.
+y8-u10-f5|short|What is the difference between dissolving speed and solubility?|Speed is how quickly dissolving happens; solubility is the maximum amount that can dissolve.
+y8-u10-f5|explain|Why is a faster dissolving time not evidence of greater solubility?|The same final maximum amount may dissolve, but at a different rate.
+y8-u10-f5|short|Which changes mainly when a sugar cube is crushed before dissolving: dissolving speed or final solubility?|Dissolving speed.
+y8-u11-f1|term|Which reproductive strategy usually involves two parents?|Sexual reproduction
+y8-u11-f1|term|Which reproductive strategy involves a single parent producing genetically identical offspring?|Asexual reproduction
+y8-u11-f1|short|How do offspring from sexual reproduction compare genetically with their parents?|They inherit a mixture of genetic information and are not identical to either parent.
+y8-u11-f1|short|How many parents are involved in asexual reproduction?|One.
+y8-u11-f1|short|Do sexually produced offspring normally have exactly the same combination of traits?|No. Their combinations can differ.
+y8-u11-f1|short|What life process produces new organisms?|Reproduction.
+y8-u11-f2|term|What is the male reproductive cell called?|Sperm
+y8-u11-f2|term|What is the female reproductive cell called?|Ovum
+y8-u11-f2|term|What is the joining of sperm and egg called?|Fertilisation
+y8-u11-f2|term|What is the cell formed immediately after fertilisation called?|Zygote
+y8-u11-f2|short|Put zygote, foetus and embryo in order of development.|Zygote, embryo, foetus.
+y8-u11-f2|short|What is the collective name for sperm and egg cells?|Gametes.
+y8-u11-f3|term|What stage of development involves gaining reproductive ability?|Puberty
+y8-u11-f3|term|What are chemical messengers carried in the blood called?|Hormones
+y8-u11-f3|term|What is the release of an egg from an ovary called?|Ovulation
+y8-u11-f3|term|What is the cyclic shedding of the uterine lining called?|Menstruation
+y8-u11-f3|short|What usually happens to the uterine lining if fertilisation does not occur?|It is shed during menstruation.
+y8-u11-f3|short|What regulates sperm production?|Hormones.
+y8-u11-f3|explain|How can a hormone coordinate reproduction in different body tissues?|It travels in the blood and changes the activity of specific target tissues.
+y8-u11-f4|term|What is the transfer of pollen to a flower’s stigma called?|Pollination
+y8-u11-f4|term|What is the start of growth from a seed called?|Germination
+y8-u11-f4|term|What reproductive structures do many fungi release to spread to new places?|Spores
+y8-u11-f4|short|What process spreads seeds away from the parent plant?|Seed dispersal.
+y8-u11-f4|short|Which comes first in flowering plants: pollination or fertilisation?|Pollination.
+y8-u11-f4|short|Name the stages after fertilisation that allow a flowering plant to establish offspring elsewhere.|Seed formation, seed dispersal and germination.
+y8-u12-f1|term|What preserved evidence can show organisms that lived long ago?|Fossils
+y8-u12-f1|term|What word describes a species with no living individuals remaining?|Extinct
+y8-u12-f1|short|Name two types of evidence that support changes in living things over time.|Fossils, shared traits or DNA evidence.
+y8-u12-f1|short|Can fossil organisms belong to groups that no longer exist?|Yes. Some belong to extinct groups.
+y8-u12-f1|explain|Why do fossils of different ages help scientists study evolution?|They provide evidence of life forms at different times in Earth’s history.
+y8-u12-f1|short|What can shared DNA features suggest about two species?|They may share common ancestry.
+y8-u12-f2|term|What are differences in traits within a species called?|Variation
+y8-u12-f2|term|What word describes variation that can be passed to offspring?|Heritable
+y8-u12-f2|term|What are environmental factors affecting survival or reproduction called?|Selection pressures
+y8-u12-f2|term|What process makes advantageous inherited traits more common across generations?|Natural selection
+y8-u12-f2|short|Give one example of a selection pressure.|Limited food, predators, temperature extremes or disease.
+y8-u12-f2|term|What describes a distribution with a longer tail to the right?|Positively skewed
+y8-u12-f2|term|What describes a distribution with a longer tail to the left?|Negatively skewed
+y8-u12-f3|term|Which scientist developed natural selection alongside Alfred Russel Wallace?|Charles Darwin
+y8-u12-f3|short|Does evolution describe changes within an individual’s lifetime or across generations in populations?|Changes across generations in populations.
+y8-u12-f3|explain|Why can an inherited trait that improves camouflage become more common?|Individuals with the trait may survive and reproduce more, passing it to more offspring.
+y8-u12-f3|short|What does common ancestry mean?|Different organisms descended from shared ancestors.
+y8-u12-f3|short|Can the accumulation of changes over long periods lead to new species?|Yes. Descendant populations can become different species.
+y8-u12-f3|explain|Why must a trait be heritable for natural selection to make it more common in later generations?|The trait must be passed from parents to offspring.
+y8-u12-f4|short|What can happen if a species cannot survive environmental change?|It may become extinct.
+y8-u12-f4|explain|Why can rapid habitat change threaten a species?|Individuals may not have traits that allow them to survive and reproduce in the new conditions.
+y8-u12-f4|short|Name one environmental change that could create a new selection pressure.|A change in food supply, habitat, predators, disease or climate.
+y8-u12-f4|explain|Why does environmental change not guarantee that a species will adapt successfully?|Suitable heritable variation may be absent, or change may be too rapid for the population to persist.
+y8-u12-f4|short|What New Zealand bird group is a well-known example of extinction?|Moa.
+y8-u13-f1|term|What is the overall force after combining forces on an object called?|Net force
+y8-u13-f1|term|What describes forces giving a net force of zero?|Balanced
+y8-u13-f1|term|What describes forces that change an object’s motion?|Unbalanced
+y8-u13-f1|short|What net force acts on an object moving at constant velocity?|Zero.
+y8-u13-f1|short|A force changes an object’s direction without changing its speed. Has its motion changed?|Yes. Direction is part of motion.
+y8-u13-f1|explain|Why does a more massive trolley need a larger force for the same change in motion?|Greater mass resists changes in motion more strongly.
+y8-u13-f2|term|What is the turning point of a lever called?|Pivot
+y8-u13-f2|term|What type of simple machine is a seesaw?|Lever
+y8-u13-f2|short|What must be equal on both sides for a seesaw to balance?|The opposing turning effects.
+y8-u13-f2|short|How can a smaller force balance a larger force on a lever?|Act farther from the pivot.
+y8-u13-f2|explain|Why must distance from the pivot be controlled when testing the effect of force size?|Both force and distance affect the turning effect, so changing both would confound the test.
+y8-u13-f2|short|What happens to turning effect if the same force is applied farther from the pivot?|It increases.
+y8-u13-f3|term|What statistical measure is strongly pulled towards an outlier?|Mean
+y8-u13-f3|term|Which measure is generally less affected by an extreme value: mean or median?|Median
+y8-u13-f3|term|What is the spread from the lowest to highest value called?|Range
+y8-u13-f3|short|A cyclist travels 60 m in 12 s. Calculate average speed.|5 m/s.
+y8-u13-f3|short|Why should measurements be repeated in a speed investigation?|To assess consistency and reduce the influence of random variation on a summary value.
+y8-u13-f3|short|Must every outlier be deleted from a data set?|No. It should be investigated; it may be a real observation.
+y8-u13-f4|term|What word describes a speed that does not change?|Constant
+y8-u13-f4|short|What does a straight sloping distance–time graph show?|Constant speed.
+y8-u13-f4|short|What does a horizontal distance–time graph show?|The object is stationary.
+y8-u13-f4|short|Which line on a distance–time graph shows the greater speed: a steep or a shallow line?|The steeper line, when scales are the same.
+y8-u13-f4|short|What does a distance–time curve that gets progressively steeper show?|Increasing speed.
+y8-u13-f4|explain|Why must graph scales be checked before comparing the steepness of two separate graphs?|Different scales can make equal speeds appear to have different slopes.
+y8-u14-f1|term|What do we call an object that emits its own light?|Light source
+y8-u14-f1|term|What process allows light from a lamp to bounce off a book towards your eyes?|Reflection
+y8-u14-f1|short|Does light need to enter your eyes for you to see an object?|Yes.
+y8-u14-f1|short|Is the Moon a source of its own visible light?|No. It reflects sunlight.
+y8-u14-f1|short|State the light path that lets you see a book illuminated by a lamp.|Lamp to book to eyes.
+y8-u14-f1|short|Does a lamp need to reflect light from another object to be seen directly?|No. Light can travel directly from the lamp to the eyes.
+y8-u14-f1|term|Which scientist challenged the idea that vision comes from rays leaving the eyes?|Ibn al-Haytham
+y8-u14-f1|explain|Why can you not see an unlit object in a completely dark room?|No light from the object reaches your eyes.
+y8-u14-f2|term|What is light bouncing from a surface called?|Reflection
+y8-u14-f2|term|What common object uses a smooth reflective surface to form an image?|Mirror
+y8-u14-f2|short|State the path of light when you see a lamp-lit book in a mirror.|Lamp to book to mirror to eyes.
+y8-u14-f2|short|Does the image of a book in a mirror mean the book is physically behind the mirror?|No. Reflected light makes the image appear there.
+y8-u14-f2|short|Name one natural surface that can reflect an image.|Calm water.
+y8-u14-f2|explain|Why can moving a mirror change whether you see an object in it?|It changes the direction in which light is reflected towards or away from your eyes.
+y8-u14-f2|short|What must reach the mirror for it to show an object?|Light from or reflected by the object.
+y8-u14-f2|explain|Why does a mirror not create light in a dark room?|A mirror reflects light; it does not emit its own light.
+y8-u14-f3|term|What is light changing direction when passing between media called?|Refraction
+y8-u14-f3|short|Name two media between which visible light can refract.|Air and water, or air and glass.
+y8-u14-f3|short|Which process helps explain a straw appearing bent at the water surface?|Refraction.
+y8-u14-f3|short|How does reflection differ from refraction?|Reflection sends light back from a surface; refraction changes its direction as it passes between media.
+y8-u14-f3|explain|Why can a submerged object appear displaced from its actual position?|Light from it refracts as it leaves the water, so it appears to come from a different direction.
+y8-u14-f3|short|Does refraction require light to pass from one medium into another?|Yes.
+y8-u14-f3|short|Can refraction occur at an air–glass boundary?|Yes.
+y8-u14-f3|explain|Why is a ray diagram useful when explaining an apparently bent straw?|It shows how the light path changes at the boundary before reaching the eye.
+y8-u15-f1|term|What is Earth’s natural satellite called?|Moon
+y8-u15-f1|term|What do we call the Moon’s repeating changes in appearance?|Phases
+y8-u15-f1|short|Approximately how long does one complete lunar phase cycle take?|29.5 days.
+y8-u15-f1|term|Which lunar phase has the whole Earth-facing side appearing sunlit?|Full Moon
+y8-u15-f1|term|Which lunar phase has the Earth-facing side appearing unlit?|New Moon
+y8-u15-f1|short|Does the Moon physically change shape during its phase cycle?|No. We see different portions of its sunlit half.
+y8-u15-f1|short|What provides the light that makes the Moon visible?|The Sun.
+y8-u15-f1|explain|Why do the Moon’s phases change as it orbits Earth?|Its position changes, so different portions of the sunlit surface are visible from Earth.
+y8-u15-f2|term|What is the Māori lunar calendar called?|Maramataka
+y8-u15-f2|short|Why does moonrise happen at different times on successive days?|The Moon moves along its orbit around Earth.
+y8-u15-f2|short|Approximately how long is the interval from one quarter phase to the next quarter phase?|About one week.
+y8-u15-f2|short|Besides Moon phases, what celestial observations are used in maramataka?|Key stars.
+y8-u15-f2|short|Name one kind of activity that maramataka can help guide.|Locally appropriate daily or seasonal activities, such as planting or harvesting.
+y8-u15-f2|explain|Why should maramataka be interpreted in its local environmental context?|Its observations and practices relate to patterns in particular regions.
+y8-u15-f2|short|What makes lunar phases useful for recognising monthly patterns?|They repeat in a predictable sequence.
+y8-u15-f2|short|Is a month-long phase cycle a random pattern or a repeating pattern?|A repeating pattern.
+y8-u15-f3|term|What occurs when the Moon moves into Earth’s shadow?|Lunar eclipse
+y8-u15-f3|term|What occurs when the Moon passes directly between Earth and the Sun and blocks sunlight?|Solar eclipse
+y8-u15-f3|short|Put Sun, Earth and Moon in order during a lunar eclipse.|Sun, Earth, Moon.
+y8-u15-f3|short|Put Sun, Earth and Moon in order during a solar eclipse.|Sun, Moon, Earth.
+y8-u15-f3|short|Whose shadow falls on the Moon in a lunar eclipse?|Earth’s shadow.
+y8-u15-f3|short|Whose shadow reaches Earth in a solar eclipse?|The Moon’s shadow.
+y8-u15-f3|explain|How is an ordinary lunar phase different from a lunar eclipse?|A phase depends on the sunlit portion we can see; an eclipse occurs when the Moon enters Earth’s shadow.
+y8-u15-f3|short|Name one limitation of a small classroom Earth–Moon–Sun model.|Sizes or distances may not be to scale.
+y8-u16-f1|term|What process breaks large food molecules into smaller soluble molecules?|Digestion
+y8-u16-f1|term|Which tube carries swallowed food to the stomach?|Oesophagus
+y8-u16-f1|term|Which organ receives food after the oesophagus?|Stomach
+y8-u16-f1|short|Put mouth, stomach, oesophagus and intestines in the order food passes through them.|Mouth, oesophagus, stomach, intestines.
+y8-u16-f1|short|Why must large food molecules be broken down before absorption?|They must become small and soluble enough to cross into the body.
+y8-u16-f1|short|What is the main purpose of digestion?|To break food into small soluble molecules that can be absorbed.
+y8-u16-f1|short|Where does food first enter the digestive tract?|The mouth.
+y8-u16-f1|explain|Why do digestive organs have different roles?|Digestion and absorption require different processes at different stages.
+y8-u16-f2|term|What type of digestion physically breaks food into smaller pieces?|Mechanical digestion
+y8-u16-f2|term|What type of digestion breaks food molecules down using enzymes?|Chemical digestion
+y8-u16-f2|term|What substances speed up the breakdown of particular food molecules?|Enzymes
+y8-u16-f2|short|Is chewing an example of mechanical or chemical digestion?|Mechanical digestion.
+y8-u16-f2|short|Does chewing alone break large molecules into smaller molecules?|No. It mainly breaks food into smaller physical pieces.
+y8-u16-f2|explain|Why does mechanical digestion help chemical digestion?|Smaller pieces provide more surface area for enzymes to act on.
+y8-u16-f2|short|Can one digestive enzyme act equally well on every food molecule?|No. Enzymes act on particular molecules.
+y8-u16-f2|short|Does enzyme activity stay the same under all conditions?|No. Conditions such as temperature and pH affect activity.
+y8-u16-f3|term|What is the movement of digested nutrients into the blood called?|Absorption
+y8-u16-f3|term|Which part of the intestine absorbs most digested nutrients?|Small intestine
+y8-u16-f3|term|What is the removal of unabsorbed material from the digestive tract called?|Egestion
+y8-u16-f3|short|What transports absorbed nutrients to body cells?|The blood.
+y8-u16-f3|short|Name two uses of absorbed nutrients in cells.|Growth, repair or respiration.
+y8-u16-f3|short|How is absorption different from digestion?|Digestion breaks molecules down; absorption moves the products across the intestine into the blood.
+y8-u16-f3|short|Do absorbed nutrients stay permanently in the small intestine?|No. They enter the blood and are transported to cells.
+y8-u16-f3|explain|Why is digestion important for supplying cells with materials?|It produces small soluble molecules that can be absorbed and carried to cells.
+y9-u17-f1|term|What is a substance made from only one type of atom called?|Element
+y9-u17-f1|term|What is the smallest unit that retains an element’s chemical properties?|Atom
+y9-u17-f1|short|How many elements are currently recognised in the periodic table?|118.
+y9-u17-f1|term|What is the chemical symbol for oxygen?|O
+y9-u17-f1|term|What is the chemical symbol for hydrogen?|H
+y9-u17-f1|term|What element has the chemical symbol Ar?|Argon
+y9-u17-f1|short|Does a sample of pure copper contain one element or several elements?|One element.
+y9-u17-f1|short|Why is the capital letter important in a chemical symbol?|Chemical symbols use specific capitalisation to identify elements correctly.
+y9-u17-f2|term|What are the vertical columns of the periodic table called?|Groups
+y9-u17-f2|term|What are the horizontal rows of the periodic table called?|Periods
+y9-u17-f2|term|Which number determines the order of elements in the modern periodic table?|Atomic number
+y9-u17-f2|term|What family of elements is found in Group 18?|Noble gases
+y9-u17-f2|term|What family of elements is found in Group 17?|Halogens
+y9-u17-f2|term|Which scientist is strongly associated with developing the periodic table and predicting missing elements?|Mendeleev
+y9-u17-f2|short|Where are most metals found in the periodic table?|On the left and in the centre.
+y9-u17-f2|short|What can elements in the same group have in common?|Similar chemical properties.
+y9-u17-f2|short|Which generally conducts electric charge well: a metal or a non-metal?|A metal.
+y9-u17-f3|term|What is a substance containing different elements chemically bonded together called?|Compound
+y9-u17-f3|term|What is a group of two or more atoms bonded together called?|Molecule
+y9-u17-f3|short|Is O₂ an element or a compound?|An element, because it contains only oxygen atoms.
+y9-u17-f3|short|Is CO₂ an element or a compound?|A compound, because it contains carbon and oxygen chemically bonded.
+y9-u17-f3|short|How many atoms in total are in one H₂O molecule?|Three: two hydrogen atoms and one oxygen atom.
+y9-u17-f3|short|How many oxygen atoms are represented by CO₂?|Two.
+y9-u17-f3|short|What does a chemical formula tell you?|The types and numbers or simplest ratio of atoms in a substance.
+y9-u17-f3|short|Can a molecule be made from atoms of only one element?|Yes, for example O₂ or N₂.
+y9-u17-f3|short|How many atoms of each element are in H₂SO₄?|Two hydrogen, one sulfur and four oxygen atoms.
+y9-u18-f1|term|Which scientist discovered the small positively charged core of an atom?|Rutherford
+y9-u18-f1|term|What is the central core of an atom called?|Nucleus
+y9-u18-f1|short|Where is most of an atom’s mass found?|In its nucleus.
+y9-u18-f1|explain|Why have atomic models changed over time?|New evidence has led scientists to revise earlier explanations.
+y9-u18-f2|term|Which subatomic particle has a positive charge?|Proton
+y9-u18-f2|term|Which subatomic particle has a negative charge?|Electron
+y9-u18-f2|term|Which subatomic particle has no charge?|Neutron
+y9-u18-f2|term|What identifies an element by the number of protons in its nucleus?|Atomic number
+y9-u18-f2|term|What is the total number of protons and neutrons called?|Mass number
+y9-u18-f2|short|A neutral atom has eight protons. How many electrons does it have?|Eight.
+y9-u18-f2|short|An atom has six protons and seven neutrons. What is its mass number?|13.
+y9-u18-f2|short|How many electrons can occupy the first shell in the simple Bohr model?|Two.
+y9-u18-f2|short|What is the simple electron arrangement of a neutral sodium atom with 11 electrons?|2, 8, 1.
+y9-u18-f3|term|What is the outermost electron shell called?|Valence shell
+y9-u18-f3|term|What is a positively charged ion called?|Cation
+y9-u18-f3|term|What is a negatively charged ion called?|Anion
+y9-u18-f3|term|What type of bond is the attraction between oppositely charged ions?|Ionic bond
+y9-u18-f3|short|Does a metal usually gain or lose electrons when forming a positive ion?|It loses electrons.
+y9-u18-f3|short|What happens to an atom’s charge when it gains an electron?|It becomes more negative.
+y9-u18-f3|short|Why must the positive and negative charges balance in an ionic compound?|The compound is electrically neutral overall.
+y9-u18-f4|term|What type of bond forms when non-metal atoms share electrons?|Covalent bond
+y9-u18-f4|short|Do covalent bonds involve transferring or sharing electrons?|Sharing electrons.
+y9-u18-f4|short|Which types of elements commonly form covalent molecules together?|Non-metals.
+y9-u18-f4|short|How many carbon and oxygen atoms are in one CO₂ molecule?|One carbon and two oxygen atoms.
+y9-u18-f4|short|Why do atoms share electrons in the simple bonding model?|To achieve stable full valence shells.
+y9-u18-f5|term|What is the name of NaCl?|Sodium chloride
+y9-u18-f5|term|What is the name of MgO?|Magnesium oxide
+y9-u18-f5|short|What difference does the prefix di- show in carbon dioxide compared with carbon monoxide?|Carbon dioxide has two oxygen atoms per molecule; carbon monoxide has one.
+y9-u18-f5|short|Which ion is named first in an ionic compound: positive or negative?|The positive ion.
+y9-u19-f1|term|Which galaxy contains the Solar System?|Milky Way
+y9-u19-f1|term|What type of object is the Sun?|Star
+y9-u19-f1|term|What type of object is Earth?|Planet
+y9-u19-f1|term|What is a natural satellite orbiting a planet commonly called?|Moon
+y9-u19-f1|short|Why can we see the Moon even though it does not emit its own visible light?|It reflects sunlight.
+y9-u19-f1|short|Can the Moon be visible during the daytime?|Yes.
+y9-u19-f1|short|What holds the Solar System’s objects in their orbits?|Gravity.
+y9-u19-f2|term|What are small rocky bodies orbiting the Sun called?|Asteroids
+y9-u19-f2|term|What are icy bodies that may develop tails near the Sun called?|Comets
+y9-u19-f2|term|What is a piece of space material that reaches Earth’s surface called?|Meteorite
+y9-u19-f2|term|What is the streak caused by space material heating in Earth’s atmosphere called?|Meteor
+y9-u19-f2|short|Between which two planets is the main asteroid belt?|Mars and Jupiter.
+y9-u19-f2|short|Name the four rocky planets in order from the Sun.|Mercury, Venus, Earth, Mars.
+y9-u19-f2|short|Name the two gas giant planets.|Jupiter and Saturn.
+y9-u19-f2|short|Name the two ice giant planets.|Uranus and Neptune.
+y9-u19-f2|short|What distinguishes a dwarf planet’s orbit from a planet’s orbit?|A dwarf planet has not cleared its orbital neighbourhood.
+y9-u19-f3|term|What unit is based on the average Earth–Sun distance?|Astronomical unit
+y9-u19-f3|short|What does AU stand for?|Astronomical unit.
+y9-u19-f3|short|About how far from the Sun is Earth in astronomical units?|1 AU.
+y9-u19-f3|short|Which generally receives more solar radiation per unit area: a nearby planet or a more distant planet?|The nearby planet.
+y9-u19-f3|explain|Why is an astronomical unit convenient for describing distances within the Solar System?|It gives a useful scale relative to the Earth–Sun distance instead of very large numbers of metres.
+y9-u19-f4|term|What instrument gathers light to help us observe distant space objects?|Telescope
+y9-u19-f4|short|Name one advantage of landing a spacecraft on another world.|It can obtain close surface observations or collect samples.
+y9-u19-f4|short|What can analysing electromagnetic radiation reveal about a distant object?|Information about its conditions, composition or surface.
+y9-u19-f4|explain|Why can improved instruments change our understanding of the Solar System?|They provide new or more detailed evidence to test existing explanations.
+y9-u19-f4|short|Why can a returned rock sample provide evidence that a distant image cannot?|It can be directly examined and tested in detail.
+y9-u20-f1|term|What is the SI unit of force?|Newton
+y9-u20-f1|term|What is an object’s resistance to a change in motion called?|Inertia
+y9-u20-f1|term|What property determines how much inertia an object has?|Mass
+y9-u20-f1|short|Two opposite forces of 12 N act on an object. What is the net force?|0 N.
+y9-u20-f1|short|What happens to the velocity of an object when its net force is zero?|It remains constant; a stationary object stays stationary.
+y9-u20-f1|short|A 10 N force acts right and a 4 N force acts left. What is the net force?|6 N to the right.
+y9-u20-f2|term|What is the rate of change of velocity called?|Acceleration
+y9-u20-f2|short|State the equation linking net force, mass and acceleration.|F = ma.
+y9-u20-f2|short|A 2 kg trolley accelerates at 3 m/s². What net force acts on it?|6 N.
+y9-u20-f2|short|A net force of 12 N acts on a 4 kg object. What is its acceleration?|3 m/s².
+y9-u20-f2|short|For the same mass, what happens to acceleration when net force doubles?|Acceleration doubles.
+y9-u20-f2|short|For the same net force, which accelerates more: a larger or smaller mass?|The smaller mass.
+y9-u20-f3|term|What state of motion is shown by a horizontal position–time line?|Stationary
+y9-u20-f3|short|What does a straight sloping position–time line show?|Constant velocity.
+y9-u20-f3|short|What does a steeper position–time line show when the scales are unchanged?|A greater speed.
+y9-u20-f3|short|What does a curved position–time line indicate?|Changing velocity.
+y9-u20-f3|short|Which variable is normally on the horizontal axis of a position–time graph?|Time.
+y9-u20-f4|term|What is force per unit contact area called?|Pressure
+y9-u20-f4|short|State the equation for pressure on a surface.|Pressure = perpendicular force ÷ area.
+y9-u20-f4|short|For the same force, does a smaller contact area give greater or smaller pressure?|Greater pressure.
+y9-u20-f4|explain|Why do snowshoes help stop a person sinking into soft snow?|They increase the contact area, reducing pressure for the same weight.
+y9-u20-f4|explain|Why does sharpening an axe help it cut?|A smaller contact area creates greater pressure for the same applied force.
+y9-u20-f5|short|Do an action–reaction pair of forces act on the same object or different objects?|Different objects.
+y9-u20-f5|short|How do the sizes and directions of an interaction pair compare?|Equal in size and opposite in direction.
+y9-u20-f5|explain|Why do interaction forces not cancel each other on one object?|They act on two different objects.
+y9-u20-f5|short|A hand pushes a wall. What is the paired interaction force?|The wall pushes back on the hand.
+y9-u21-f1|term|What property of matter causes electric attraction and repulsion?|Electric charge
+y9-u21-f1|term|What is a material that allows charge to move through it called?|Conductor
+y9-u21-f1|term|What is a material that restricts the movement of charge called?|Insulator
+y9-u21-f1|term|What is the region around a charged object where other charges experience a force called?|Electric field
+y9-u21-f1|explain|Why are wires often made of metal with a plastic coating?|Metal conducts charge; plastic insulation restricts charge movement to the surroundings.
+y9-u21-f1|short|What does static electricity involve?|An accumulation of charge on surfaces.
+y9-u21-f2|term|What is the rate of flow of electric charge called?|Current
+y9-u21-f2|term|What unit is used for electric current?|Ampere
+y9-u21-f2|term|What unit is used for voltage?|Volt
+y9-u21-f2|term|What unit is used for resistance?|Ohm
+y9-u21-f2|term|What circuit component is designed to provide resistance?|Resistor
+y9-u21-f2|short|What must a circuit provide for charge to flow continuously?|A complete conducting path.
+y9-u21-f2|short|What does electrical resistance do to charge movement?|It limits charge movement through a component.
+y9-u21-f3|term|What type of circuit has only one continuous path for current?|Series
+y9-u21-f3|term|What type of circuit has multiple branches for current?|Parallel
+y9-u21-f3|short|What happens to current in a series circuit if its only path is broken?|Current stops throughout the circuit.
+y9-u21-f3|short|What happens to the voltage across branches in a parallel circuit?|Each branch has the same voltage across it.
+y9-u21-f3|short|How do branch currents relate to the total current in a parallel circuit?|They add to give the total current.
+y9-u21-f3|explain|Why can one lamp stay lit when another lamp in a different parallel branch breaks?|Its own branch still provides a complete path.
+y9-u21-f4|term|What unit is used to measure energy?|Joule
+y9-u21-f4|short|Is energy created as charge travels through a circuit?|No. Energy is transferred and conserved.
+y9-u21-f4|short|What unwanted energy transfer commonly reduces a circuit’s efficiency?|Transfer to thermal energy in the surroundings.
+y9-u21-f4|explain|Why can a lamp warm its surroundings as well as give out light?|Some transferred electrical energy becomes thermal energy.
+y9-u21-f5|term|What device converts sunlight into electrical energy?|Solar panel
+y9-u21-f5|term|What rotating device is used in many electricity-generating systems?|Turbine
+y9-u21-f5|short|Name two methods used to generate electricity.|For example, solar panels and turbines driven by wind, water or steam.
+y9-u21-f5|short|What kind of evidence could help compare two electricity-generation choices?|Output, reliability, resource availability, costs or environmental impacts.
+y9-u22-f1|term|What are specialised structures within cells called?|Organelles
+y9-u22-f1|term|What cell type has genetic material that is not enclosed in a nucleus?|Prokaryotic
+y9-u22-f1|term|What cell type has genetic material enclosed in a nucleus?|Eukaryotic
+y9-u22-f1|term|What structure controls entry and exit of substances from a cell?|Cell membrane
+y9-u22-f1|term|Where do many chemical reactions take place within a cell?|Cytoplasm
+y9-u22-f1|term|Which microorganism group consists of prokaryotic cells?|Bacteria
+y9-u22-f1|short|Do bacterial cells have a nucleus enclosing their genetic material?|No.
+y9-u22-f1|short|Name three components found in a bacterial cell.|Genetic material, cell membrane and cytoplasm.
+y9-u22-f1|short|Is a prokaryote typically single-celled or multicellular?|Single-celled.
+y9-u22-f1|explain|Why does having no nucleus not mean a bacterium has no genetic material?|Its genetic material is present but is not enclosed in a nucleus.
+y9-u22-f1|short|Can a eukaryotic organism be single-celled?|Yes.
+y9-u22-f1|short|What is the key difference between prokaryotic and eukaryotic genetic material location?|Only eukaryotic cells enclose their genetic material in a nucleus.
+y9-u22-f2|term|Which organelle contains DNA in a typical plant or animal cell?|Nucleus
+y9-u22-f2|term|Which organelles carry out most aerobic respiration in eukaryotic cells?|Mitochondria
+y9-u22-f2|term|Which plant organelles capture light for photosynthesis?|Chloroplasts
+y9-u22-f2|term|Which plant cell structure provides strength and shape outside the membrane?|Cell wall
+y9-u22-f2|term|Which large fluid-filled plant cell space stores water and nutrients?|Vacuole
+y9-u22-f2|short|Name two structures found in plant cells but not animal cells.|A cell wall and chloroplasts.
+y9-u22-f2|short|Are animal cells prokaryotic or eukaryotic?|Eukaryotic.
+y9-u22-f2|short|What information does DNA provide for a cell?|Instructions affecting its structure and functions.
+y9-u22-f2|short|Do both animal and plant cells have a cell membrane?|Yes.
+y9-u22-f2|short|Which cell type usually has a larger vacuole: plant or animal?|Plant.
+y9-u22-f2|explain|Why do plant cells need mitochondria even when they contain chloroplasts?|They still need respiration to release energy for life processes.
+y9-u22-f2|short|What food molecule is broken down during cellular respiration?|Glucose.
+y9-u23-f1|term|What is a microorganism or infectious agent that causes disease called?|Pathogen
+y9-u23-f1|term|What type of disease can be spread between individuals by pathogens?|Infectious
+y9-u23-f1|term|What type of disease is not caused by a pathogen and does not spread between people?|Non-infectious
+y9-u23-f1|term|What theory states that microorganisms can cause disease?|Germ theory
+y9-u23-f1|term|Which scientist developed germ theory alongside Robert Koch?|Louis Pasteur
+y9-u23-f1|short|Name four groups that include pathogens.|Bacteria, viruses, protists and fungi.
+y9-u23-f1|short|Name two routes by which pathogens can spread.|Airborne particles, body fluids or contaminated objects.
+y9-u23-f1|short|What can handwashing help remove to reduce disease transmission?|Pathogens on the hands.
+y9-u23-f1|term|What is separating potentially infected individuals to reduce transmission called?|Quarantine
+y9-u23-f1|short|Is every disease caused by a pathogen?|No. Some diseases are non-infectious.
+y9-u23-f1|explain|How can sharing a contaminated drink bottle spread an infectious disease?|Pathogens can pass from the bottle or bodily fluids to another person.
+y9-u23-f1|short|Can a plant disease be infectious?|Yes. Pathogens can infect plants, for example myrtle rust.
+y9-u23-f2|term|What cells recognise and respond to pathogens in the immune system?|White blood cells
+y9-u23-f2|term|What proteins made by specialised white blood cells help recognise specific pathogens?|Antibodies
+y9-u23-f2|term|What prepares an immune response without causing the disease itself?|Vaccination
+y9-u23-f2|term|What is the community of microorganisms living in and on the body called?|Microbiome
+y9-u23-f2|short|Name a physical barrier that helps prevent pathogens entering the body.|Skin, hair or cilia.
+y9-u23-f2|short|Name a chemical defence against pathogens.|Tears, saliva or stomach acid.
+y9-u23-f2|short|Is intact skin a specific antibody response or a non-specific defence?|A non-specific defence.
+y9-u23-f2|explain|How does vaccination help protect against later infection?|It stimulates a protective immune response so the body can respond to the pathogen.
+y9-u23-f2|short|Do antibodies and skin protect the body in exactly the same way?|No. Skin is a barrier; antibodies are part of an immune response.
+y9-u23-f2|short|What can cilia help move away from the respiratory surfaces?|Mucus containing trapped particles and pathogens.
+y9-u23-f2|short|Are all microorganisms living on the body harmful?|No. Many are part of the protective microbiome.
+y9-u23-f2|explain|Why does preventing pathogens entering the body reduce the risk of infection?|It limits the opportunity for pathogens to establish and reproduce inside the body.
+y9-u24-f1|term|What is the net movement of particles from high to low concentration called?|Diffusion
+y9-u24-f1|term|What is a difference in concentration between two regions called?|Concentration gradient
+y9-u24-f1|short|In which direction does net diffusion occur across a concentration gradient?|From higher concentration to lower concentration.
+y9-u24-f1|short|Name two gases that move into or out of cells by diffusion.|Oxygen and carbon dioxide.
+y9-u24-f1|short|If oxygen concentration is higher outside a cell, what is its net diffusion direction?|Into the cell.
+y9-u24-f1|short|If carbon dioxide concentration is higher inside a cell, what is its net diffusion direction?|Out of the cell.
+y9-u24-f1|explain|Why is diffusion important for respiration in cells?|It enables oxygen supply and the removal of carbon dioxide.
+y9-u24-f1|short|Does diffusion require particles to move only in one direction?|No. Particles move randomly, but net movement follows the concentration gradient.
+y9-u24-f2|term|What process uses light to make glucose from carbon dioxide and water?|Photosynthesis
+y9-u24-f2|term|What sugar is made during photosynthesis?|Glucose
+y9-u24-f2|term|What gas is released during photosynthesis?|Oxygen
+y9-u24-f2|term|What insoluble carbohydrate can plants use to store glucose?|Starch
+y9-u24-f2|term|What substance can plants build from glucose to make cell walls?|Cellulose
+y9-u24-f2|short|Name the two raw materials used in photosynthesis.|Water and carbon dioxide.
+y9-u24-f2|short|What energy source is needed for photosynthesis?|Light.
+y9-u24-f2|explain|How does a thin leaf help photosynthesis?|It provides a short distance for gases to diffuse.
+y9-u24-f2|short|Besides plants, name another group that can photosynthesise.|Algae or some bacteria.
+y9-u24-f3|term|What process releases chemical energy by breaking down glucose in cells?|Respiration
+y9-u24-f3|term|What gas is used in aerobic respiration?|Oxygen
+y9-u24-f3|short|Name the two waste products of aerobic respiration.|Carbon dioxide and water.
+y9-u24-f3|short|What do cells use the energy released by respiration for?|Life processes such as movement, growth and transport.
+y9-u24-f3|short|Do plant cells carry out respiration?|Yes.
+y9-u24-f3|short|State the word equation for aerobic respiration.|Glucose + oxygen → carbon dioxide + water, with energy released.
+y9-u24-f3|short|How do the glucose and oxygen needed for respiration relate to photosynthesis?|They are products of photosynthesis.
+y9-u24-f3|explain|Why is respiration more than just breathing?|Respiration is a chemical process inside cells; breathing moves air into and out of lungs.
+y10-u25-f1|term|What are the starting substances in a chemical reaction called?|Reactants
+y10-u25-f1|term|What are the substances formed in a chemical reaction called?|Products
+y10-u25-f1|short|What is conserved when a chemical equation is balanced?|The number of atoms of each element.
+y10-u25-f1|short|In a closed system, how does the total mass of reactants compare with the total mass of products?|The masses are equal.
+y10-u25-f1|short|What is the difference between a word equation and a formula equation?|One uses substance names; the other uses chemical formulas.
+y10-u25-f2|term|What is a base that dissolves in water called?|Alkali
+y10-u25-f2|term|What scale is used to describe acidity or alkalinity?|pH
+y10-u25-f2|term|What term describes a solution with pH 7?|Neutral
+y10-u25-f2|short|Is a solution at pH 3 acidic or alkaline?|Acidic.
+y10-u25-f2|short|Which is more acidic: pH 2 or pH 5?|pH 2.
+y10-u25-f2|short|Why must tasting never be used to identify a laboratory acid or base?|The substance may be harmful or corrosive.
+y10-u25-f2|short|Name an indicator used to test acidity or alkalinity.|Litmus or universal indicator.
+y10-u25-f3|term|Which gas gives a squeaky pop with a lit splint?|Hydrogen
+y10-u25-f3|term|Which gas relights a glowing splint?|Oxygen
+y10-u25-f3|term|Which gas turns limewater cloudy?|Carbon dioxide
+y10-u25-f3|short|What colour change does blue cobalt chloride paper show in the presence of water?|It turns pink.
+y10-u25-f3|short|Why is a gas test stronger evidence than a gas being colourless?|Several gases are colourless; the test gives more specific evidence.
+y10-u25-f4|term|What type of reaction forms one product from two or more reactants?|Combination
+y10-u25-f4|term|What type of compound usually forms when a metal reacts with a non-metal?|Ionic compound
+y10-u25-f4|term|What type of bonding commonly forms between non-metals?|Covalent bonding
+y10-u25-f4|short|What area of materials science is associated with Alan MacDiarmid’s work?|Plastics that can conduct electricity and their electronic applications.
+y10-u25-f5|term|What is a reaction in which a substance burns in oxygen called?|Combustion
+y10-u25-f5|term|What is a reaction in which one compound breaks into simpler substances called?|Decomposition
+y10-u25-f5|term|What is decomposition caused by heating called?|Thermal decomposition
+y10-u25-f5|short|Name the two products of complete hydrocarbon combustion.|Carbon dioxide and water.
+y10-u25-f5|short|Name one carbon-containing product that indicates incomplete combustion.|Carbon monoxide or carbon soot.
+y10-u25-f5|short|What are the usual products when a metal carbonate thermally decomposes?|A metal oxide and carbon dioxide.
+y10-u25-f6|term|What is the reaction between an acid and a base called?|Neutralisation
+y10-u25-f6|short|What are the products when an acid reacts with a metal hydroxide?|A salt and water.
+y10-u25-f6|short|What additional gas forms when an acid reacts with a metal carbonate?|Carbon dioxide.
+y10-u25-f6|short|What products form when hydrochloric acid reacts with sodium hydroxide?|Sodium chloride and water.
+y10-u25-f6|short|What are the three products when an acid reacts with a metal carbonate?|A salt, water and carbon dioxide.
+y10-u26-f1|term|What is one repeated back-and-forth motion about a fixed position called?|Oscillation
+y10-u26-f1|term|What is the number of oscillations per second called?|Frequency
+y10-u26-f1|term|What unit is used for frequency?|Hertz
+y10-u26-f1|term|What is the distance between corresponding repeating points on a wave called?|Wavelength
+y10-u26-f1|term|What is the maximum displacement of an oscillation from its equilibrium position called?|Amplitude
+y10-u26-f1|short|What do waves transfer overall: energy or matter?|Energy, without an overall transfer of matter.
+y10-u26-f1|short|What can happen to a material’s particles when it absorbs wave energy?|Their motion may increase, raising thermal energy.
+y10-u26-f2|term|What type of wave requires a material medium?|Mechanical wave
+y10-u26-f2|term|What type of wave has oscillations perpendicular to its direction of travel?|Transverse
+y10-u26-f2|term|What type of wave has oscillations parallel to its direction of travel?|Longitudinal
+y10-u26-f2|term|What property of sound is determined by frequency?|Pitch
+y10-u26-f2|short|Is sound a transverse or longitudinal mechanical wave?|Longitudinal.
+y10-u26-f2|short|Can sound travel through a vacuum?|No. It requires a material medium.
+y10-u26-f2|short|What happens to a sound’s pitch if its frequency increases?|The pitch rises.
+y10-u26-f2|short|What generally happens to loudness when the amplitude of a sound wave increases?|It increases.
+y10-u26-f2|short|In general, does sound travel fastest in solids, liquids or gases?|Solids, particularly stiff materials.
+y10-u26-f3|term|What kind of wave can travel without a material medium?|Electromagnetic wave
+y10-u26-f3|term|What is the complete range of electromagnetic radiation called?|Electromagnetic spectrum
+y10-u26-f3|short|Do radio waves and visible light travel at different speeds in a vacuum?|No. All electromagnetic waves have the same speed in a vacuum.
+y10-u26-f3|short|Is visible light transverse or longitudinal?|Transverse.
+y10-u26-f3|short|Name the electromagnetic waves at the longest-wavelength end of the spectrum.|Radio waves.
+y10-u26-f3|short|Name the electromagnetic waves at the shortest-wavelength end of the spectrum.|Gamma rays.
+y10-u26-f3|short|What medical imaging technique is associated with Paul Callaghan’s research area?|Magnetic resonance imaging, or MRI.
+y10-u26-f4|term|What is light passing through a material called?|Transmission
+y10-u26-f4|term|What is light bouncing back from a surface called?|Reflection
+y10-u26-f4|term|What is light being taken up by a material called?|Absorption
+y10-u26-f4|term|What is light changing direction when passing between different media called?|Refraction
+y10-u26-f4|short|What wavelengths are present in white visible light?|All visible wavelengths.
+y10-u26-f4|explain|Why can an object look red under white light?|It reflects or transmits red wavelengths more strongly than many other visible wavelengths.
+y10-u27-f1|term|What molecule carries an organism’s genetic information?|DNA
+y10-u27-f1|term|What is the shape of DNA called?|Double helix
+y10-u27-f1|term|What are the structures of organised DNA in the nucleus called?|Chromosomes
+y10-u27-f1|term|What is a section of DNA containing instructions for a protein or part of one called?|Gene
+y10-u27-f1|short|Where are chromosomes located in a typical plant or animal cell?|The nucleus.
+y10-u27-f1|short|What contribution is Rosalind Franklin associated with in understanding DNA?|Evidence about DNA’s structure that informed the double-helix model.
+y10-u27-f2|term|What large molecules help build structures and carry out tasks in cells?|Proteins
+y10-u27-f2|term|What protein is found in hair, nails and feathers?|Keratin
+y10-u27-f2|term|What type of protein speeds up chemical reactions in cells?|Enzyme
+y10-u27-f2|term|What type of protein helps protect the body against specific pathogens?|Antibody
+y10-u27-f2|short|What happens when a gene is active?|Its instructions are used to make its protein.
+y10-u27-f2|short|Are most traits influenced by one gene or many genes?|Many genes.
+y10-u27-f2|short|Name two functions of proteins in cells.|Building structures, transporting substances, speeding reactions or defending against disease.
+y10-u27-f3|term|What is an organism’s set of observable characteristics called?|Phenotype
+y10-u27-f3|short|What two broad influences interact to produce a phenotype?|Genetic information and the environment.
+y10-u27-f3|short|Name one environmental factor that can influence human height.|Nutrition.
+y10-u27-f3|short|What environmental condition can influence sex in tuatara?|Nest temperature.
+y10-u27-f3|explain|Why can two individuals with similar genes still develop different characteristics?|Their environments may differ and interact with their genetic information.
+y10-u27-f3|short|Is human height determined by nutrition alone?|No. It is influenced by genes and environmental factors including nutrition.
+y10-u27-f4|term|What describes differences in traits among members of a population?|Variation
+y10-u27-f4|term|What type of variation takes a range of measured values, such as height?|Continuous
+y10-u27-f4|term|What type of variable places blood groups into distinct groups?|Categorical
+y10-u27-f4|short|Is human height an example of continuous variation or distinct categories?|Continuous variation.
+y10-u27-f4|short|Is blood type usually recorded as a measured range or distinct categories?|Distinct categories.
+y10-u27-f4|short|Name one observable characteristic that could be measured in a variation study.|Height, mass, leaf length or another measurable trait.
+y10-u28-f1|term|What are nerve cells called?|Neurons
+y10-u28-f1|term|What are the brain and spinal cord together called?|Central nervous system
+y10-u28-f1|term|What system consists of nerves outside the brain and spinal cord?|Peripheral nervous system
+y10-u28-f1|term|Which main brain region is involved in conscious thought and voluntary actions?|Cerebrum
+y10-u28-f1|term|Which main brain region coordinates movement and balance?|Cerebellum
+y10-u28-f1|term|Which main brain region controls many automatic functions such as breathing?|Brainstem
+y10-u28-f1|short|Is a reflex a voluntary action or an automatic response?|An automatic response.
+y10-u28-f1|short|Name the two organs that form the central nervous system.|The brain and spinal cord.
+y10-u28-f2|term|What detects a change in the environment?|Receptor
+y10-u28-f2|term|What is a change in the environment that can be detected called?|Stimulus
+y10-u28-f2|term|What neuron carries information from a receptor towards the central nervous system?|Sensory neuron
+y10-u28-f2|term|What neuron carries signals from the central nervous system towards an effector?|Motor neuron
+y10-u28-f2|term|What produces a response, such as a muscle or gland?|Effector
+y10-u28-f2|short|Put receptor, effector, central nervous system and sensory neuron in order before a response, including a motor neuron.|Receptor → sensory neuron → central nervous system → motor neuron → effector.
+y10-u28-f2|short|Give one example of an effector.|A muscle or a gland.
+y10-u28-f2|short|What is the role of the brain and spinal cord in a response pathway?|To process information and coordinate the response.
+y10-u28-f3|term|What is regulation of body temperature called?|Thermoregulation
+y10-u28-f3|term|What is maintaining stable internal conditions called?|Homeostasis
+y10-u28-f3|term|What is the widening of blood vessels near the skin called?|Vasodilation
+y10-u28-f3|term|What is the narrowing of blood vessels near the skin called?|Vasoconstriction
+y10-u28-f3|short|Name two responses that help cool the body.|Sweating and vasodilation.
+y10-u28-f3|short|Name two responses that help conserve or produce thermal energy when cold.|Vasoconstriction and shivering.
+y10-u28-f3|short|Where are temperature changes detected for thermoregulation?|By temperature receptors in the skin and brain.
+y10-u28-f3|explain|Why does shivering help warm a person?|Muscle activity increases energy transfer to thermal energy.
+y10-u29-f1|term|What is force acting per unit area called?|Pressure
+y10-u29-f1|short|What happens to pressure in a liquid as depth increases?|It increases.
+y10-u29-f1|short|In which directions does a fluid exert pressure?|In all directions.
+y10-u29-f1|short|Does water pressure act only downwards?|No. It also acts sideways and upwards.
+y10-u29-f1|explain|Why does a diver experience greater water pressure at greater depth?|There is more weight of water above each unit area.
+y10-u29-f1|short|What produces atmospheric pressure?|The weight of air in Earth’s atmosphere.
+y10-u29-f1|short|Which experiences greater water pressure: a hole near the top or near the bottom of a tank?|The hole near the bottom.
+y10-u29-f1|explain|Why must a deep-water container withstand forces on its sides as well as its top?|The surrounding water exerts pressure in all directions.
+y10-u29-f2|term|What kind of system transfers forces using enclosed fluids?|Hydraulic system
+y10-u29-f2|term|What describes a system increasing output force compared with input force?|Mechanical advantage
+y10-u29-f2|short|Name one use of hydraulics in a vehicle.|Hydraulic brakes.
+y10-u29-f2|short|Why can hydraulics be useful for lifting a heavy load?|Pressure in an enclosed fluid can produce a larger output force on a larger area.
+y10-u29-f2|short|What does a mechanical advantage greater than one tell you about force?|The output force is larger than the input force.
+y10-u29-f2|short|At the same fluid pressure, which piston experiences the larger force: a larger-area or smaller-area piston?|The larger-area piston.
+y10-u29-f2|explain|How can a small input force produce a larger output force in a hydraulic system?|The input pressure is transmitted through the fluid and acts over a larger output area.
+y10-u29-f2|short|What substance carries pressure through a hydraulic system?|An enclosed fluid.
+y10-u29-f3|term|What is the upward force exerted by a fluid on an immersed object called?|Buoyancy
+y10-u29-f3|short|How does buoyant force compare with weight for an object floating at rest?|They are equal.
+y10-u29-f3|short|What happens when an object’s weight is greater than its buoyant force?|It sinks.
+y10-u29-f3|short|For equal displaced volumes, which produces more buoyant force: a denser or less dense fluid?|The denser fluid.
+y10-u29-f3|short|Does buoyancy act only on objects at the surface of a liquid?|No. It also acts on immersed objects.
+y10-u29-f3|short|What is the direction of an object’s weight?|Downwards.
+y10-u29-f3|explain|Why can the same object float more easily in a denser liquid?|A denser liquid provides a larger buoyant force for the same displaced volume.
+y10-u29-f3|short|What two forces must be compared to explain whether an object sinks or floats?|Weight and buoyant force.
+y10-u30-f1|term|What is the layer of gases around Earth called?|Atmosphere
+y10-u30-f1|term|What Earth sphere includes living organisms?|Biosphere
+y10-u30-f1|term|What Earth sphere includes its water stores?|Hydrosphere
+y10-u30-f1|term|What Earth sphere includes rocks and landforms?|Geosphere
+y10-u30-f1|short|Name the two most abundant gases in Earth’s atmosphere.|Nitrogen and oxygen.
+y10-u30-f2|term|What is the change from liquid water into water vapour called?|Evaporation
+y10-u30-f2|term|What is the change from water vapour into liquid droplets called?|Condensation
+y10-u30-f2|term|What is water falling from clouds as rain, snow, sleet or hail called?|Precipitation
+y10-u30-f2|short|What energy source drives evaporation in the water cycle?|The Sun.
+y10-u30-f2|explain|How can cooling moist air produce a cloud?|Water vapour condenses into tiny liquid droplets or forms ice crystals.
+y10-u30-f3|term|What word describes living or recently living parts of an ecosystem?|Biotic
+y10-u30-f3|term|What word describes physical non-living conditions such as light and temperature?|Abiotic
+y10-u30-f3|short|Why are mosses often found in damp shaded places?|Those conditions suit their survival and water needs.
+y10-u30-f3|short|Name one abiotic variable to measure when comparing a wetland and a dry grassland.|Water availability, soil moisture, light or temperature.
+y10-u30-f4|term|What is the loss of water vapour from plants called?|Transpiration
+y10-u30-f4|term|What process breaks down dead organisms and waste, returning nutrients?|Decomposition
+y10-u30-f4|short|Which plant structures absorb water from soil?|Roots.
+y10-u30-f4|short|Name two things soil stores that support plant growth.|Water and dissolved nutrients.
+y10-u30-f4|explain|How do soil microorganisms help keep nutrients available to plants?|They decompose dead matter and release nutrients back into the environment.
+y10-u30-f5|term|What is the Māori knowledge system called?|Mātauranga Māori
+y10-u30-f5|short|What does ngā tohu o te taiao refer to?|Signs of the natural world that can indicate environmental or seasonal patterns.
+y10-u30-f5|short|What kind of evidence underpins long-term local environmental knowledge?|Repeated observations of environmental patterns over time.
+y10-u30-f5|explain|Why can long-term local observations be useful when assessing ecosystem change?|They reveal patterns and changes that a short single visit may miss.
+y10-u30-f6|term|What is a prolonged shortage of water caused by low rainfall called?|Drought
+y10-u30-f6|short|Name two human actions that can disrupt freshwater availability.|Drainage, pollution or changes that increase runoff.
+y10-u30-f6|short|How can wetlands help regulate water movement?|They store water and slow its movement through the landscape.
+y10-u30-f6|explain|Why can restoring vegetation reduce erosion and support water availability?|Vegetation slows runoff and helps water infiltrate and remain in soil.
+y10-u30-f6|short|Name one action that can support ecosystem regeneration.|Conservation, habitat restoration or long-term resource management.
+y10-u31-f1|term|What is Earth’s crust and rigid upper mantle together called?|Lithosphere
+y10-u31-f1|term|What are the large moving pieces of Earth’s lithosphere called?|Tectonic plates
+y10-u31-f1|term|Who proposed the theory of continental drift?|Alfred Wegener
+y10-u31-f1|term|What type of mantle movement transfers energy and helps drive plate movement?|Convection
+y10-u31-f1|short|Approximately how fast do tectonic plates typically move?|A few centimetres per year.
+y10-u31-f1|short|What energy source drives convection in the mantle?|Thermal energy from Earth’s interior.
+y10-u31-f1|short|Why can small yearly plate movements still reshape Earth?|They accumulate over millions of years.
+y10-u31-f1|explain|How did plate tectonics develop from the earlier idea of continental drift?|Later evidence and explanations of moving plates extended and refined the earlier theory.
+y10-u31-f2|term|What type of boundary has plates moving towards each other?|Convergent
+y10-u31-f2|term|What type of boundary has plates moving apart?|Divergent
+y10-u31-f2|term|What type of boundary has plates sliding past each other?|Transform
+y10-u31-f2|term|What sudden event releases built-up stress along faults?|Earthquake
+y10-u31-f2|short|Can earthquakes occur at all three main types of plate boundary?|Yes.
+y10-u31-f2|short|At which two main boundary types do volcanoes commonly form?|Convergent and divergent boundaries.
+y10-u31-f2|short|Must every volcano be located at a plate boundary?|No. Volcanoes can also occur at hotspots or other intraplate locations.
+y10-u31-f2|explain|Why are many earthquakes and volcanoes arranged in belts around Earth?|Many occur along the edges of tectonic plates.
+y10-u31-f3|short|Give one example of a gradual Earth-system process.|Tectonic plate movement over long timescales.
+y10-u31-f3|short|Give one example of a sudden geological event.|An earthquake or volcanic eruption.
+y10-u31-f3|short|Do all changes in Earth systems happen at the same rate?|No. Some are gradual and others occur suddenly.
+y10-u31-f3|explain|Why should a geological hazard claim distinguish evidence from prediction?|Observations may support a claim without guaranteeing exactly what will happen next.
+y10-u31-f3|short|Can a few years of observation directly show every process operating over millions of years?|No. Long-term changes also require evidence from rocks, structures and other records.
+y10-u31-f3|explain|Why does slow plate movement not mean earthquake hazards are absent?|Stress can accumulate gradually and then be released suddenly.
+y10-u31-f3|short|What should accompany a claim about a possible natural hazard?|Evidence and a clear explanation of uncertainty.
+y10-u31-f3|short|Why should a model of plate movement state its timescale?|Movement that looks large in a model may represent millions of years.

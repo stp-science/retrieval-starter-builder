@@ -15,9 +15,12 @@ import { clarifyQuestion, isBareYesNoQuestion } from "../question-clarity";
 import { assertThinkingLinkingCoverage, buildThinkingLinkingKeywords } from "../thinking-linking-keywords";
 
 import curriculum from "./curriculum.json";
+import { staffQuestionBank, activityQuestions } from "./staff-question-bank";
+import { staffVisualPrompts } from "./visual-prompts";
 import { useTeacherHistory } from "./use-history";
 import { composeStarter, lastStarterQuestions } from "./history-selection";
 import "./staff.css";
+import "./studio.css";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -26,6 +29,9 @@ type Question = {
   id?: string;
   focusId?: string;
   statement?: string;
+  oneWord?: boolean;
+  clozeText?: string;
+  clozeAnswer?: string;
   q: string;
   a: string;
   difficulty: Difficulty;
@@ -73,6 +79,7 @@ type Topic = {
   optional?: boolean;
   focuses?: typeof curriculum.topics[number]["focuses"];
   oneWordQuestions?: Question[];
+  clozeQuestions?: Question[];
 };
 
 type ActivityId =
@@ -562,14 +569,12 @@ const yearGroupTopics: Topic[] = [
   ...scientificSkillsTopics,
 ];
 
-const curriculumTopics: Topic[] = curriculum.topics.map(t => ({
+const curriculumTopics: Topic[] = staffQuestionBank.map(t => ({
  id:t.id, year:t.year as YearGroup, name:t.title, strand:t.strand as Topic["strand"], keywords:t.keywords,
- optional:t.optional, focuses:t.focuses,
- questions:t.focuses.flatMap(f=>f.questions.map(q=>({id:q.id,focusId:f.id,statement:q.statement,q:q.prompt,a:q.answer,
- difficulty:(q.type==="cloze"?"foundation":/^(why|how|explain|compare)/i.test(q.prompt)?"stretch":"core") as Difficulty,
- kind:(q.type==="cloze"?"short":"explain") as QuestionKind}))),
- oneWordQuestions:t.focuses.flatMap(f=>f.questions.filter(q=>q.type==="cloze").map(q=>({id:q.id,focusId:f.id,statement:q.statement,q:q.prompt,a:q.answer,difficulty:"foundation" as Difficulty,kind:"short" as QuestionKind})))
+ optional:t.optional, focuses:t.focuses,questions:t.questions,oneWordQuestions:t.oneWordQuestions,clozeQuestions:t.clozeQuestions,
 }));
+
+const questionsForActivity = activityQuestions;
 
 const activities: { id: ActivityId; name: string; description: string; tag: string }[] = [
   { id: "quick-quiz", name: "Quick Quiz", description: "A balanced mix of short and explanation questions.", tag: "Flexible" },
@@ -833,6 +838,8 @@ function visualKeyword(answer: string, topic: Topic) {
 }
 
 function visualsForTopic(topic: Topic): Pick<VisualPrompt, "symbol" | "answer">[] {
+  const staffClues=staffVisualPrompts[topic.id];
+  if(staffClues)return staffClues.map(([symbol,answer])=>({symbol,answer}));
   const configured = topicVisuals[topic.id];
   if (configured?.length) return configured;
 
@@ -1030,7 +1037,7 @@ export default function Home() {
   function selectClass(name:string,classYear:number){staff.setClassName(name);chooseYear(classYear as YearGroup);}
   function requestGenerate(){
     if(!staff.ready||staff.saving||!selectedTopics.length)return;
-    const bank=curriculumTopics.flatMap(t=>[...t.questions,...focusedKnowledgePool([t])].map(q=>({...q,topicId:t.id})));
+    const bank=curriculumTopics.flatMap(t=>[...questionsForActivity(t,activity),...((activity==="brain-dump"||activity==="cops-robbers")?focusedKnowledgePool([t]):[])].map(q=>({...q,topicId:t.id})));
     const previous=lastStarterQuestions(bank,staff.history).map(q=>generated.find(g=>g.id===q.id)??q);
     if(usesQuestionActivity&&previous.length){setLastQuestions(previous);setRepeatIds([]);setIncludeNone(false);setReviewOpen(true);}else void generate([]);
   }
@@ -1042,11 +1049,12 @@ export default function Home() {
     focuses:t.focuses?.filter(f=>!focusId||f.id===focusId),
     questions:t.questions.filter(q=>!focusId||q.focusId===focusId),
     oneWordQuestions:t.oneWordQuestions?.filter(q=>!focusId||q.focusId===focusId),
+    clozeQuestions:t.clozeQuestions?.filter(q=>!focusId||q.focusId===focusId),
   })),[focusId,showOptional]);
   function historySelection<T extends GeneratedQuestion>(items:T[],n:number):T[]{return staff.select(items,n);}
   const yearTopics = useMemo(
     () => topics.filter((topic) => topic.year === year && (![11, 12, 13, "IB"].includes(year) || topic.course === course)),
-    [year, course],
+    [year, course, topics],
   );
   const courseLabel = year === 11 || year === 12 || year === 13 ? `Year ${year} ${course}` : year === "IB" ? `IB ${course}` : `Year ${year} Science`;
   const fileCourseLabel = courseLabel.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
@@ -1059,7 +1067,7 @@ export default function Home() {
     [generated],
   );
   const clozeItems = useMemo(
-    () => generated.map((question) => ({ ...question, ...makeCloze(question.statement || question.a) })),
+    () => generated.map((question) => ({ ...question, ...(question.clozeText?{text:question.clozeText,missing:question.clozeAnswer||question.a}:makeCloze(question.statement || question.a)) })),
     [generated],
   );
   const clozeWordBank = useMemo(
@@ -1154,6 +1162,7 @@ export default function Home() {
 
   function chooseActivity(nextActivity: ActivityId) {
     setActivity(nextActivity);
+    if(nonQuestionActivities.includes(nextActivity)&&!["brain-dump","cops-robbers"].includes(nextActivity))setFocusId("");
     if (nextActivity === "concept-map" && selected.length > 1) setSelected([selected[0]]);
     setGenerated([]);
     setKeywordSet([]);
@@ -1170,12 +1179,10 @@ export default function Home() {
   async function generate(repeats:GeneratedQuestion[] = []) {
     if (!selectedTopics.length||!staff.ready||staff.saving) return;
     const pool = selectedTopics.flatMap((topic) => {
-      const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
-        ? topic.oneWordQuestions
-        : topic.questions;
+      const activityQuestions = questionsForActivity(topic,activity);
       return activityQuestions.map((question) => ({ ...question, topicId: topic.id }));
     });
-    const suitable = pool.filter((question) => matchesLevel(question, activity === "question-chain" ? "balanced" : level));
+    const suitable = pool.filter((question) => matchesLevel(question, activity === "question-chain" || activity === "one-worders" || activity === "cloze-recall" ? "balanced" : level));
     const nonYesNoSuitable = suitable.filter((question) => !isYesNoQuestion(question.q));
     const oneWordPool = suitable.filter((question) => question.kind === "short" && !isYesNoQuestion(question.q));
     const placematPool = suitable
@@ -1192,7 +1199,7 @@ export default function Home() {
       : isFocusedKnowledge
       ? focusedKnowledgePool(selectedTopics)
       : activity === "one-worders"
-      ? (uniqueOneWordPool.length ? uniqueOneWordPool : nonYesNoSuitable)
+      ? uniqueOneWordPool
       : activity === "retrieval-placemat"
         ? (placematPool.length ? placematPool : suitable.map(openEndedPlacematQuestion))
         : suitable;
@@ -1248,10 +1255,11 @@ export default function Home() {
       })),
     ));
     const usesQuestions = !nonQuestionActivities.includes(activity)||isFocusedKnowledge;
+    if(["connect-four","retrieval-clock","retrieval-placemat"].includes(activity)&&finalResult.length<requested){staff.notify(`This activity needs ${requested} different questions. Only ${finalResult.length} are available with these choices. Select more content or choose a smaller activity.`);return;}
     if(usesQuestions && finalResult.length && !await staff.save(finalResult))return;
     if(usesQuestions && finalResult.length < requested){staff.notify(`This starter has ${finalResult.length} of ${requested} questions. Select more content, or click Generate starter again to choose repeats from the last starter.`);}
     setGenerated(usesQuestions ? finalResult : []);
-    setKeywordSet(usesQuestions ? [] : keywords.slice(0, 16));
+    setKeywordSet(usesQuestions ? [] : keywords.slice(0, activity === "back-to-back" ? requested : 16));
     setVisualSet(usesQuestions ? [] : visuals.slice(0, fixedPromptCounts["picture-prompts"]));
     setListPromptSet(buildListPrompts(selectedTopics, listPromptSet));
     setShowAnswers(activity === "flashcard-sprint");
@@ -1270,11 +1278,9 @@ export default function Home() {
     const pool = (isFocusedKnowledge
       ? focusedKnowledgePool(selectedTopics)
       : selectedTopics.flatMap((topic) => {
-        const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
-          ? topic.oneWordQuestions
-          : topic.questions;
+        const activityQuestions = questionsForActivity(topic,activity);
         return activityQuestions
-          .filter((question) => matchesLevel(question, level))
+          .filter((question) => matchesLevel(question, activity === "one-worders" || activity === "cloze-recall" ? "balanced" : level))
           .filter((question) => activity !== "one-worders" || (question.kind === "short" && !isYesNoQuestion(question.q)))
           .filter((question) => activity !== "retrieval-placemat" || question.kind === "explain")
           .map((question) => ({ ...question, topicId: topic.id }))
@@ -1579,7 +1585,7 @@ export default function Home() {
       return [heading, topicLine, activityInstructions[activity], "", "Questions", ...questions, "", "Answer bank", ...answers].join("\n");
     }
     if (activity === "cloze-recall") {
-      return [heading, topicLine, activityInstructions[activity], "", `Word bank: ${clozeWordBank.join(" • ")}`, "", ...clozeItems.map((item, index) => `${index + 1}. ${item.q}\nIncomplete answer: ${item.text}\nFull answer: ${item.a}`)].join("\n");
+      return [heading, topicLine, activityInstructions[activity], "", `Word bank: ${clozeWordBank.join(" • ")}`, "", ...clozeItems.map((item, index) => `${index + 1}. Complete the scientific statement.\n${item.text}\nFull answer: ${item.a}`)].join("\n");
     }
     if (activity === "question-chain") {
       const chain = [...generated].sort((left, right) => difficultyRank[left.difficulty] - difficultyRank[right.difficulty]);
@@ -1944,7 +1950,7 @@ export default function Home() {
         content.push(
           grid([{ children: [para(`WORD BANK  •  ${clozeWordBank.join("  •  ")}`, { bold: true, center: true, color: "365F72", size: 17, after: 0 })], fill: "EEF4F7" }], 1),
           para("", { after: 60 }),
-          grid(clozeItems.map((item, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para(item.q, { bold: true, size: 17 }), para(`Incomplete answer: ${item.text}`, { size: 19 }), ...(showAnswers ? [para(`Full answer: ${item.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2),
+          grid(clozeItems.map((item, index) => ({ children: [para(`${index + 1}`, { bold: true, color: "CF082B", size: 15 }), para("Complete the scientific statement.", { bold: true, size: 17 }), para(`Incomplete answer: ${item.text}`, { size: 19 }), ...(showAnswers ? [para(`Full answer: ${item.a}`, { color: "365F72", bold: true, size: 16 })] : [])] })), 2),
         );
       } else if (activity === "flashcard-sprint") {
         content.push(grid(generated.map((question, index) => ({ children: [
@@ -2047,13 +2053,13 @@ export default function Home() {
     || (activity === "cops-robbers" && knowledgeFocus === "focused");
 
   return (
-    <main>
+    <main className="staff-studio">
       <header className="topbar">
         <a className="brand" href="#top" aria-label="St Peter's Cambridge retrieval starter builder home">
           <img className="brand-crest" src="../stpeters-crest.webp" alt="St Peter's Cambridge owl crest" />
           <span className="brand-wordmark">
             <strong>St Peter&apos;s Cambridge</strong>
-            <small>Retrieval Starter Builder · Staff 2027</small>
+            <small>Science retrieval · Staff workspace 2027</small>
           </span>
         </a>
         <div className="topbar-actions">
@@ -2068,8 +2074,9 @@ export default function Home() {
       <section className="hero" id="top">
         <div>
           <p className="eyebrow">St Peter&apos;s Science</p>
-          <h1>Build a purposeful starter<br />in under a minute.</h1>
-          <p className="hero-copy">Choose the course content students have learned. Select the new 2027 curriculum in teaching order. Create a starter, remember what each class has used and revisit tricky knowledge.</p>
+          <h1>Your next science starter.</h1>
+          <p className="studio-meta">Years 7–10 <span>31 topics</span><span>{curriculumTopics.reduce((sum,topic)=>sum+topic.questions.length,0)} direct questions</span></p>
+          <p className="hero-copy">Choose your class, select previously taught content and create a ready-to-use activity.</p>
         </div>
         <div className="hero-stat" aria-label="Question bank size">
           <strong>{curriculumTopics.reduce((sum, topic) => sum + topic.questions.length, 0)}</strong>
@@ -2094,7 +2101,7 @@ export default function Home() {
         <div className="repeat-dialog-list">{lastQuestions.map(q=><article key={q.id}><label className="repeat-choice"><input type="checkbox" checked={repeatIds.includes(q.id||"")} disabled={staff.saving||(!repeatIds.includes(q.id||"")&&repeatIds.length>=questionLimit)} onChange={e=>toggleRepeat(q.id||"",e.target.checked)}/><span>{q.q}<small>{curriculumTopics.find(t=>t.id===q.topicId)?.name}</small></span></label><details><summary>Answer</summary>{q.a}</details></article>)}</div>
         <label className="repeat-choice include-none"><input type="checkbox" checked={includeNone} disabled={staff.saving} onChange={e=>{setIncludeNone(e.target.checked);setRepeatIds([]);}}/><span>Don’t include any<small>Use new questions only.</small></span></label>
         <p className="bank-note" role="status">{repeatIds.length} selected · up to {questionLimit} questions in this starter. {staff.saving?"Saving your starter…":""}</p>
-        <p className="bank-note" role="status">{staff.message.startsWith("Could not save")?staff.message:""}</p><div className="repeat-dialog-actions"><button type="button" disabled={staff.saving} onClick={()=>setReviewOpen(false)}>Cancel</button><button type="button" className="generate-button" disabled={staff.saving||(!includeNone&&!repeatIds.length)} onClick={()=>void generate(includeNone?[]:lastQuestions.filter(q=>repeatIds.includes(q.id||"")))}>Generate starter</button></div>
+        <p className="bank-note" role="status">{/^(Could not save|This activity needs)/.test(staff.message)?staff.message:""}</p><div className="repeat-dialog-actions"><button type="button" disabled={staff.saving} onClick={()=>setReviewOpen(false)}>Cancel</button><button type="button" className="generate-button" disabled={staff.saving||(!includeNone&&!repeatIds.length)} onClick={()=>void generate(includeNone?[]:lastQuestions.filter(q=>repeatIds.includes(q.id||"")))}>Generate starter</button></div>
       </dialog>
 
       <div className="workspace" data-class-history="true" inert={staff.classesReady&&(!staff.classes.length||manageClasses)}>
@@ -2149,7 +2156,7 @@ export default function Home() {
               </label>
             ))}
           </div>
-          <label className="focus-option"><span>Learning focus</span><select value={focusId} onChange={e=>{setFocusId(e.target.value);setGenerated([]);}}><option value="">All focuses in selected topics</option>{curriculumTopics.filter(t=>selected.includes(t.id)).map(t=><optgroup key={t.id} label={t.name}>{t.focuses?.map(f=><option key={f.id} value={f.id}>Focus {f.number}: {f.title}</option>)}</optgroup>)}</select></label>
+          <label className="focus-option"><span>Learning focus</span><select value={focusId} disabled={nonQuestionActivities.includes(activity)&&!(["brain-dump","cops-robbers"].includes(activity)&&knowledgeFocus==="focused")} onChange={e=>{setFocusId(e.target.value);setGenerated([]);}}><option value="">All focuses in selected topics</option>{curriculumTopics.filter(t=>selected.includes(t.id)).map(t=><optgroup key={t.id} label={t.name}>{t.focuses?.map(f=><option key={f.id} value={f.id}>Focus {f.number}: {f.title}</option>)}</optgroup>)}</select></label>
           <p className="bank-note">Click Generate starter to choose any questions to repeat from this class’s last starter. The remaining questions will be new.</p>
 
           <div className="divider" />
@@ -2164,6 +2171,9 @@ export default function Home() {
             <b aria-hidden="true">→</b>
           </button>
 
+          <label className="format-picker"><span>Activity format</span><select value={activity} onChange={e=>chooseActivity(e.target.value as ActivityId)}>{activities.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+          <p className="selected-format-description">{activities.find(item=>item.id===activity)?.description}</p>
+          <details className="format-browser"><summary>Browse all {activities.length} activity formats</summary>
           <div className="activity-grid">
             {activities.map((item) => (
               <button key={item.id} className={`activity-card ${activity === item.id ? "selected" : ""}`} onClick={() => chooseActivity(item.id)}>
@@ -2173,11 +2183,12 @@ export default function Home() {
               </button>
             ))}
           </div>
+          </details>
 
           {(activity === "brain-dump" || activity === "cops-robbers") && (
             <label className="focus-option">
               <span>Knowledge focus</span>
-              <select value={knowledgeFocus} onChange={(event) => setKnowledgeFocus(event.target.value as KnowledgeFocus)}>
+              <select value={knowledgeFocus} onChange={(event) => {setKnowledgeFocus(event.target.value as KnowledgeFocus);setFocusId("");setGenerated([]);setKeywordSet([]);}}>
                 <option value="focused">Focused concept prompts</option>
                 <option value="whole-topic">Whole topics</option>
               </select>
@@ -2187,14 +2198,14 @@ export default function Home() {
 
           <div className="options-row">
             <label>
-              <span>Number of prompts</span>
+              <span>{nonQuestionActivities.includes(activity)?"Number of prompts":"Number of questions"}</span>
               <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "retrieval-relay", "list-it", "concept-map", "retrieval-placemat", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "whole-topic")}>
                 {[4, 6, 8, 10, 12, 16].map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </label>
             <label>
               <span>Challenge</span>
-              <select value={level} onChange={(event) => setLevel(event.target.value as "balanced" | Difficulty)} disabled={nonQuestionActivities.includes(activity) || activity === "question-chain"}>
+              <select value={level} onChange={(event) => setLevel(event.target.value as "balanced" | Difficulty)} disabled={nonQuestionActivities.includes(activity) || ["question-chain","one-worders","cloze-recall"].includes(activity)}>
                 <option value="balanced">Balanced mix</option>
                 <option value="foundation">Build confidence</option>
                 <option value="core">Core knowledge</option>
@@ -2214,25 +2225,22 @@ export default function Home() {
           <div className="preview-topline">
             <div><span className="live-dot" /> Classroom preview</div>
             {hasOutput && (
-              <div className="preview-actions">
-                <button onClick={copyOutput}>{copied ? "Copied!" : "Copy text"}</button>
-                {generated.length > 0 && <button onClick={openCustomQuestion}>Write your own question</button>}
-                {generated.length > 0 && <button className="flag-toolbar-button" onClick={() => openFlagQuestion(0)}>Flag a question</button>}
-                <button className="fullscreen-button" onClick={enterPresentationMode}>Full screen</button>
-                <button onClick={printOutput}>Print</button>
-                <button className="word-button" onClick={downloadWord} disabled={downloadingWord}>
-                  {downloadingWord ? "Preparing Word…" : wordDownloadError ? "Try Word again" : "Download Word"}
-                </button>
-                <button className="download-button" onClick={downloadPdf} disabled={downloading}>
-                  {downloading ? "Preparing PDF…" : downloadError ? "Try download again" : "Download PDF"}
-                </button>
+              <div className="preview-tools">
+                <button className="fullscreen-button" onClick={enterPresentationMode}>Present</button>
+                {generated.length>0&&<details className="toolbar-menu"><summary>Edit</summary><div className="preview-actions edit-actions"><button onClick={openCustomQuestion}>Write your own question</button><button className="flag-toolbar-button" onClick={()=>openFlagQuestion(0)}>Flag a question</button></div></details>}
+                <details className="toolbar-menu export-menu"><summary>Export</summary><div className="preview-actions export-actions">
+                  <button onClick={copyOutput}>{copied?"Copied!":"Copy text"}</button>
+                  <button onClick={printOutput}>Print</button>
+                  <button className="word-button" onClick={downloadWord} disabled={downloadingWord}>{downloadingWord?"Preparing Word…":wordDownloadError?"Try Word again":"Download Word"}</button>
+                  <button className="download-button" onClick={downloadPdf} disabled={downloading}>{downloading?"Preparing PDF…":downloadError?"Try download again":"Download PDF"}</button>
+                </div></details>
               </div>
             )}
           </div>
 
           {!hasOutput ? (
             <div className="empty-preview">
-              <div className="paper-stack" aria-hidden="true"><span /><span /><span>?</span></div>
+              <div className="empty-mark" aria-hidden="true">▤</div>
               <h2>Your starter will appear here</h2>
               <p>Select the topics pupils have learned, choose an activity and generate a ready-to-use task.</p>
               <div className="empty-tip"><strong>Good retrieval is effortful.</strong> Keep notes closed, allow thinking time, then give feedback.</div>
@@ -2433,7 +2441,7 @@ export default function Home() {
                       <div key={item.q}>
                         <span>{index + 1}</span>
                         {questionActions(index)}
-                        <strong className="cloze-context">{item.q}</strong>
+                        <strong className="cloze-context">Complete the scientific statement.</strong>
                         <p><small>Incomplete answer</small>{item.text}</p>
                         {showAnswers && <em>Full answer: {item.a}</em>}
                       </div>
@@ -2541,7 +2549,7 @@ export default function Home() {
               <footer><span>From memory first</span><span>Check • Correct • Improve</span></footer>
             </article>
             </div>
-            <details className="teacher-guide" open>
+            <details className="teacher-guide">
               <summary>
                 <span><strong>Teacher guide</strong><small>For the current activity</small></span>
                 <b>{teacherGuides[activity].time}</b>

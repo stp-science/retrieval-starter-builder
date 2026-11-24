@@ -283,7 +283,7 @@ export default function SiteExperienceEnhancer() {
     let duplicateSwapBudget = 0;
 
     const installScienceArtwork = () => {
-      if (disposed) return;
+      if (disposed || document.querySelector(".staff-studio")) return;
       const hero = document.querySelector<HTMLElement>(".hero");
       if (hero && !hero.querySelector("[data-science-hero-art]")) {
         const image = document.createElement("img");

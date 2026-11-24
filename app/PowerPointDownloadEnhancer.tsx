@@ -612,22 +612,17 @@ export default function PowerPointDownloadEnhancer() {
 
     const installButton = () => {
       if (disposed) return;
-      const actions = document.querySelector<HTMLElement>(".preview-actions");
+      const actions = (document.querySelector<HTMLElement>(".export-actions") ?? document.querySelector<HTMLElement>(".preview-actions"));
       if (!actions) return;
 
-      if (document.querySelector(".starter-sheet.activity-flashcard-sprint")) {
-        actions.querySelector<HTMLButtonElement>("[data-powerpoint-download]")?.remove();
-        return;
-      }
       if (actions.querySelector("[data-powerpoint-download]")) return;
 
       const buttons = Array.from(actions.querySelectorAll<HTMLButtonElement>("button"));
-      const wordButton = buttons.find((button) => button.textContent?.includes("Word"));
       const pdfButton = buttons.find((button) => button.textContent?.includes("PDF"));
       const button = document.createElement("button");
       button.type = "button";
       button.dataset.powerpointDownload = "true";
-      button.className = wordButton?.className || "word-button";
+      button.className = "powerpoint-button";
       button.textContent = "Download PowerPoint";
       button.setAttribute("aria-label", "Download an editable classroom PowerPoint slide for this activity");
       button.addEventListener("click", handlePowerPointClick);

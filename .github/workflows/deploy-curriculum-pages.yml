@@ -35,6 +35,9 @@ jobs:
       - name: Check activity wiring
         run: node --test tests/activity-integrity.test.mjs tests/class-retrieval.test.mjs
 
+      - name: Check 2027 question formats and activity behaviour
+        run: npm run test:2027
+
       - name: Build static site
         run: npx next build
 

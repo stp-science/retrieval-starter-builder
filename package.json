@@ -16,7 +16,8 @@
     "test": "npm run audit:junior-guides && npm run audit:year12-chemistry && npm run audit:questions && npm run build && node --test tests/rendered-html.test.mjs",
     "validate:artifact": "bash scripts/validate-artifact.sh",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "test:2027": "node --import tsx --test tests/class-retrieval.test.mjs tests/staff-question-bank.test.mjs tests/staff-activities.test.mjs"
   },
   "dependencies": {
     "docx": "^9.7.1",
@@ -38,6 +39,7 @@
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
+    "jsdom": "^31.0.1",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
