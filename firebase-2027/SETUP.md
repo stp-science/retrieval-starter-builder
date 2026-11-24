@@ -40,3 +40,9 @@ The Firestore emulator compiles the prototype rules. Live Google OAuth and the s
 ## Original-layout restoration
 
 The live 2027 route is now implemented in `app/2027/page.tsx`, sharing the original global styles and export enhancers. Its active question bank is `app/2027/curriculum.json`; the old standalone `public/2027/index.html` entrypoint has been removed. Public `config.js` and `firebase-store.js` are still used for Firebase setup. Run `node --test tests/staff-2027.test.mjs` after a static build to verify catalogue parity and curriculum coverage. Fixed-size boards require sufficient matching questions; the builder asks teachers to select more topics instead of producing incomplete boards.
+
+## Named class setup and history
+
+Publish the updated `firestore.rules` along with the app changes before enabling sign-in. Each teacher creates named classes (for example 9PL and 9SG) on their first visit after sign-in. Class documents store only `name` and `year` at `teachers/{uid}/classes/{classId}`. The class ID is the encoded, normalised name. Teachers select one class before generating; new questions are saved automatically, and repeats must be selected explicitly. Deleting a class from Manage classes confirms and deletes that class document and its question history.
+
+When `public/2027/config.js` has `firebaseConfig = null`, setup and histories work in a device-only preview. Google sign-in and cross-device class lists require the school Firebase configuration and the updated deployed rules.

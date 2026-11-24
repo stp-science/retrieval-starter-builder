@@ -16,6 +16,7 @@ import { assertThinkingLinkingCoverage, buildThinkingLinkingKeywords } from "../
 
 import curriculum from "./curriculum.json";
 import { useTeacherHistory } from "./use-history";
+import { composeStarter } from "./history-selection";
 import "./staff.css";
 
 type Difficulty = "foundation" | "core" | "stretch";
@@ -971,7 +972,12 @@ export default function Home() {
   const [count, setCount] = useState(8);
   const [level, setLevel] = useState<"balanced" | Difficulty>("balanced");
   const [knowledgeFocus, setKnowledgeFocus] = useState<KnowledgeFocus>("focused");
-  const [generated, setGenerated] = useState<GeneratedQuestion[]>([]);
+  const [draftQuestions, setGenerated] = useState<GeneratedQuestion[]>([]);
+  const [repeatQuestions,setRepeatQuestions] = useState<GeneratedQuestion[]>([]);
+  const [manageClasses,setManageClasses] = useState(false);
+  const [newClassName,setNewClassName] = useState("");
+  const [newClassYear,setNewClassYear] = useState(9);
+  const [deleteClassName,setDeleteClassName] = useState<string|null>(null);
   const [keywordSet, setKeywordSet] = useState<string[]>([]);
   const [visualSet, setVisualSet] = useState<VisualPrompt[]>([]);
   const [listPromptSet, setListPromptSet] = useState<ListPrompt[]>([]);
@@ -1011,12 +1017,27 @@ export default function Home() {
   const [focusId,setFocusId] = useState("");
   const [showOptional,setShowOptional] = useState(false);
   const staff = useTeacherHistory();
+  const questionLimit = fixedPromptCounts[activity] ?? (activity === "quiz-quiz-trade" ? Math.min(count,12) : count);
+  const generated = composeStarter(draftQuestions,repeatQuestions,questionLimit);
+  useEffect(()=>{if(staff.classesReady&&!staff.classes.length)setManageClasses(true);},[staff.classesReady,staff.classes.length]);
+  useEffect(()=>{setRepeatQuestions([]);setGenerated([]);setKeywordSet([]);setVisualSet([]);setListPromptSet([]);setShowAnswers(false);setRevealedRoulette(new Set());},[staff.className,staff.user?.uid,year,activity,focusId,selected.join(",")]);
+  async function addNamedClass(event:FormEvent){event.preventDefault();if(await staff.addClass(newClassName,newClassYear))setNewClassName("");}
+  function selectClass(name:string,classYear:number){staff.setClassName(name);chooseYear(classYear as YearGroup);}
+  async function toggleRepeat(q:GeneratedQuestion,checked:boolean){
+    if(!checked){setRepeatQuestions(current=>current.filter(r=>r.id!==q.id));return;}
+    if(repeatQuestions.length>=questionLimit){staff.notify("Untick a repeated question before selecting another.");return;}
+    if(await staff.save([q])){setRepeatQuestions(current=>[...current,q]);setShowAnswers(false);setRevealedRoulette(new Set());}
+  }
   const topics = useMemo(() => curriculumTopics.filter(t=>showOptional||!t.optional).map(t=>({...t,
     focuses:t.focuses?.filter(f=>!focusId||f.id===focusId),
     questions:t.questions.filter(q=>!focusId||q.focusId===focusId),
     oneWordQuestions:t.oneWordQuestions?.filter(q=>!focusId||q.focusId===focusId),
   })),[focusId,showOptional]);
   const browsableQuestions = selectedTopicsForBank();
+  const previousQuestions = browsableQuestions.filter((q,i,all)=>q.id&&all.findIndex(x=>x.id===q.id)===i&&staff.history[q.id]?.count>0&&(!draftQuestions.some(x=>x.id===q.id)||repeatQuestions.some(x=>x.id===q.id)))
+    .filter(q=>matchesLevel(q,level)&&(activity!=="one-worders"||(q.kind==="short"&&!isYesNoQuestion(q.q))))
+    .filter(q=>activity!=="retrieval-placemat"||q.kind==="explain")
+    .sort((a,b)=>(staff.history[b.id||""]?.lastUsed||0)-(staff.history[a.id||""]?.lastUsed||0));
   function selectedTopicsForBank(){return topics.filter(t=>selected.includes(t.id)).flatMap(t=>[...t.questions,...focusedKnowledgePool([t])].map(q=>({...q,topicId:t.id})));}
   function historySelection<T extends GeneratedQuestion>(items:T[],n:number):T[]{return staff.select(items,n);}
   const yearTopics = useMemo(
@@ -1142,9 +1163,9 @@ export default function Home() {
     if (nextActivity === "question-chain") setLevel("balanced");
   }
 
-  function generate() {
-    if (!selectedTopics.length) return;
-    staff.notify("Starter ready. Mark it as used after teaching. History remains on this device until Firebase is connected.");
+  async function generate() {
+    if (!selectedTopics.length||!staff.ready||staff.saving) return;
+    setRepeatQuestions([]);
     const pool = selectedTopics.flatMap((topic) => {
       const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
         ? topic.oneWordQuestions
@@ -1176,13 +1197,6 @@ export default function Home() {
       ? Math.min(count, 12)
       : count);
     const result: GeneratedQuestion[] = historySelection(source,requested);
-    if(["connect-four","retrieval-clock","retrieval-placemat"].includes(activity) && result.length<requested){
-      setGenerated([]);setKeywordSet([]);setVisualSet([]);setListPromptSet([]);
-      staff.notify(`This activity needs ${requested} different questions. Only ${result.length} match your topics and history filters. Select more topics or change the filters.`);return;
-    }
-    if(!isWholeTopicKnowledge && !nonQuestionActivities.includes(activity) && !result.length){
-      setGenerated([]);setKeywordSet([]);setVisualSet([]);setListPromptSet([]);staff.notify("No questions match these history filters. Choose more topics or another question selection.");return;
-    }
     const keywords = activity === "thinking-linking"
       ? buildThinkingLinkingKeywords(selectedTopics, Math.min(16, 2*Math.floor(new Set(selectedTopics.flatMap(t=>t.keywords)).size/2)))
       : shuffled(selectedTopics.flatMap((topic) => topic.keywords));
@@ -1228,8 +1242,10 @@ export default function Home() {
         keyword: visualKeyword(prompt.answer, topic),
       })),
     ));
-    if(finalResult.length < requested && !nonQuestionActivities.includes(activity)){staff.notify(`Only ${finalResult.length} questions match this activity and your history filters. Select more topics or change the filters for a fuller starter.`);}
-    setGenerated(finalResult);
+    const usesQuestions = !nonQuestionActivities.includes(activity)||isFocusedKnowledge;
+    if(usesQuestions && finalResult.length && !await staff.save(finalResult))return;
+    if(usesQuestions && finalResult.length < requested){staff.notify(`There are ${finalResult.length} new questions left for this class in the selected content. Select more content or tick previously used questions below to revisit them.`);}
+    setGenerated(usesQuestions ? finalResult : []);
     setKeywordSet(keywords.slice(0, 16));
     setVisualSet(visuals.slice(0, fixedPromptCounts["picture-prompts"]));
     setListPromptSet(buildListPrompts(selectedTopics, listPromptSet));
@@ -1238,7 +1254,8 @@ export default function Home() {
     setCopied(false);
   }
 
-  function replaceQuestion(index: number) {
+  async function replaceQuestion(index: number) {
+    if(!staff.ready||staff.saving)return;
     const currentQuestion = generated[index];
     if (!currentQuestion) return;
     const used = new Set(generated.map((question) => question.q));
@@ -1258,15 +1275,17 @@ export default function Home() {
           .map((question) => activity === "retrieval-placemat" ? openEndedPlacematQuestion(question) : question);
       }))
       .map(addYesNoExplanation);
-    const canUse = (question: GeneratedQuestion) => !used.has(question.q)
+    const canUse = (question: GeneratedQuestion) => !used.has(question.q) && staff.matches(question)
       && (activity !== "match-up" || !usedAnswers.has(question.a.trim().toLowerCase()));
     const sameTopic = pool.filter((question) => question.topicId === currentQuestion.topicId && canUse(question));
     const anyTopic = pool.filter(canUse);
     const replacement = activity === "question-chain"
       ? [...sameTopic].sort((left, right) => relatedness(right, generated) - relatedness(left, generated))[0]
       : historySelection(sameTopic,1)[0] ?? historySelection(anyTopic,1)[0];
-    if (!replacement) return;
-    setGenerated((current) => current.map((question, questionIndex) => questionIndex === index ? replacement : question));
+    if (!replacement){staff.notify("No more new questions match. Choose more content or tick a previously used question.");return;}
+    if(!await staff.save([replacement]))return;
+    setRepeatQuestions(current=>current.filter(q=>q.id!==currentQuestion.id));
+    setGenerated(generated.map((question, questionIndex) => questionIndex === index ? replacement : question));
     setShowAnswers(activity === "flashcard-sprint");
     setRevealedRoulette((current) => {
       const next = new Set(current);
@@ -1501,7 +1520,7 @@ export default function Home() {
     return (
       <div className="question-controls">
         <button type="button" className="swap-button" onClick={() => replaceQuestion(index)}>Swap</button>
-        {generated[index]?.id && <button type="button" className="revisit-button" onClick={()=>staff.flag(generated[index])}>{staff.history[generated[index].id||""]?.revisit?"Revisit ✓":"Revisit"}</button>}
+
         <button type="button" className="flag-button" onClick={() => openFlagQuestion(index)} aria-label={`Flag question ${index + 1} for review`}>Flag</button>
       </div>
     );
@@ -2032,7 +2051,7 @@ export default function Home() {
           </span>
         </a>
         <div className="topbar-actions">
-          <button className="staff-login" onClick={staff.login}>{staff.user ? "Sign out" : "Sign in with Google"}</button><span className="beta-pill">2027 · {curriculumTopics.reduce((sum, topic) => sum + topic.questions.length, 0).toLocaleString()}-question bank</span>
+          <button className="staff-login" disabled={staff.saving} onClick={staff.login}>{staff.user ? "Sign out" : "Sign in with Google"}</button><span className="beta-pill">2027 · {curriculumTopics.reduce((sum, topic) => sum + topic.questions.length, 0).toLocaleString()}-question bank</span>
           <button type="button" className="general-feedback-button" onClick={openGeneralFeedback} aria-haspopup="dialog" aria-label="Send site feedback or report a problem">
             <span className="feedback-button-icon" aria-hidden="true">!</span>
             <span className="feedback-button-copy"><strong>Feedback &amp; help</strong><small>Report a problem or suggest an improvement</small></span>
@@ -2048,11 +2067,21 @@ export default function Home() {
         </div>
         <div className="hero-stat" aria-label="Question bank size">
           <strong>{curriculumTopics.reduce((sum, topic) => sum + topic.questions.length, 0)}</strong>
-          <span>checked prompts</span>
+          <span>questions</span>
         </div>
       </section>
 
-      <div className="workspace">
+      {staff.classesReady && (!staff.classes.length||manageClasses) && <div className="class-setup-backdrop"><section className="class-setup" role="dialog" aria-modal="true" aria-labelledby="class-setup-title">
+        <p className="eyebrow">Your teaching groups</p><h2 id="class-setup-title">{staff.classes.length?"Manage your classes":"Set up your classes"}</h2>
+        <p>Give each class its own name, such as 9PL or 10SG. Question history is saved separately for every class.</p>
+        <form onSubmit={addNamedClass}><label>Class name<input autoFocus required maxLength={60} value={newClassName} placeholder="e.g. 9PL" onChange={e=>setNewClassName(e.target.value)} disabled={staff.saving}/></label><label>Year group<select value={newClassYear} onChange={e=>setNewClassYear(Number(e.target.value))} disabled={staff.saving}>{[7,8,9,10].map(y=><option key={y} value={y}>Year {y}</option>)}</select></label><button type="submit" disabled={staff.saving||!newClassName.trim()}>Add class</button></form>
+        <ul className="managed-classes">{staff.classes.map(c=><li key={c.name}><span><strong>{c.name}</strong> · Year {c.year}</span><button type="button" disabled={staff.saving} onClick={()=>setDeleteClassName(c.name)}>Delete</button></li>)}</ul>
+        {deleteClassName&&<div className="delete-class-confirm" role="alert"><p>Delete <strong>{deleteClassName}</strong> and its question history? This cannot be undone.</p><button disabled={staff.saving} onClick={async()=>{if(await staff.deleteClass(deleteClassName))setDeleteClassName(null);}}>Delete class and history</button><button disabled={staff.saving} onClick={()=>setDeleteClassName(null)}>Cancel</button></div>}
+        <p role="status" className="bank-note">{staff.message}</p>
+        <button type="button" className="generate-button" disabled={!staff.classes.length||staff.saving||!!deleteClassName} onClick={()=>setManageClasses(false)}>Done · go to starter builder</button>
+      </section></div>}
+
+      <div className="workspace" inert={staff.classesReady&&(!staff.classes.length||manageClasses)}>
         <section className="builder-panel" aria-label="Starter builder">
           <div className="step-heading">
             <span className="step-number">1</span>
@@ -2060,8 +2089,11 @@ export default function Home() {
           </div>
 
           <div className="staff-status" role="status">{staff.message}</div>
-          <div className="staff-settings"><label>Class group<input value={staff.className} maxLength={60} onChange={e=>{staff.setClassName(e.target.value);setGenerated([]);}} placeholder="e.g. 7SCI A" /></label>
-          <label>Question selection<select value={staff.mode} onChange={e=>staff.setMode(e.target.value)}><option value="fresh">Unused first, then oldest used</option><option value="unused">Unused only</option><option value="used">Previously used</option><option value="revisit">Revisit next time</option><option value="all">Any question</option></select></label></div>
+          <div className="class-picker">
+            <div className="class-picker-heading"><strong>Select your class</strong><button type="button" className="text-button" onClick={()=>setManageClasses(true)}>Manage classes</button></div>
+            {!staff.className&&<p>Select a class before generating a starter.</p>}
+            <div className="class-choices">{staff.classes.map(c=><label key={c.name} className={staff.className===c.name?"selected":""}><input type="radio" name="starter-class" checked={staff.className===c.name} disabled={staff.saving} onChange={()=>selectClass(c.name,c.year)}/><span>{c.name}<small>Year {c.year}</small></span></label>)}</div>
+          </div>
           <label className="staff-optional"><input type="checkbox" checked={showOptional} onChange={e=>{setShowOptional(e.target.checked);setSelected([]);setFocusId("");}}/> Include optional topics</label>
           <div className="year-tabs" role="group" aria-label="Year group">
             {([7, 8, 9, 10] as YearGroup[]).map((item) => (
@@ -2096,14 +2128,17 @@ export default function Home() {
                 <input type="checkbox" checked={selected.includes(topic.id)} onChange={() => toggleTopic(topic.id)} />
                 <span className={`strand-dot ${topic.strand.toLowerCase()}`} />
                 <span className="topic-name">{topic.name}{topic.programme && topic.programme !== "IB" && <small>{topic.programme}</small>}{topic.standard && <small>{topic.programme === "IB" ? `${topic.standard} • ${topic.level}` : `${topic.standard} • External`}</small>}</span>
-                <span className="question-count">{topic.questions.length} starter prompts</span>
+                <span className="question-count">{topic.questions.length} questions</span>
                 <span className="checkmark">✓</span>
               </label>
             ))}
           </div>
           <label className="focus-option"><span>Learning focus</span><select value={focusId} onChange={e=>{setFocusId(e.target.value);setGenerated([]);}}><option value="">All focuses in selected topics</option>{curriculumTopics.filter(t=>selected.includes(t.id)).map(t=><optgroup key={t.id} label={t.name}>{t.focuses?.map(f=><option key={f.id} value={f.id}>Focus {f.number}: {f.title}</option>)}</optgroup>)}</select></label>
-          <p className="bank-note">Questions follow the October 2026 unit plans for 2027. Source-based recall and short answers are available across all 31 topics. Mark a starter as used after teaching; generation alone does not update history.</p>
-          <details className="staff-bank"><summary>Browse questions, history and revisit list</summary>{browsableQuestions.filter(q=>staff.matches(q)).map(q=><article key={q.id}><p>{q.q}</p><small>{staff.history[q.id||""]?.count||0} uses · {topics.find(t=>t.id===q.topicId)?.name}</small><details><summary>Answer</summary>{q.a}</details><div><button onClick={()=>{setGenerated(g=>g.some(x=>x.id===q.id)?g:[...g,q]);setKeywordSet([]);}}>Add to starter</button><button onClick={()=>staff.flag(q)}>{staff.history[q.id||""]?.revisit?"Remove revisit":"Revisit next time"}</button></div></article>)}</details>
+          <p className="bank-note">New questions are chosen automatically and saved for the selected class when you generate a starter. Tick an old question below only when you want to revisit it.</p>
+          {staff.className && <details className="staff-bank" open><summary>Previously used questions · {staff.className} ({previousQuestions.length})</summary>
+            <p className="bank-note">All start unticked. Tick any students struggled with to include it in this starter. Repeats take the place of new questions within your chosen question count.</p>
+            {previousQuestions.length ? previousQuestions.map(q=><article key={q.id}><label className="repeat-choice"><input type="checkbox" checked={repeatQuestions.some(r=>r.id===q.id)} disabled={!staff.ready||staff.saving||nonQuestionActivities.includes(activity)&&!(["brain-dump","cops-robbers"].includes(activity)&&knowledgeFocus==="focused")} onChange={e=>void toggleRepeat(q,e.target.checked)}/><span>{q.q}<small>{topics.find(t=>t.id===q.topicId)?.name} · Last used {new Date(staff.history[q.id||""].lastUsed).toLocaleDateString("en-NZ")}</small></span></label><details><summary>Answer</summary>{q.a}</details></article>) : <p className="bank-note">No earlier questions for this class match the selected learning and activity yet.</p>}
+          </details>}
 
           <div className="divider" />
           <div className="step-heading">
@@ -2156,7 +2191,7 @@ export default function Home() {
             </label>
           </div>
 
-          <button className="generate-button" onClick={generate} disabled={!staff.ready || !selected.length || (activity === "concept-map" && selected.length !== 1)}>
+          <button className="generate-button" onClick={generate} disabled={!staff.ready || staff.saving || !selected.length || (activity === "concept-map" && selected.length !== 1)}>
             <span>Generate starter</span><span aria-hidden="true">→</span>
           </button>
           {!selected.length && <p className="validation-note">Select at least one topic to continue.</p>}
@@ -2477,7 +2512,7 @@ export default function Home() {
                 </ol>
               )}
 
-              {generated.some(q=>q.id) && <div className="staff-use"><button disabled={!staff.ready||staff.saving} onClick={()=>staff.save(generated)}>Mark starter as used</button><small>Saved separately for {staff.className || "this class"}. Revisit flags stay until you remove them.</small></div>}
+              {generated.some(q=>q.id) && <div className="staff-use"><small>Question history saved for {staff.className}. Select another class to build its own starter.</small></div>}
               <div className="export-answer-bank" aria-hidden="true">
                 {generated.map((question, index) => (
                   <span

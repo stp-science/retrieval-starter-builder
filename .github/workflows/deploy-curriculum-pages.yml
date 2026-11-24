@@ -33,7 +33,7 @@ jobs:
         run: npx tsx scripts/audit-question-grammar.ts
 
       - name: Check activity wiring
-        run: node --test tests/activity-integrity.test.mjs
+        run: node --test tests/activity-integrity.test.mjs tests/class-retrieval.test.mjs
 
       - name: Build static site
         run: npx next build
