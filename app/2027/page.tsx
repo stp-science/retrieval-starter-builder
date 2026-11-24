@@ -18,9 +18,10 @@ import curriculum from "./curriculum.json";
 import { staffQuestionBank, activityQuestions } from "./staff-question-bank";
 import { staffVisualPrompts } from "./visual-prompts";
 import { useTeacherHistory } from "./use-history";
-import { composeStarter, lastStarterQuestions } from "./history-selection";
+import { composeStarter, lastStarterQuestions, mixQuestions } from "./history-selection";
 import "./staff.css";
 import "./studio.css";
+import "./activity-preview.css";
 
 type Difficulty = "foundation" | "core" | "stretch";
 type QuestionKind = "short" | "explain";
@@ -794,12 +795,6 @@ function titleForActivity(id: ActivityId) {
   return activities.find((activity) => activity.id === id)?.name ?? "Retrieval Starter";
 }
 
-function matchesLevel(question: Question, level: "balanced" | Difficulty) {
-  if (level === "balanced") return true;
-  if (level === "foundation") return difficultyRank[question.difficulty] <= 2;
-  if (level === "stretch") return difficultyRank[question.difficulty] >= 2;
-  return question.difficulty === "core";
-}
 
 const clozeStopWords = new Set([
   "about", "after", "again", "because", "between", "called", "during", "example", "formed", "from", "into", "more", "other", "present", "same", "such", "than", "that", "their", "there", "these", "they", "this", "through", "when", "which", "with",
@@ -977,7 +972,7 @@ export default function Home() {
   const [selected, setSelected] = useState<string[]>([]);
   const [activity, setActivity] = useState<ActivityId>("quick-quiz");
   const [count, setCount] = useState(8);
-  const [level, setLevel] = useState<"balanced" | Difficulty>("balanced");
+  const [editingQuestions,setEditingQuestions] = useState(false);
   const [knowledgeFocus, setKnowledgeFocus] = useState<KnowledgeFocus>("focused");
   const [generated, setGenerated] = useState<GeneratedQuestion[]>([]);
   const [reviewOpen,setReviewOpen] = useState(false);
@@ -1051,7 +1046,7 @@ export default function Home() {
     oneWordQuestions:t.oneWordQuestions?.filter(q=>!focusId||q.focusId===focusId),
     clozeQuestions:t.clozeQuestions?.filter(q=>!focusId||q.focusId===focusId),
   })),[focusId,showOptional]);
-  function historySelection<T extends GeneratedQuestion>(items:T[],n:number):T[]{return staff.select(items,n);}
+  function historySelection<T extends GeneratedQuestion>(items:T[],n:number):T[]{return mixQuestions(staff.select(items,items.length),n);}
   const yearTopics = useMemo(
     () => topics.filter((topic) => topic.year === year && (![11, 12, 13, "IB"].includes(year) || topic.course === course)),
     [year, course, topics],
@@ -1173,7 +1168,7 @@ export default function Home() {
     const fixedCount = fixedPromptCounts[nextActivity];
     if (fixedCount) setCount(fixedCount);
     if (nextActivity === "retrieval-placemat" || nextActivity === "brain-dump" || nextActivity === "cops-robbers") setCount(4);
-    if (nextActivity === "question-chain") setLevel("balanced");
+
   }
 
   async function generate(repeats:GeneratedQuestion[] = []) {
@@ -1182,7 +1177,7 @@ export default function Home() {
       const activityQuestions = questionsForActivity(topic,activity);
       return activityQuestions.map((question) => ({ ...question, topicId: topic.id }));
     });
-    const suitable = pool.filter((question) => matchesLevel(question, activity === "question-chain" || activity === "one-worders" || activity === "cloze-recall" ? "balanced" : level));
+    const suitable = pool;
     const nonYesNoSuitable = suitable.filter((question) => !isYesNoQuestion(question.q));
     const oneWordPool = suitable.filter((question) => question.kind === "short" && !isYesNoQuestion(question.q));
     const placematPool = suitable
@@ -1280,7 +1275,6 @@ export default function Home() {
       : selectedTopics.flatMap((topic) => {
         const activityQuestions = questionsForActivity(topic,activity);
         return activityQuestions
-          .filter((question) => matchesLevel(question, activity === "one-worders" || activity === "cloze-recall" ? "balanced" : level))
           .filter((question) => activity !== "one-worders" || (question.kind === "short" && !isYesNoQuestion(question.q)))
           .filter((question) => activity !== "retrieval-placemat" || question.kind === "explain")
           .map((question) => ({ ...question, topicId: topic.id }))
@@ -2196,22 +2190,14 @@ export default function Home() {
             </label>
           )}
 
-          <div className="options-row">
+          <div className="options-row automatic-mix">
             <label>
               <span>{nonQuestionActivities.includes(activity)?"Number of prompts":"Number of questions"}</span>
               <select value={count} onChange={(event) => setCount(Number(event.target.value))} disabled={["thinking-linking", "retrieval-relay", "list-it", "concept-map", "retrieval-placemat", "retrieval-clock", "picture-prompts", "two-things", "connect-four"].includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "whole-topic")}>
                 {[4, 6, 8, 10, 12, 16].map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </label>
-            <label>
-              <span>Challenge</span>
-              <select value={level} onChange={(event) => setLevel(event.target.value as "balanced" | Difficulty)} disabled={nonQuestionActivities.includes(activity) || ["question-chain","one-worders","cloze-recall"].includes(activity)}>
-                <option value="balanced">Balanced mix</option>
-                <option value="foundation">Build confidence</option>
-                <option value="core">Core knowledge</option>
-                <option value="stretch">Add challenge</option>
-              </select>
-            </label>
+
           </div>
 
           <button className="generate-button" onClick={requestGenerate} disabled={!staff.ready || staff.saving || !selected.length || (activity === "concept-map" && selected.length !== 1)}>
@@ -2227,7 +2213,7 @@ export default function Home() {
             {hasOutput && (
               <div className="preview-tools">
                 <button className="fullscreen-button" onClick={enterPresentationMode}>Present</button>
-                {generated.length>0&&<details className="toolbar-menu"><summary>Edit</summary><div className="preview-actions edit-actions"><button onClick={openCustomQuestion}>Write your own question</button><button className="flag-toolbar-button" onClick={()=>openFlagQuestion(0)}>Flag a question</button></div></details>}
+                {generated.length>0&&<details className="toolbar-menu"><summary>Edit</summary><div className="preview-actions edit-actions"><button onClick={()=>setEditingQuestions(value=>!value)}>{editingQuestions?"Hide question controls":"Show question controls"}</button><button onClick={openCustomQuestion}>Write your own question</button><button className="flag-toolbar-button" onClick={()=>openFlagQuestion(0)}>Flag a question</button></div></details>}
                 <details className="toolbar-menu export-menu"><summary>Export</summary><div className="preview-actions export-actions">
                   <button onClick={copyOutput}>{copied?"Copied!":"Copy text"}</button>
                   <button onClick={printOutput}>Print</button>
@@ -2249,15 +2235,15 @@ export default function Home() {
             <>
             <div ref={presentationRef} className={`presentation-stage ${presentationMode ? "active" : ""}`}>
               <div className="presentation-controls">
+                <button type="button" className="back-to-builder" onClick={exitPresentationMode}>Back to builder</button>
                 <strong>{titleForActivity(activity)}</strong>
                 <span>{activity === "retrieval-roulette" ? "Reveal each answer beside its question." : "Use Show answers when pupils are ready to check."}</span>
                 {canShowAnswers && (
                   <button onClick={() => setShowAnswers((value) => !value)}>{showAnswers ? "Hide answers" : "Show answers"}</button>
                 )}
-                <button onClick={exitPresentationMode}>Exit full screen</button>
               </div>
             <article
-              className={`starter-sheet activity-${activity} ${presentationItemCount > 8 ? "many-prompts" : ""}`}
+              className={`starter-sheet activity-${activity} ${presentationItemCount > 8 ? "many-prompts" : ""} ${editingQuestions ? "editing-questions" : ""}`}
               ref={sheetRef}
               style={{ "--presentation-scale": presentationScale } as CSSProperties}
             >
@@ -2269,7 +2255,7 @@ export default function Home() {
               <p className="instructions">{activityInstructions[activity]}</p>
 
               {((generated.length > 0 && (!nonQuestionActivities.includes(activity) || ((activity === "brain-dump" || activity === "cops-robbers") && knowledgeFocus === "focused"))) || (visualSet.length > 0 && activity === "picture-prompts")) && (
-                <div className="swap-help"><span>Want a different prompt?</span> Use <strong>Swap</strong> beside any question.</div>
+                <div className="swap-help">Use <strong>Swap</strong> to choose another new question, or <strong>Flag</strong> to report a problem.</div>
               )}
 
               {activity === "thinking-linking" && (

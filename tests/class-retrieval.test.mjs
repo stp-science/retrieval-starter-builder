@@ -33,3 +33,11 @@ test('repeat choices contain only the last saved starter for the current class',
  assert.deepEqual(selectNewQuestions(bank,history,2,()=>0).map(q=>q.id),['unused']);
  assert.deepEqual(lastStarterQuestions([...bank,bank[1]],history).map(q=>q.id),['last-a','last-b']);
 });
+
+test('automatic mixing includes recall, core and explanation questions when available',async()=>{
+ const {mixQuestions}=await import('../app/2027/history-selection.ts');
+ const items=[{id:'a',difficulty:'foundation'},{id:'b',difficulty:'foundation'},{id:'c',difficulty:'core'},{id:'d',difficulty:'stretch'}];
+ assert.deepEqual(mixQuestions(items,3).map(q=>q.difficulty),['foundation','core','stretch']);
+ assert.equal(mixQuestions(items,0).length,0);
+ assert.equal(mixQuestions(items.filter(q=>q.difficulty==='foundation'),5).length,2);
+});

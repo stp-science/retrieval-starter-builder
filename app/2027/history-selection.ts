@@ -15,3 +15,11 @@ export function lastStarterQuestions<T extends {id?:string}>(items:T[],history:Q
  const seen=new Set<string>();
  return items.filter(q=>{if(!q.id||seen.has(q.id)||history[q.id]?.lastUsed!==latest||!history[q.id]?.count)return false;seen.add(q.id);return true;});
 }
+// Balance the available new questions automatically; specialist pools keep their own question type.
+export function mixQuestions<T extends {difficulty?:string}>(items:T[],count:number):T[]{
+ const buckets=['foundation','core','stretch'].map(d=>items.filter(q=>q.difficulty===d));
+ const others=items.filter(q=>!['foundation','core','stretch'].includes(q.difficulty||''));
+ buckets.push(others);const result:T[]=[];
+ while(result.length<count&&buckets.some(b=>b.length)){for(const bucket of buckets){const q=bucket.shift();if(q)result.push(q);if(result.length>=count)break;}}
+ return result;
+}
