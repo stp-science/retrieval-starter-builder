@@ -8,3 +8,10 @@ export function selectNewQuestions<T extends {id?:string}>(items:T[],history:Que
 export function composeStarter<T extends {id?:string}>(fresh:T[],repeats:T[],count:number):T[]{
  return [...repeats,...fresh.filter(q=>!repeats.some(r=>r.id===q.id))].slice(0,count);
 }
+// Every question in a starter is saved in one transaction with the same timestamp.
+export function lastStarterQuestions<T extends {id?:string}>(items:T[],history:QuestionHistory):T[]{
+ const latest=Math.max(0,...Object.values(history).filter(h=>h.count>0).map(h=>h.lastUsed));
+ if(!latest)return [];
+ const seen=new Set<string>();
+ return items.filter(q=>{if(!q.id||seen.has(q.id)||history[q.id]?.lastUsed!==latest||!history[q.id]?.count)return false;seen.add(q.id);return true;});
+}

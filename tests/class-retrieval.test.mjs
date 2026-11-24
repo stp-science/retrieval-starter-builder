@@ -20,3 +20,16 @@ test('only explicitly selected repeats enter the starter, preserving fixed grid 
  assert.deepEqual(composeStarter(questions,[questions[0]],3),questions);
  assert.deepEqual(composeStarter(questions,[],3),questions); // Unticking restores the new questions.
 });
+
+test('repeat choices contain only the last saved starter for the current class',async()=>{
+ const {lastStarterQuestions}=await import('../app/2027/history-selection.ts');
+ const bank=[{id:'old'},{id:'last-a'},{id:'last-b'},{id:'unused'}];
+ const history={old:{...used,lastUsed:100},'last-a':{...used,lastUsed:200},'last-b':{...used,lastUsed:200}};
+ assert.deepEqual(lastStarterQuestions(bank,history).map(q=>q.id),['last-a','last-b']);
+ assert.deepEqual(lastStarterQuestions(bank,{}),[]);
+ assert.deepEqual(lastStarterQuestions(bank,{old:{...used,lastUsed:300}}).map(q=>q.id),['old']);
+ const fresh=selectNewQuestions(bank,history,1,()=>0);
+ assert.deepEqual(composeStarter(fresh,[bank[1]],2).map(q=>q.id),['last-a','unused']);
+ assert.deepEqual(selectNewQuestions(bank,history,2,()=>0).map(q=>q.id),['unused']);
+ assert.deepEqual(lastStarterQuestions([...bank,bank[1]],history).map(q=>q.id),['last-a','last-b']);
+});

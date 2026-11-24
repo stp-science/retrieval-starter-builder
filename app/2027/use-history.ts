@@ -31,8 +31,8 @@ export function useTeacherHistory(){
  function matches(q:Tracked){return !!q.id&&!(history[q.id]?.count>0);}
  function select<T extends Tracked>(items:T[],n:number):T[]{return selectNewQuestions(items,history,n);}
  async function persist(items:Tracked[]){if(!ready||locked.current||!classRef.current)return false;const ids=[...new Set(items.flatMap(q=>q.id?[q.id]:[]))];if(!ids.length)return true;
-  locked.current=true;setSaving(true);const key=localKey(),name=classRef.current;
-  try{if(preview.current){const next:History=JSON.parse(localStorage.getItem(key)||'{}');for(const id of ids){const h=next[id]||{count:0,lastUsed:0,revisit:false};next[id]={count:h.count+1,lastUsed:Date.now(),revisit:false};}localStorage.setItem(key,JSON.stringify(next));if(classRef.current===name)setHistory(next);}else{if(!backend.current||!currentUser.current)throw Error('Sign in first.');await backend.current.save(ids,null);if(classRef.current===name)setHistory(current=>{const next={...current};for(const id of ids){const h=next[id]||{count:0,lastUsed:0,revisit:false};next[id]={...h,count:Math.max(1,h.count),lastUsed:Date.now()};}return next;});}
+  locked.current=true;setSaving(true);const key=localKey(),name=classRef.current,usedAt=Date.now();
+  try{if(preview.current){const next:History=JSON.parse(localStorage.getItem(key)||'{}');for(const id of ids){const h=next[id]||{count:0,lastUsed:0,revisit:false};next[id]={count:h.count+1,lastUsed:usedAt,revisit:false};}localStorage.setItem(key,JSON.stringify(next));if(classRef.current===name)setHistory(next);}else{if(!backend.current||!currentUser.current)throw Error('Sign in first.');await backend.current.save(ids,null);if(classRef.current===name)setHistory(current=>{const next={...current};for(const id of ids){const h=next[id]||{count:0,lastUsed:0,revisit:false};next[id]={...h,count:Math.max(1,h.count),lastUsed:usedAt};}return next;});}
    setMessage(`Starter history saved for ${name}.${preview.current?' On this device only.':''}`);return true;
   }catch(e){setMessage('Could not save: '+(e instanceof Error?e.message:'Please try again.'));return false;}finally{locked.current=false;setSaving(false);}
  }

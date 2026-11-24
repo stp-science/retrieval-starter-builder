@@ -7,13 +7,13 @@ New staff builder for the October 2026 STP 2027 Years 7–10 unit-plan sequence.
 - 29 core topics and two labelled optional topics; 119 learning focuses.
 - Original knowledge statements retained as source evidence. Questions use short answers and missing-word recall, with stable identifiers.
 - All 24 original activity implementations, the random activity wheel, the shared original design and preview, and original presentation, print/PDF, Word and PowerPoint controls.
-- Automatic unused-question selection and an unticked list of previously used questions for explicit repeats.
+- Automatic unused-question selection with a confirmation dialog showing only the selected class’s last starter. Teachers tick repeats or choose “Don’t include any” before generating.
 - Per-teacher, per-class history with Google authentication and Firestore, once configured. Generating a starter saves the questions for the selected class automatically.
 - Device-only preview when Firebase is unconfigured. This is clearly labelled and never presented as cloud sync. Preview history is separate from signed-in history.
 
 ## Connect Firebase
 
-This project is NOT currently connected to a live Firebase project. No live school authentication or cloud history has been tested.
+The live builder is connected to `stp-science-retrieval-2027`. School Google sign-in was confirmed during setup on 25 November 2026. The steps below document the connection process.
 
 1. Select or create a school-owned Firebase project. Add a Web app and copy its public `firebaseConfig` from Project settings. Never supply a service-account private key.
 2. Enable Google in Authentication > Sign-in method. Choose the school support email.
@@ -43,6 +43,6 @@ The live 2027 route is now implemented in `app/2027/page.tsx`, sharing the origi
 
 ## Named class setup and history
 
-Publish the updated `firestore.rules` along with the app changes before enabling sign-in. Each teacher creates named classes (for example 9PL and 9SG) on their first visit after sign-in. Class documents store only `name` and `year` at `teachers/{uid}/classes/{classId}`. The class ID is the encoded, normalised name. Teachers select one class before generating; new questions are saved automatically, and repeats must be selected explicitly. Deleting a class from Manage classes confirms and deletes that class document and its question history.
+Publish the updated `firestore.rules` along with the app changes before enabling sign-in. Each teacher creates named classes (for example 9PL and 9SG) on their first visit after sign-in. Class documents store only `name` and `year` at `teachers/{uid}/classes/{classId}`. The class ID is the encoded, normalised name. Teachers select one class before generating. Generate opens a dialog containing only questions from the last saved starter, all unticked; teachers choose repeats or “Don’t include any”, then confirm generation. Question histories change only after confirmation. Every question in the new starter is saved together with the same transaction timestamp, which identifies the last starter without additional Firestore rules. Swapping a question saves the full revised starter as the latest batch. Deleting a class from Manage classes confirms and deletes that class document and its question history.
 
 When `public/2027/config.js` has `firebaseConfig = null`, setup and histories work in a device-only preview. Google sign-in and cross-device class lists require the school Firebase configuration and the updated deployed rules.

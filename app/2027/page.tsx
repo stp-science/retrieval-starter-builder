@@ -16,7 +16,7 @@ import { assertThinkingLinkingCoverage, buildThinkingLinkingKeywords } from "../
 
 import curriculum from "./curriculum.json";
 import { useTeacherHistory } from "./use-history";
-import { composeStarter } from "./history-selection";
+import { composeStarter, lastStarterQuestions } from "./history-selection";
 import "./staff.css";
 
 type Difficulty = "foundation" | "core" | "stretch";
@@ -972,8 +972,12 @@ export default function Home() {
   const [count, setCount] = useState(8);
   const [level, setLevel] = useState<"balanced" | Difficulty>("balanced");
   const [knowledgeFocus, setKnowledgeFocus] = useState<KnowledgeFocus>("focused");
-  const [draftQuestions, setGenerated] = useState<GeneratedQuestion[]>([]);
-  const [repeatQuestions,setRepeatQuestions] = useState<GeneratedQuestion[]>([]);
+  const [generated, setGenerated] = useState<GeneratedQuestion[]>([]);
+  const [reviewOpen,setReviewOpen] = useState(false);
+  const [lastQuestions,setLastQuestions] = useState<GeneratedQuestion[]>([]);
+  const [repeatIds,setRepeatIds] = useState<string[]>([]);
+  const [includeNone,setIncludeNone] = useState(false);
+  const reviewDialog = useRef<HTMLDialogElement|null>(null);
   const [manageClasses,setManageClasses] = useState(false);
   const [newClassName,setNewClassName] = useState("");
   const [newClassYear,setNewClassYear] = useState(9);
@@ -1018,27 +1022,27 @@ export default function Home() {
   const [showOptional,setShowOptional] = useState(false);
   const staff = useTeacherHistory();
   const questionLimit = fixedPromptCounts[activity] ?? (activity === "quiz-quiz-trade" ? Math.min(count,12) : count);
-  const generated = useMemo(()=>composeStarter(draftQuestions,repeatQuestions,questionLimit),[draftQuestions,repeatQuestions,questionLimit]);
+  const usesQuestionActivity = !nonQuestionActivities.includes(activity)||(["brain-dump","cops-robbers"].includes(activity)&&knowledgeFocus==="focused");
+  useEffect(()=>{const dialog=reviewDialog.current;if(reviewOpen&&!dialog?.open)dialog?.showModal();else if(!reviewOpen&&dialog?.open)dialog.close();},[reviewOpen]);
   useEffect(()=>{if(staff.classesReady&&!staff.classes.length)setManageClasses(true);},[staff.classesReady,staff.classes.length]);
-  useEffect(()=>{setRepeatQuestions([]);setGenerated([]);setKeywordSet([]);setVisualSet([]);setListPromptSet([]);setShowAnswers(false);setRevealedRoulette(new Set());},[staff.className,staff.user?.uid,year,activity,focusId,selected.join(",")]);
+  useEffect(()=>{setReviewOpen(false);setRepeatIds([]);setIncludeNone(false);setGenerated([]);setKeywordSet([]);setVisualSet([]);setListPromptSet([]);setShowAnswers(false);setRevealedRoulette(new Set());},[staff.className,staff.user?.uid,year,activity,focusId,selected.join(",")]);
   async function addNamedClass(event:FormEvent){event.preventDefault();if(await staff.addClass(newClassName,newClassYear))setNewClassName("");}
   function selectClass(name:string,classYear:number){staff.setClassName(name);chooseYear(classYear as YearGroup);}
-  async function toggleRepeat(q:GeneratedQuestion,checked:boolean){
-    if(!checked){setRepeatQuestions(current=>current.filter(r=>r.id!==q.id));return;}
-    if(repeatQuestions.length>=questionLimit){staff.notify("Untick a repeated question before selecting another.");return;}
-    if(await staff.save([q])){setRepeatQuestions(current=>[...current,q]);setShowAnswers(false);setRevealedRoulette(new Set());}
+  function requestGenerate(){
+    if(!staff.ready||staff.saving||!selectedTopics.length)return;
+    const bank=curriculumTopics.flatMap(t=>[...t.questions,...focusedKnowledgePool([t])].map(q=>({...q,topicId:t.id})));
+    const previous=lastStarterQuestions(bank,staff.history).map(q=>generated.find(g=>g.id===q.id)??q);
+    if(usesQuestionActivity&&previous.length){setLastQuestions(previous);setRepeatIds([]);setIncludeNone(false);setReviewOpen(true);}else void generate([]);
+  }
+  function toggleRepeat(id:string,checked:boolean){
+    setIncludeNone(false);
+    setRepeatIds(current=>checked?[...current,id]:current.filter(x=>x!==id));
   }
   const topics = useMemo(() => curriculumTopics.filter(t=>showOptional||!t.optional).map(t=>({...t,
     focuses:t.focuses?.filter(f=>!focusId||f.id===focusId),
     questions:t.questions.filter(q=>!focusId||q.focusId===focusId),
     oneWordQuestions:t.oneWordQuestions?.filter(q=>!focusId||q.focusId===focusId),
   })),[focusId,showOptional]);
-  const browsableQuestions = selectedTopicsForBank();
-  const previousQuestions = browsableQuestions.filter((q,i,all)=>q.id&&all.findIndex(x=>x.id===q.id)===i&&staff.history[q.id]?.count>0&&(!draftQuestions.some(x=>x.id===q.id)||repeatQuestions.some(x=>x.id===q.id)))
-    .filter(q=>matchesLevel(q,level)&&(activity!=="one-worders"||(q.kind==="short"&&!isYesNoQuestion(q.q))))
-    .filter(q=>activity!=="retrieval-placemat"||q.kind==="explain")
-    .sort((a,b)=>(staff.history[b.id||""]?.lastUsed||0)-(staff.history[a.id||""]?.lastUsed||0));
-  function selectedTopicsForBank(){return topics.filter(t=>selected.includes(t.id)).flatMap(t=>[...t.questions,...focusedKnowledgePool([t])].map(q=>({...q,topicId:t.id})));}
   function historySelection<T extends GeneratedQuestion>(items:T[],n:number):T[]{return staff.select(items,n);}
   const yearTopics = useMemo(
     () => topics.filter((topic) => topic.year === year && (![11, 12, 13, "IB"].includes(year) || topic.course === course)),
@@ -1163,9 +1167,8 @@ export default function Home() {
     if (nextActivity === "question-chain") setLevel("balanced");
   }
 
-  async function generate() {
+  async function generate(repeats:GeneratedQuestion[] = []) {
     if (!selectedTopics.length||!staff.ready||staff.saving) return;
-    setRepeatQuestions([]);
     const pool = selectedTopics.flatMap((topic) => {
       const activityQuestions = activity === "one-worders" && topic.oneWordQuestions?.length
         ? topic.oneWordQuestions
@@ -1196,11 +1199,12 @@ export default function Home() {
     const requested = fixedPromptCounts[activity] ?? (activity === "quiz-quiz-trade"
       ? Math.min(count, 12)
       : count);
-    const result: GeneratedQuestion[] = historySelection(source,requested);
+    const newCount=Math.max(0,requested-repeats.length);
+    const result: GeneratedQuestion[] = historySelection(source,newCount);
     const keywords = activity === "thinking-linking"
       ? buildThinkingLinkingKeywords(selectedTopics, Math.min(16, 2*Math.floor(new Set(selectedTopics.flatMap(t=>t.keywords)).size/2)))
       : shuffled(selectedTopics.flatMap((topic) => topic.keywords));
-    let finalResult = shuffled(result).slice(0, requested);
+    let finalResult = shuffled(result).slice(0, newCount);
     if (activity === "question-chain") {
       const chainTopic = shuffled(selectedTopics.filter((topic) => topic.questions.length))[0];
       if(!chainTopic)return;
@@ -1213,8 +1217,8 @@ export default function Home() {
       const start = shuffled([...new Set(starts)])[0] ?? 0;
       const connectedWindow = topicQuestions.slice(start, start + windowSize);
       const seed = connectedWindow.find((question) => question.difficulty === "foundation") ?? connectedWindow[0];
-      const connected: GeneratedQuestion[] = seed ? [seed] : [];
-      while (connected.length < requested) {
+      const connected: GeneratedQuestion[] = seed && newCount>0 ? [seed] : [];
+      while (connected.length < newCount) {
         const candidates = connectedWindow.filter((question) => !connected.some((picked) => picked.q === question.q));
         const next = candidates.sort((left, right) => relatedness(right, connected) - relatedness(left, connected))[0];
         if (!next) break;
@@ -1225,14 +1229,15 @@ export default function Home() {
     if (activity === "match-up") {
       const candidates = [...finalResult, ...historySelection(source,source.length)]
         .filter((question, index, all) => all.findIndex((item) => item.q === question.q) === index);
-      const seenAnswers = new Set<string>();
+      const seenAnswers = new Set<string>(repeats.map(q=>q.a.trim().toLowerCase()));
       finalResult = candidates.filter((question) => {
         const answerKey = question.a.trim().toLowerCase();
         if (seenAnswers.has(answerKey)) return false;
         seenAnswers.add(answerKey);
         return true;
-      }).slice(0, requested);
+      }).slice(0, newCount);
     }
+    finalResult = composeStarter(finalResult,repeats,requested);
     finalResult = finalResult.map(addYesNoExplanation);
     const visuals = shuffled(selectedTopics.flatMap((topic) =>
       visualsForTopic(topic).map((prompt) => ({
@@ -1244,7 +1249,7 @@ export default function Home() {
     ));
     const usesQuestions = !nonQuestionActivities.includes(activity)||isFocusedKnowledge;
     if(usesQuestions && finalResult.length && !await staff.save(finalResult))return;
-    if(usesQuestions && finalResult.length < requested){staff.notify(`There are ${finalResult.length} new questions left for this class in the selected content. Select more content or tick previously used questions below to revisit them.`);}
+    if(usesQuestions && finalResult.length < requested){staff.notify(`This starter has ${finalResult.length} of ${requested} questions. Select more content, or click Generate starter again to choose repeats from the last starter.`);}
     setGenerated(usesQuestions ? finalResult : []);
     setKeywordSet(usesQuestions ? [] : keywords.slice(0, 16));
     setVisualSet(usesQuestions ? [] : visuals.slice(0, fixedPromptCounts["picture-prompts"]));
@@ -1252,6 +1257,7 @@ export default function Home() {
     setShowAnswers(activity === "flashcard-sprint");
     setRevealedRoulette(new Set());
     setCopied(false);
+    setReviewOpen(false);
   }
 
   async function replaceQuestion(index: number) {
@@ -1282,10 +1288,10 @@ export default function Home() {
     const replacement = activity === "question-chain"
       ? [...sameTopic].sort((left, right) => relatedness(right, generated) - relatedness(left, generated))[0]
       : historySelection(sameTopic,1)[0] ?? historySelection(anyTopic,1)[0];
-    if (!replacement){staff.notify("No more new questions match. Choose more content or tick a previously used question.");return;}
-    if(!await staff.save([replacement]))return;
-    setRepeatQuestions(current=>current.filter(q=>q.id!==currentQuestion.id));
-    setGenerated(generated.map((question, questionIndex) => questionIndex === index ? replacement : question));
+    if (!replacement){staff.notify("No more new questions match. Choose more content or click Generate starter to revisit the last starter.");return;}
+    const nextQuestions=generated.map((question, questionIndex) => questionIndex === index ? replacement : question);
+    if(!await staff.save(nextQuestions))return;
+    setGenerated(nextQuestions);
     setShowAnswers(activity === "flashcard-sprint");
     setRevealedRoulette((current) => {
       const next = new Set(current);
@@ -2081,6 +2087,16 @@ export default function Home() {
         <button type="button" className="generate-button" disabled={!staff.classes.length||staff.saving||!!deleteClassName} onClick={()=>setManageClasses(false)}>Done · go to starter builder</button>
       </section></div>}
 
+      <dialog ref={reviewDialog} className="class-setup repeat-dialog" data-class-history="true" aria-labelledby="repeat-title" onCancel={e=>{if(staff.saving)e.preventDefault();else setReviewOpen(false);}}>
+        <p className="eyebrow">{staff.className} · Last starter only</p>
+        <h2 id="repeat-title">Any questions to revisit?</h2>
+        <p>Tick questions students struggled with last time. We’ll include these and fill the remaining spaces with new questions.</p>
+        <div className="repeat-dialog-list">{lastQuestions.map(q=><article key={q.id}><label className="repeat-choice"><input type="checkbox" checked={repeatIds.includes(q.id||"")} disabled={staff.saving||(!repeatIds.includes(q.id||"")&&repeatIds.length>=questionLimit)} onChange={e=>toggleRepeat(q.id||"",e.target.checked)}/><span>{q.q}<small>{curriculumTopics.find(t=>t.id===q.topicId)?.name}</small></span></label><details><summary>Answer</summary>{q.a}</details></article>)}</div>
+        <label className="repeat-choice include-none"><input type="checkbox" checked={includeNone} disabled={staff.saving} onChange={e=>{setIncludeNone(e.target.checked);setRepeatIds([]);}}/><span>Don’t include any<small>Use new questions only.</small></span></label>
+        <p className="bank-note" role="status">{repeatIds.length} selected · up to {questionLimit} questions in this starter. {staff.saving?"Saving your starter…":""}</p>
+        <p className="bank-note" role="status">{staff.message.startsWith("Could not save")?staff.message:""}</p><div className="repeat-dialog-actions"><button type="button" disabled={staff.saving} onClick={()=>setReviewOpen(false)}>Cancel</button><button type="button" className="generate-button" disabled={staff.saving||(!includeNone&&!repeatIds.length)} onClick={()=>void generate(includeNone?[]:lastQuestions.filter(q=>repeatIds.includes(q.id||"")))}>Generate starter</button></div>
+      </dialog>
+
       <div className="workspace" data-class-history="true" inert={staff.classesReady&&(!staff.classes.length||manageClasses)}>
         <section className="builder-panel" aria-label="Starter builder">
           <div className="step-heading">
@@ -2134,11 +2150,7 @@ export default function Home() {
             ))}
           </div>
           <label className="focus-option"><span>Learning focus</span><select value={focusId} onChange={e=>{setFocusId(e.target.value);setGenerated([]);}}><option value="">All focuses in selected topics</option>{curriculumTopics.filter(t=>selected.includes(t.id)).map(t=><optgroup key={t.id} label={t.name}>{t.focuses?.map(f=><option key={f.id} value={f.id}>Focus {f.number}: {f.title}</option>)}</optgroup>)}</select></label>
-          <p className="bank-note">New questions are chosen automatically and saved for the selected class when you generate a starter. Tick an old question below only when you want to revisit it.</p>
-          {staff.className && <details className="staff-bank" open><summary>Previously used questions · {staff.className} ({previousQuestions.length})</summary>
-            <p className="bank-note">All start unticked. Tick any students struggled with to include it in this starter. Repeats take the place of new questions within your chosen question count.</p>
-            {previousQuestions.length ? previousQuestions.map(q=><article key={q.id}><label className="repeat-choice"><input type="checkbox" checked={repeatQuestions.some(r=>r.id===q.id)} disabled={!staff.ready||staff.saving||nonQuestionActivities.includes(activity)&&!(["brain-dump","cops-robbers"].includes(activity)&&knowledgeFocus==="focused")} onChange={e=>void toggleRepeat(q,e.target.checked)}/><span>{q.q}<small>{topics.find(t=>t.id===q.topicId)?.name} · Last used {new Date(staff.history[q.id||""].lastUsed).toLocaleDateString("en-NZ")}</small></span></label><details><summary>Answer</summary>{q.a}</details></article>) : <p className="bank-note">No earlier questions for this class match the selected learning and activity yet.</p>}
-          </details>}
+          <p className="bank-note">Click Generate starter to choose any questions to repeat from this class’s last starter. The remaining questions will be new.</p>
 
           <div className="divider" />
           <div className="step-heading">
@@ -2191,7 +2203,7 @@ export default function Home() {
             </label>
           </div>
 
-          <button className="generate-button" onClick={generate} disabled={!staff.ready || staff.saving || !selected.length || (activity === "concept-map" && selected.length !== 1)}>
+          <button className="generate-button" onClick={requestGenerate} disabled={!staff.ready || staff.saving || !selected.length || (activity === "concept-map" && selected.length !== 1)}>
             <span>Generate starter</span><span aria-hidden="true">→</span>
           </button>
           {!selected.length && <p className="validation-note">Select at least one topic to continue.</p>}
