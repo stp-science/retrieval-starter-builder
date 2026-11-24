@@ -27,7 +27,7 @@ export function useTeacherHistory(){
   return()=>{active=false;backend.current?.dispose();};
  },[]);
  useEffect(()=>{setHistory({});setReady(false);if(!className)return;if(preview.current)localLoad();else backend.current?.watch();},[className]);
- function chooseClass(name:string){setReady(false);setHistory({});setClassName(name);classRef.current=name;}
+ function chooseClass(name:string){setMessage(name?`Selected ${name}. New questions use this class's history.`:'Select your class before generating a starter.');setReady(false);setHistory({});setClassName(name);classRef.current=name;}
  function matches(q:Tracked){return !!q.id&&!(history[q.id]?.count>0);}
  function select<T extends Tracked>(items:T[],n:number):T[]{return selectNewQuestions(items,history,n);}
  async function persist(items:Tracked[]){if(!ready||locked.current||!classRef.current)return false;const ids=[...new Set(items.flatMap(q=>q.id?[q.id]:[]))];if(!ids.length)return true;

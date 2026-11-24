@@ -1018,7 +1018,7 @@ export default function Home() {
   const [showOptional,setShowOptional] = useState(false);
   const staff = useTeacherHistory();
   const questionLimit = fixedPromptCounts[activity] ?? (activity === "quiz-quiz-trade" ? Math.min(count,12) : count);
-  const generated = composeStarter(draftQuestions,repeatQuestions,questionLimit);
+  const generated = useMemo(()=>composeStarter(draftQuestions,repeatQuestions,questionLimit),[draftQuestions,repeatQuestions,questionLimit]);
   useEffect(()=>{if(staff.classesReady&&!staff.classes.length)setManageClasses(true);},[staff.classesReady,staff.classes.length]);
   useEffect(()=>{setRepeatQuestions([]);setGenerated([]);setKeywordSet([]);setVisualSet([]);setListPromptSet([]);setShowAnswers(false);setRevealedRoulette(new Set());},[staff.className,staff.user?.uid,year,activity,focusId,selected.join(",")]);
   async function addNamedClass(event:FormEvent){event.preventDefault();if(await staff.addClass(newClassName,newClassYear))setNewClassName("");}
@@ -1246,8 +1246,8 @@ export default function Home() {
     if(usesQuestions && finalResult.length && !await staff.save(finalResult))return;
     if(usesQuestions && finalResult.length < requested){staff.notify(`There are ${finalResult.length} new questions left for this class in the selected content. Select more content or tick previously used questions below to revisit them.`);}
     setGenerated(usesQuestions ? finalResult : []);
-    setKeywordSet(keywords.slice(0, 16));
-    setVisualSet(visuals.slice(0, fixedPromptCounts["picture-prompts"]));
+    setKeywordSet(usesQuestions ? [] : keywords.slice(0, 16));
+    setVisualSet(usesQuestions ? [] : visuals.slice(0, fixedPromptCounts["picture-prompts"]));
     setListPromptSet(buildListPrompts(selectedTopics, listPromptSet));
     setShowAnswers(activity === "flashcard-sprint");
     setRevealedRoulette(new Set());
@@ -2081,7 +2081,7 @@ export default function Home() {
         <button type="button" className="generate-button" disabled={!staff.classes.length||staff.saving||!!deleteClassName} onClick={()=>setManageClasses(false)}>Done · go to starter builder</button>
       </section></div>}
 
-      <div className="workspace" inert={staff.classesReady&&(!staff.classes.length||manageClasses)}>
+      <div className="workspace" data-class-history="true" inert={staff.classesReady&&(!staff.classes.length||manageClasses)}>
         <section className="builder-panel" aria-label="Starter builder">
           <div className="step-heading">
             <span className="step-number">1</span>

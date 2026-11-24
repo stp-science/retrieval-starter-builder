@@ -338,6 +338,9 @@ export default function SiteExperienceEnhancer() {
 
     const handleQuestionMixRequest = (event: MouseEvent) => {
       if (!event.isTrusted || !(event.target instanceof Element)) return;
+      // The staff builder saves every generated question to its class history.
+      // Its own selector owns question replacement; background swaps would consume unseen questions.
+      if(event.target.closest("[data-class-history]"))return;
       const generateButton = event.target.closest(".generate-button");
       const questionSwap = event.target.closest(".question-controls .swap-button");
       if (!generateButton && !questionSwap) return;
