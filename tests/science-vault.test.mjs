@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {newRun,mark,bank,finish,live,makeDeck} from '../public/science-vault/core.mjs';
+const q={q:'Test question',a:'Test answer',topic:'Test'};
+function correct(r,t=1){r.phase='revealed';assert.equal(mark(r,q,true,t),true);}
+test('banking saves the ladder value, then wrong answers only lose the new chain',()=>{const r=newRun(0);correct(r);correct(r);assert.equal(r.chain,20);assert.equal(bank(r,2),20);assert.equal(bank(r,2),0);correct(r);r.phase='revealed';mark(r,q,false,3);assert.equal(r.banked,20);assert.equal(r.chain,0);assert.equal(r.lastLost,10);assert.equal(r.mistakes.length,1);});
+test('seven correct answers automatically bank 1000 and reset chain',()=>{const r=newRun(0);for(let i=0;i<7;i++)correct(r);assert.equal(r.banked,1000);assert.equal(r.chain,0);correct(r);assert.equal(r.chain,10);assert.equal(r.banked,1000);});
+test('answers cannot be marked twice or before revealing',()=>{const r=newRun(0);assert.equal(mark(r,q,true,1),false);correct(r);assert.equal(mark(r,q,true,2),false);assert.equal(r.correct,1);});
+test('deadline ends a round and rejects late banking and marking',()=>{const r=newRun(0);correct(r);bank(r,5);correct(r);assert.equal(bank(r,300000),0);assert.equal(r.banked,10);assert.equal(r.lostAtEnd,10);assert.equal(r.chain,0);assert.equal(live(r,300001),false);assert.equal(mark(r,q,true,300001),false);finish(r);assert.equal(r.lostAtEnd,10);});
+test('complete Year 9 bank has unique questions per topic and deck uses selected topics only',()=>{const topics=JSON.parse(fs.readFileSync(new URL('../public/science-vault/questions.json',import.meta.url)));assert.equal(topics.length,10);assert.equal(topics.reduce((n,t)=>n+t.questions.length,0),409);assert.ok(topics.some(t=>t.id==='y9-ecosystems'));for(const t of topics){assert.equal(new Set(t.questions.map(q=>q.q.toLowerCase())).size,t.questions.length);for(const q of t.questions){assert.ok(q.q&&q.a);assert.equal(q.wrong.length,2);assert.equal(new Set([q.a,...q.wrong].map(x=>x.toLowerCase())).size,3);}}const deck=makeDeck(topics.slice(0,2));assert.equal(deck.length,78);assert.ok(deck.every(q=>topics.slice(0,2).some(t=>t.id===q.topicId)));assert.equal(new Set(deck.map(q=>q.topicId+q.q)).size,78);});

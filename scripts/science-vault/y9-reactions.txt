@@ -1,0 +1,40 @@
+Products|Catalysts only
+Reactants|Indicators only
+Is physically mixed with|Has exactly the same properties as
+When both sides have the same number of molecules only|When every coefficient is the same
+Subscripts can always be changed without affecting substances|Subscripts change only the temperature of the reaction
+A reaction that takes energy from the surroundings|A reaction that never transfers energy
+Carbon monoxide and hydrogen only|Carbon and oxygen only
+A less reactive metal always replaces a more reactive one|Any two metals exchange places regardless of reactivity
+Only a change of container|Only a change in position of the beaker
+Bubbles prove that atoms are being destroyed|Bubbles always mean a liquid is freezing
+A gas released by heating a liquid|A substance that dissolves completely during mixing
+Atoms gain mass whenever the temperature rises|Temperature changes prove no new substances have formed
+A substance formed at the end of a reaction|A substance that can never change chemically
+A starting substance that is used in a reaction|Only an insoluble solid formed in a reaction
+Only the colours of the substances|Only the masses of the containers
+Is identical to|Has the same number of molecules as
+On the right of the arrow|Always above the arrow
+On the left of the arrow|Always below the arrow
+The number of molecules regardless of atom types|The number of reactants and products listed
+A subscript within a formula|An element's atomic number
+It changes only the size of the written text|It changes only the number of molecules, never their identity
+Check only that both sides have the same number of letters|Count only one chosen element and ignore the others
+Atoms disappear and new atom types are created|Every reactant molecule survives unchanged
+The mass of dissolved material only|The electrical conductivity only
+The exact identity of every dissolved substance|The total number of molecules in the solution
+0|14
+Above 7|Exactly 7
+Below 7|Exactly 7
+A salt and hydrogen|A salt and carbon dioxide
+Oxygen|Carbon dioxide
+Hydrogen|Oxygen
+They lose energy and usually cool down|Their energy and temperature must stay unchanged
+They gain energy and usually warm up|They must give out light without any energy transfer
+Endothermic|Neither: no energy transfer occurs
+Exothermic|Neither: cooling means no energy transfer
+A fuel and nitrogen|Carbon dioxide and water
+Heat and light are absorbed from the surroundings|No energy is transferred to the surroundings
+Carbon monoxide and hydrogen only|A salt and water only
+When the added metal is less reactive|Whenever the two metals have different colours
+The replaced metal is always more reactive|Any metal that dissolves must be less reactive

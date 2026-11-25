@@ -1,0 +1,38 @@
+Only the genetic information an organism inherits|Only the environment surrounding an organism
+Genes and chance alone, with no environmental influence|Environment alone, with no genetic influence
+A whole cell containing many nuclei|A protein containing instructions for making DNA
+Genes directly change every trait without involving proteins|Genes affect traits only after the organism dies
+A gene moving from the nucleus into another organism|A gene disappearing whenever its product is made
+The chemical symbol for an element|The atomic number of a metal
+Each whole trait is always controlled by exactly one gene|Environmental factors never affect traits
+Only the desired result and no measured variables|Several variables to change together without controls
+A section of DNA that is never expressed|Only a characteristic that cannot be measured
+Identical inherited information guarantees identical traits in every environment|Environmental conditions replace all inherited DNA
+In the cell membrane|Dissolved freely in the cytoplasm only
+A protein that contains no DNA|A single atom found in the nucleus
+Genes contain nuclei, and nuclei are made of chromosomes|Chromosomes contain cells, and DNA is made of nuclei
+Instructions for making a whole ecosystem|Instructions for making individual atoms
+Proteins have no effect on cell processes|Proteins influence traits only by changing the weather
+Yes. Every trait has exactly one controlling gene|Yes. Environmental factors cannot influence any trait
+Its information is destroyed instead of used|Its information automatically leaves the organism
+Soil pH paints pigments directly onto the petals|Soil pH cannot influence flower colour
+Temperature cannot affect development or traits|Temperature changes every inherited gene into a new gene
+Nutrition affects only the environment and never the organism|Nutrients replace every inherited gene
+All phenotypes depend only on DNA|The environment has no role in phenotype
+Differences caused only by diet after birth|Differences caused only by temperature during development
+Differences caused only by genes received from parents|Differences that cannot be influenced by surroundings
+The outcome that is measured|A factor deliberately kept constant
+The factor deliberately changed|A factor deliberately kept constant
+Factors deliberately changed in every trial|Outcomes measured to see what happened
+They guarantee that all results will be identical|They remove every systematic error automatically
+Only one environmental condition is enough to show any trend|A range prevents any changes being detected
+Unlabelled values without units or repeats|Only the conclusion, without measured values
+A single unusual result far from the others|A prediction made before any results are collected
+The conclusion is evidence even if the data disagree|Data are useful only if they match the prediction
+Variation that can fall only into separate categories|Variation found only in organisms with identical traits
+ABO blood group|Presence or absence of a genetic condition
+Variation that takes every possible value in a range|Variation caused only by measurement error
+A line graph joining category names in order|A scatter graph with arbitrary numerical codes for categories
+A pie chart of every individual measurement|A bar chart with gaps between adjacent numerical intervals
+It proves that one gene controls every whole trait|It removes the need to consider environmental influences
+It includes every influence and has no limitations|It proves environmental conditions are irrelevant

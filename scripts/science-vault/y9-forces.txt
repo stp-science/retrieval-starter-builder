@@ -1,0 +1,40 @@
+Kilogram (kg)|Pascal (Pa)
+The object's speed and mass|The object's acceleration and temperature
+The largest force only, ignoring the others|The sum of force magnitudes with directions ignored
+It must slow down until it stops|It must accelerate in its current direction
+The force that always slows a moving object|An object's ability to create energy
+Greater mass means less inertia|Mass has no effect on inertia
+F = m/a|F = a/m
+Acceleration decreases|Acceleration stays the same
+The energy stored by a moving object|The mass contained in an object
+A change in an element's atomic number|A change of mass into force
+The magnitude of the force|The speed of the object
+The direction of the force|The distance the object has travelled
+Mass, speed or temperature|Energy, time or density
+A force acting only between objects that are separated|A force that acts only when an object is stationary
+A force that requires surfaces to touch|A force that cannot act through empty space
+Add the magnitudes regardless of direction|Subtract the smaller and point in the smaller force's direction
+Subtract their magnitudes|Multiply their magnitudes
+There are no individual forces present|All forces must act in the same direction
+No. Balanced forces occur only when an object is at rest|No. Every moving object needs a forward net force
+It must remain at constant velocity|It must have no change of speed or direction
+A moving object always needs a forward net force|An object with zero net force always slows down
+Yes. Any motion requires a forward net force|Yes. The force must increase continuously
+Yes. It is a forward force acting on every moving object|Yes. It is the same as friction
+It has less inertia|Its acceleration must always be zero
+A new forward force appears when the bus stops|The passenger's mass suddenly increases
+It removes all forces from the passenger|It increases the passenger's inertia to stop motion
+The distance travelled each second|The force acting per unit area
+Grams (g)|Newtons (N)
+Metres per second (m/s)|Newtons per second (N/s)
+1.5 N|5 N
+Acceleration increases|Acceleration stays the same
+The empty trolley has greater inertia|The force is larger just because the trolley is empty
+Paired forces act on the same object in the same direction|Only the larger object in an interaction exerts a force
+One object only|Three objects in every case
+They have the same direction|Their directions depend only on the objects' masses
+The heavier object always exerts a larger force|The faster object always exerts a larger force
+They act in the same direction|They always have unequal magnitudes
+The foot pushes the ground forward and the ground pushes the foot forward|Both forces act only on the person's foot
+The rocket needs surrounding air to push against|The gases push the rocket backward while escaping backward
+The larger object always exerts the larger force|The smaller object exerts no force

@@ -1,0 +1,4162 @@
+[
+  {
+    "id": "y9-elements-compounds",
+    "name": "Elements, Molecules and Compounds",
+    "strand": "Chemistry",
+    "questions": [
+      {
+        "q": "Define matter.",
+        "a": "Anything that has mass and takes up space.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Anything that is visible, including light",
+          "Anything that transfers energy, including sound"
+        ]
+      },
+      {
+        "q": "Define an atom.",
+        "a": "The smallest particle of an element that retains that element's identity.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The smallest particle of a compound",
+          "A group of different elements mixed together"
+        ]
+      },
+      {
+        "q": "Define an element.",
+        "a": "A substance made of only one type of atom.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A substance containing several types of atom bonded together",
+          "A substance made of different materials physically mixed"
+        ]
+      },
+      {
+        "q": "Define a molecule.",
+        "a": "A group of atoms chemically bonded and acting as one particle.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A single atom with no bonds",
+          "A mixture of unbonded substances"
+        ]
+      },
+      {
+        "q": "Define a compound.",
+        "a": "A substance made of two or more different elements chemically bonded in a fixed ratio.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Two or more elements mixed in any ratio",
+          "Two or more atoms of the same element bonded together"
+        ]
+      },
+      {
+        "q": "Explain why O₂ is an element rather than a compound.",
+        "a": "It contains only one type of atom.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It has two different types of atom",
+          "Any particle with two atoms must be a compound"
+        ]
+      },
+      {
+        "q": "State what a subscript in a formula shows.",
+        "a": "The number of atoms of the preceding element in one molecule or formula unit.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The number of molecules in the whole sample",
+          "The total number of different elements present"
+        ]
+      },
+      {
+        "q": "Explain why NaCl is not described as a discrete molecule.",
+        "a": "It forms an extended ionic lattice; the formula shows the simplest ratio.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It contains only one type of atom",
+          "It consists of separate sodium chloride molecules"
+        ]
+      },
+      {
+        "q": "Which two properties define matter?",
+        "a": "It has mass and takes up space.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "It has colour and a fixed shape",
+          "It gives out light and transfers heat"
+        ]
+      },
+      {
+        "q": "Name the tiny particles that make up all ordinary matter.",
+        "a": "Atoms",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Cells",
+          "Molecules of water only"
+        ]
+      },
+      {
+        "q": "State what sub-microscopic means when describing atoms.",
+        "a": "They are too small to see directly with an ordinary microscope.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They are large enough to see with the naked eye",
+          "They can always be seen with a school light microscope"
+        ]
+      },
+      {
+        "q": "State whether the space between particles is completely filled with matter. Explain your answer.",
+        "a": "No. The particle model includes empty space between particles.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. The gaps are always full of air particles",
+          "Yes. Matter completely fills every gap"
+        ]
+      },
+      {
+        "q": "Describe the changes when a gas is compressed.",
+        "a": "The spacing between its particles decreases, not the particle size.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The individual particles shrink",
+          "The number of particles increases"
+        ]
+      },
+      {
+        "q": "State what a solid particle diagram should show.",
+        "a": "Particles close together in a fixed arrangement",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Particles far apart and free to move randomly",
+          "Particles close together and freely flowing past each other"
+        ]
+      },
+      {
+        "q": "State what a liquid particle diagram should show.",
+        "a": "Particles close together with an irregular arrangement and able to move past one another",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Particles fixed in a regular arrangement",
+          "Particles far apart with no attraction"
+        ]
+      },
+      {
+        "q": "State what a gas particle diagram should show.",
+        "a": "Particles far apart and moving in different directions",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Particles touching in fixed positions",
+          "Particles close together and sliding past each other"
+        ]
+      },
+      {
+        "q": "Name the table that lists all known chemical elements.",
+        "a": "On the periodic table",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "On a food web",
+          "On a reactivity series only"
+        ]
+      },
+      {
+        "q": "State what a chemical symbol identifies.",
+        "a": "An element",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "A whole mixture",
+          "A type of chemical reaction"
+        ]
+      },
+      {
+        "q": "Describe how a two-letter element symbol is capitalised.",
+        "a": "The first letter is uppercase and the second is lowercase.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Both letters are uppercase",
+          "The first letter is lowercase and the second is uppercase"
+        ]
+      },
+      {
+        "q": "Describe how a particle diagram can show a pure element.",
+        "a": "Every particle contains only the same type of atom.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Every particle has two different atom types",
+          "Several different unbonded particle types are present"
+        ]
+      },
+      {
+        "q": "State whether a molecule of an element can contain two or more atoms. Explain your answer.",
+        "a": "Yes. An elemental molecule such as O₂ still contains only one atom type.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "No. Two bonded atoms must always be different elements",
+          "No. An element must consist of isolated atoms"
+        ]
+      },
+      {
+        "q": "Describe how a compound can be recognised in a particle diagram.",
+        "a": "Each compound particle contains two or more different atom types bonded in a fixed ratio.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "All particles contain only one type of atom",
+          "Different atom types are present but never bonded"
+        ]
+      },
+      {
+        "q": "State whether a molecule can be an element. Explain your answer.",
+        "a": "Yes, if all its atoms are the same element.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "No. All molecules are compounds",
+          "No. Elements cannot form chemical bonds"
+        ]
+      },
+      {
+        "q": "Explain why carbon dioxide is both a molecule and a compound.",
+        "a": "It is a bonded group containing atoms of two different elements.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It is a physical mixture of carbon and oxygen",
+          "It contains two atoms of the same element"
+        ]
+      },
+      {
+        "q": "Define chemically bonded.",
+        "a": "Atoms are joined through a chemical interaction as part of the same particle or structure.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Atoms are simply touching with no chemical interaction",
+          "Atoms are separated by empty space and never interact"
+        ]
+      },
+      {
+        "q": "State what a fixed ratio means in a compound.",
+        "a": "The elements occur in the same numerical proportion in that compound.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The amount of each element can vary freely",
+          "Every compound contains equal numbers of each atom type"
+        ]
+      },
+      {
+        "q": "State what a chemical formula tells you about the elements in a substance.",
+        "a": "Which elements are present in the substance",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "The exact temperature of the substance",
+          "The colour and state of the substance"
+        ]
+      },
+      {
+        "q": "State the number of atoms represented by an element symbol with no subscript in a chemical formula.",
+        "a": "One",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Zero",
+          "Two"
+        ]
+      },
+      {
+        "q": "State how many hydrogen atoms are represented in H₂O.",
+        "a": "Two",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "One",
+          "Three"
+        ]
+      },
+      {
+        "q": "State how many oxygen atoms are represented in H₂O.",
+        "a": "One",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Two",
+          "Three"
+        ]
+      },
+      {
+        "q": "State what brackets mean in a chemical formula.",
+        "a": "The group inside the brackets is treated together and multiplied by the following subscript.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "The group inside is added only once regardless of the subscript",
+          "Only the first element inside is multiplied"
+        ]
+      },
+      {
+        "q": "State what a coefficient in front of a formula multiplies.",
+        "a": "The whole formula",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the final element in the formula",
+          "Only the first element in the formula"
+        ]
+      },
+      {
+        "q": "Explain why NaCl represents a ratio rather than one molecule.",
+        "a": "Sodium chloride forms a repeating ionic lattice.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It consists of isolated NaCl molecules",
+          "Sodium and chlorine are mixed in a variable ratio"
+        ]
+      },
+      {
+        "q": "Define a scientific model.",
+        "a": "A simplified representation used to explain, predict or communicate an idea",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A perfect full-sized copy containing every detail",
+          "A guess that cannot be checked against evidence"
+        ]
+      },
+      {
+        "q": "Explain why a formula might be a useful model.",
+        "a": "It communicates which elements are present and their numerical proportions.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It shows the exact three-dimensional shape of every substance",
+          "It shows only the substance's colour"
+        ]
+      },
+      {
+        "q": "Explain why a particle diagram might be a useful model.",
+        "a": "It can represent particle types, spacing, arrangement and bonding.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It shows atoms at their actual size on the page",
+          "It proves that particles have the colours used in the drawing"
+        ]
+      },
+      {
+        "q": "Explain why a model is not a perfect copy of a substance.",
+        "a": "It simplifies selected features and leaves other features out.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It includes every detail at exactly the correct scale",
+          "The simplified features can never be used to make predictions"
+        ]
+      },
+      {
+        "q": "Describe how a pure substance appears in a particle diagram.",
+        "a": "Only one type of particle is present.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Several different particle types are present",
+          "Every particle must contain only one atom"
+        ]
+      },
+      {
+        "q": "Describe how a mixture appears in a particle diagram.",
+        "a": "More than one type of particle is present and the substances are not bonded into a new substance.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only one type of particle is present",
+          "All components are chemically bonded in a fixed ratio"
+        ]
+      },
+      {
+        "q": "State whether a sample that looks uniform can still be a mixture. Explain your answer.",
+        "a": "Yes. Air and salt water are mixtures even though they can look uniform.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "No. Every mixture must have visible layers",
+          "No. A uniform appearance proves that a substance is pure"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-periodic-table",
+    "name": "Periodic Table",
+    "strand": "Chemistry",
+    "questions": [
+      {
+        "q": "Name the vertical columns of the periodic table.",
+        "a": "Groups",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Periods",
+          "Rows"
+        ]
+      },
+      {
+        "q": "Name the horizontal rows of the periodic table.",
+        "a": "Periods",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Groups",
+          "Families"
+        ]
+      },
+      {
+        "q": "State one piece of information shown in an element's periodic-table box.",
+        "a": "Its element symbol or atomic number",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Its current room temperature",
+          "Its price per kilogram"
+        ]
+      },
+      {
+        "q": "Describe how Group 17 reactivity changes down the group.",
+        "a": "It decreases.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It increases",
+          "It stays the same for every element"
+        ]
+      },
+      {
+        "q": "State where most metals are found on the periodic table.",
+        "a": "On the left and in the centre.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Only on the far right",
+          "Only in the top row"
+        ]
+      },
+      {
+        "q": "Describe how Group 1 reactivity changes down the group.",
+        "a": "It increases.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "It decreases",
+          "It stays the same for every element"
+        ]
+      },
+      {
+        "q": "Identify which group contains the noble gases.",
+        "a": "Group 18",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Group 1",
+          "Group 17"
+        ]
+      },
+      {
+        "q": "Explain why Mendeleev left gaps in his table.",
+        "a": "He predicted that undiscovered elements would fill them and have particular properties.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "He had no way to predict properties of missing elements",
+          "He wanted every group to have only three elements"
+        ]
+      },
+      {
+        "q": "Explain why elements are arranged in a periodic table.",
+        "a": "The arrangement reveals repeating patterns in their physical and chemical properties.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It arranges elements by their colour only",
+          "It places all elements in alphabetical order"
+        ]
+      },
+      {
+        "q": "State what elements in one vertical group tend to share.",
+        "a": "Similar chemical properties",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "The same atomic number",
+          "Exactly the same mass"
+        ]
+      },
+      {
+        "q": "Name the scientist who developed an early periodic table that successfully predicted missing elements.",
+        "a": "Dmitri Mendeleev",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Isaac Newton",
+          "Charles Darwin"
+        ]
+      },
+      {
+        "q": "Explain why Mendeleev's gaps were scientifically useful.",
+        "a": "They allowed him to predict the properties of elements that had not yet been discovered.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "They showed that no more elements could exist",
+          "They proved that atomic numbers were all identical"
+        ]
+      },
+      {
+        "q": "Describe how the periodic table can be used as a scientific model.",
+        "a": "Position and patterns help classify elements and predict properties.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It shows the actual size of every atom",
+          "It lists elements randomly without useful patterns"
+        ]
+      },
+      {
+        "q": "Describe how elements are broadly classified.",
+        "a": "As metals or non-metals",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "As acids or alkalis only",
+          "As organisms or minerals only"
+        ]
+      },
+      {
+        "q": "State one physical property commonly shown by metals.",
+        "a": "For example, lustre, malleability, ductility, high conductivity or a relatively high melting point",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Poor electrical conductivity",
+          "Brittleness and no lustre in all cases"
+        ]
+      },
+      {
+        "q": "State one physical property commonly shown by non-metals.",
+        "a": "For example, low conductivity, a lower boiling point or being a gas at room temperature",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "High electrical conductivity",
+          "Easy drawing into metal wires"
+        ]
+      },
+      {
+        "q": "Explain why metals are often used for electrical wiring.",
+        "a": "Many metals conduct electricity and can be drawn into wires.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They prevent electrical current from flowing",
+          "They are all liquid at room temperature"
+        ]
+      },
+      {
+        "q": "Identify which name is given to the Group 1 elements.",
+        "a": "Alkali metals",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Noble gases",
+          "Halogens"
+        ]
+      },
+      {
+        "q": "Name one Group 1 element.",
+        "a": "Lithium, sodium, potassium, rubidium or caesium",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Chlorine",
+          "Calcium"
+        ]
+      },
+      {
+        "q": "Explain why Group 1 metals are stored under oil.",
+        "a": "They are very reactive, so the oil limits contact with air and water.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Oil makes them completely unreactive forever",
+          "Oil increases their contact with water"
+        ]
+      },
+      {
+        "q": "Describe how the reaction with water changes from lithium to sodium to potassium.",
+        "a": "It becomes more vigorous down the group.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It becomes less vigorous down the group",
+          "All three react at exactly the same rate"
+        ]
+      },
+      {
+        "q": "Identify which gas forms when a Group 1 metal reacts with water.",
+        "a": "Hydrogen",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Oxygen",
+          "Carbon dioxide"
+        ]
+      },
+      {
+        "q": "Identify which type of compound forms when a Group 1 metal reacts with water.",
+        "a": "A metal hydroxide",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A metal carbonate",
+          "A metal chloride"
+        ]
+      },
+      {
+        "q": "State one physical property common to Group 1 metals.",
+        "a": "They are soft, low-density metals with relatively low melting points.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They are all very hard with extremely high melting points",
+          "They are all gases at room temperature"
+        ]
+      },
+      {
+        "q": "Identify which name is given to the Group 2 elements.",
+        "a": "Alkaline earth metals",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Alkali metals",
+          "Halogens"
+        ]
+      },
+      {
+        "q": "Compare the reactivity of Group 2 and Group 1 metals in the same period.",
+        "a": "Group 2 metals are reactive but less reactive than Group 1 metals.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Group 2 metals are always more reactive",
+          "Both groups have exactly the same reactivity"
+        ]
+      },
+      {
+        "q": "Describe how reactivity changes down Group 2.",
+        "a": "It increases.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "It decreases",
+          "It stays the same"
+        ]
+      },
+      {
+        "q": "Identify which reacts more vigorously with hydrochloric acid: magnesium or calcium.",
+        "a": "Calcium, because it is lower in Group 2.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Magnesium, because it is higher in Group 2",
+          "Both always react at the same rate"
+        ]
+      },
+      {
+        "q": "State the products when a Group 2 metal reacts with an acid.",
+        "a": "A salt and hydrogen gas",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A salt and oxygen gas",
+          "A salt and carbon dioxide gas"
+        ]
+      },
+      {
+        "q": "Describe a positive test result for hydrogen gas.",
+        "a": "A lit splint gives a squeaky pop.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A glowing splint relights",
+          "Limewater turns cloudy"
+        ]
+      },
+      {
+        "q": "Identify which name is given to the Group 17 elements.",
+        "a": "Halogens",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Noble gases",
+          "Alkaline earth metals"
+        ]
+      },
+      {
+        "q": "Name one halogen.",
+        "a": "Fluorine, chlorine, bromine or iodine",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Sodium",
+          "Argon"
+        ]
+      },
+      {
+        "q": "Describe how reactivity changes down Group 17.",
+        "a": "It decreases.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "It increases",
+          "It stays the same"
+        ]
+      },
+      {
+        "q": "Describe how the reactivity of Group 17 elements changes down the periodic table.",
+        "a": "A halogen higher up Group 17 is more reactive than one lower down.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A halogen lower down is more reactive",
+          "Every halogen has the same reactivity"
+        ]
+      },
+      {
+        "q": "Give one use of a Group 17 element (halogen).",
+        "a": "For example, chlorine is used to disinfect water or iodine is used as an antiseptic.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Helium in a balloon",
+          "Copper in electrical wiring"
+        ]
+      },
+      {
+        "q": "Describe what happens when iodine is warmed.",
+        "a": "It forms a purple vapour.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "It forms a green vapour",
+          "It turns into a magnetic metal"
+        ]
+      },
+      {
+        "q": "What name is given to Group 18 elements?",
+        "a": "Noble gases",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Halogens",
+          "Alkali metals"
+        ]
+      },
+      {
+        "q": "Explain why noble gases are used in balloons, signs or welding.",
+        "a": "They are non-reactive under normal conditions, so they are useful when reactions are unwanted.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They react rapidly with other materials",
+          "They are all highly flammable"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-traits",
+    "name": "Determining Organism Traits",
+    "strand": "Biology",
+    "questions": [
+      {
+        "q": "Define a phenotype.",
+        "a": "The observable characteristics or traits of an organism.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the genetic information an organism inherits",
+          "Only the environment surrounding an organism"
+        ]
+      },
+      {
+        "q": "Which two broad influences shape phenotype?",
+        "a": "Genes and the environment",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Genes and chance alone, with no environmental influence",
+          "Environment alone, with no genetic influence"
+        ]
+      },
+      {
+        "q": "Define a gene.",
+        "a": "A section of DNA containing instructions for making a protein or part of a protein.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A whole cell containing many nuclei",
+          "A protein containing instructions for making DNA"
+        ]
+      },
+      {
+        "q": "Describe how genes influence traits.",
+        "a": "Genes provide instructions for proteins that affect structures and cell functions.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Genes directly change every trait without involving proteins",
+          "Genes affect traits only after the organism dies"
+        ]
+      },
+      {
+        "q": "Define gene expression.",
+        "a": "The activity of a gene that results in its product being made.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A gene moving from the nucleus into another organism",
+          "A gene disappearing whenever its product is made"
+        ]
+      },
+      {
+        "q": "Give one environmental factor that can influence trait expression.",
+        "a": "For example, nutrition, temperature, light or soil pH.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "The chemical symbol for an element",
+          "The atomic number of a metal"
+        ]
+      },
+      {
+        "q": "Explain why 'one gene for each whole trait' is often inaccurate.",
+        "a": "Most traits are influenced by many genes and environmental factors.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Each whole trait is always controlled by exactly one gene",
+          "Environmental factors never affect traits"
+        ]
+      },
+      {
+        "q": "State what a fair investigation of an environmental signal should identify.",
+        "a": "An independent variable, dependent variable, control variables and repeats.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the desired result and no measured variables",
+          "Several variables to change together without controls"
+        ]
+      },
+      {
+        "q": "Define an observable trait.",
+        "a": "A characteristic that can be seen or measured",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "A section of DNA that is never expressed",
+          "Only a characteristic that cannot be measured"
+        ]
+      },
+      {
+        "q": "Explain why two organisms with similar inherited information can show different traits.",
+        "a": "Environmental conditions can affect how traits develop or are expressed.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Identical inherited information guarantees identical traits in every environment",
+          "Environmental conditions replace all inherited DNA"
+        ]
+      },
+      {
+        "q": "State where most DNA is found in a plant or animal cell.",
+        "a": "In chromosomes in the nucleus",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "In the cell membrane",
+          "Dissolved freely in the cytoplasm only"
+        ]
+      },
+      {
+        "q": "Define a chromosome.",
+        "a": "A structure made of DNA that carries many genes",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A protein that contains no DNA",
+          "A single atom found in the nucleus"
+        ]
+      },
+      {
+        "q": "Describe how nucleus, chromosome, DNA and gene are related.",
+        "a": "The nucleus contains chromosomes; chromosomes are made of DNA; genes are sections of DNA.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Genes contain nuclei, and nuclei are made of chromosomes",
+          "Chromosomes contain cells, and DNA is made of nuclei"
+        ]
+      },
+      {
+        "q": "State what a gene contains instructions for making.",
+        "a": "Instructions for making a protein or part of a protein",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Instructions for making a whole ecosystem",
+          "Instructions for making individual atoms"
+        ]
+      },
+      {
+        "q": "Describe how a protein can affect an observable trait.",
+        "a": "Proteins influence cell structures and processes that contribute to the trait.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Proteins have no effect on cell processes",
+          "Proteins influence traits only by changing the weather"
+        ]
+      },
+      {
+        "q": "State whether every trait is controlled by a single gene. Explain your answer.",
+        "a": "No. Most traits are influenced by many genes and the environment.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Every trait has exactly one controlling gene",
+          "Yes. Environmental factors cannot influence any trait"
+        ]
+      },
+      {
+        "q": "State what the information in an active gene is used to produce.",
+        "a": "Its information is being used to make its product.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Its information is destroyed instead of used",
+          "Its information automatically leaves the organism"
+        ]
+      },
+      {
+        "q": "Describe how soil pH can affect hydrangea flower colour.",
+        "a": "Soil conditions can influence processes and gene activity involved in producing flower pigments.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Soil pH paints pigments directly onto the petals",
+          "Soil pH cannot influence flower colour"
+        ]
+      },
+      {
+        "q": "Describe how temperature can affect traits in some organisms.",
+        "a": "Temperature can act as an environmental signal during development.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Temperature cannot affect development or traits",
+          "Temperature changes every inherited gene into a new gene"
+        ]
+      },
+      {
+        "q": "Describe how nutrition can influence phenotype.",
+        "a": "Nutrient availability can affect growth, development and the activity of cell processes.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Nutrition affects only the environment and never the organism",
+          "Nutrients replace every inherited gene"
+        ]
+      },
+      {
+        "q": "Explain why phenotype should not be described as caused only by DNA.",
+        "a": "Many phenotypes result from interactions between genetic information and the environment.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "All phenotypes depend only on DNA",
+          "The environment has no role in phenotype"
+        ]
+      },
+      {
+        "q": "Define inherited variation.",
+        "a": "Differences linked to genetic information received from parents",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Differences caused only by diet after birth",
+          "Differences caused only by temperature during development"
+        ]
+      },
+      {
+        "q": "Define environmental variation.",
+        "a": "Differences produced by conditions or experiences in the environment",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Differences caused only by genes received from parents",
+          "Differences that cannot be influenced by surroundings"
+        ]
+      },
+      {
+        "q": "Define the independent variable in an investigation.",
+        "a": "The factor deliberately changed",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The outcome that is measured",
+          "A factor deliberately kept constant"
+        ]
+      },
+      {
+        "q": "Define the dependent variable in an investigation.",
+        "a": "The outcome measured or observed",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The factor deliberately changed",
+          "A factor deliberately kept constant"
+        ]
+      },
+      {
+        "q": "Define control variables.",
+        "a": "Factors kept the same so the test is fair",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Factors deliberately changed in every trial",
+          "Outcomes measured to see what happened"
+        ]
+      },
+      {
+        "q": "Explain why repeats are needed in an investigation of environmental effects.",
+        "a": "They show variation and improve confidence that a pattern is reliable.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They guarantee that all results will be identical",
+          "They remove every systematic error automatically"
+        ]
+      },
+      {
+        "q": "Explain why an investigation should use an appropriate range of environmental conditions.",
+        "a": "A suitable range makes it possible to detect and describe a trend.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Only one environmental condition is enough to show any trend",
+          "A range prevents any changes being detected"
+        ]
+      },
+      {
+        "q": "State what a results table should contain.",
+        "a": "Clearly labelled variables, units where needed, and recorded repeat measurements or observations",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Unlabelled values without units or repeats",
+          "Only the conclusion, without measured values"
+        ]
+      },
+      {
+        "q": "Define a trend in data.",
+        "a": "A consistent pattern or relationship between variables",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A single unusual result far from the others",
+          "A prediction made before any results are collected"
+        ]
+      },
+      {
+        "q": "Explain why a conclusion must refer to data.",
+        "a": "The data are the evidence for the claimed effect on the trait.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The conclusion is evidence even if the data disagree",
+          "Data are useful only if they match the prediction"
+        ]
+      },
+      {
+        "q": "Define continuous variation.",
+        "a": "Variation that can take any value across a range",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Variation that can fall only into separate categories",
+          "Variation found only in organisms with identical traits"
+        ]
+      },
+      {
+        "q": "Give one example of a continuously varying trait.",
+        "a": "For example, height or mass",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "ABO blood group",
+          "Presence or absence of a genetic condition"
+        ]
+      },
+      {
+        "q": "Define discontinuous variation.",
+        "a": "Variation that falls into separate categories",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Variation that takes every possible value in a range",
+          "Variation caused only by measurement error"
+        ]
+      },
+      {
+        "q": "Identify which graph is suitable for separate trait categories.",
+        "a": "A bar chart",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A line graph joining category names in order",
+          "A scatter graph with arbitrary numerical codes for categories"
+        ]
+      },
+      {
+        "q": "Identify which graph is suitable for continuous measurements grouped into intervals.",
+        "a": "A histogram",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A pie chart of every individual measurement",
+          "A bar chart with gaps between adjacent numerical intervals"
+        ]
+      },
+      {
+        "q": "Explain why a model linking genes, proteins and environment is useful.",
+        "a": "It shows how several influences can combine to produce a phenotype.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It proves that one gene controls every whole trait",
+          "It removes the need to consider environmental influences"
+        ]
+      },
+      {
+        "q": "State one limitation of a simple trait model.",
+        "a": "It may make a multi-gene, environmentally influenced trait look simpler than it really is.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It includes every influence and has no limitations",
+          "It proves environmental conditions are irrelevant"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-reactions",
+    "name": "Chemical Reactions",
+    "strand": "Chemistry",
+    "questions": [
+      {
+        "q": "Name the starting substances in a reaction.",
+        "a": "Reactants",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Products",
+          "Catalysts only"
+        ]
+      },
+      {
+        "q": "Name the substances formed.",
+        "a": "Products",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Reactants",
+          "Indicators only"
+        ]
+      },
+      {
+        "q": "State what the arrow in a chemical equation means.",
+        "a": "Reacts to form",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Is physically mixed with",
+          "Has exactly the same properties as"
+        ]
+      },
+      {
+        "q": "State the condition that makes a chemical equation balanced.",
+        "a": "When each type of atom has the same total number on both sides.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "When both sides have the same number of molecules only",
+          "When every coefficient is the same"
+        ]
+      },
+      {
+        "q": "Explain why subscripts must not be changed when balancing a chemical equation.",
+        "a": "Changing a subscript changes the identity of the substance.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Subscripts can always be changed without affecting substances",
+          "Subscripts change only the temperature of the reaction"
+        ]
+      },
+      {
+        "q": "Define an exothermic reaction.",
+        "a": "A reaction that transfers energy to the surroundings.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A reaction that takes energy from the surroundings",
+          "A reaction that never transfers energy"
+        ]
+      },
+      {
+        "q": "State the products of complete combustion of a hydrocarbon.",
+        "a": "Carbon dioxide and water",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Carbon monoxide and hydrogen only",
+          "Carbon and oxygen only"
+        ]
+      },
+      {
+        "q": "Describe what occurs in a displacement reaction.",
+        "a": "A more reactive metal replaces a less reactive metal in a compound.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A less reactive metal always replaces a more reactive one",
+          "Any two metals exchange places regardless of reactivity"
+        ]
+      },
+      {
+        "q": "Name one observation that can provide evidence of a chemical reaction.",
+        "a": "For example, gas formation, a precipitate, temperature change or colour change",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Only a change of container",
+          "Only a change in position of the beaker"
+        ]
+      },
+      {
+        "q": "Explain why gas bubbles can be evidence of a reaction.",
+        "a": "A new gas substance may be forming.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Bubbles prove that atoms are being destroyed",
+          "Bubbles always mean a liquid is freezing"
+        ]
+      },
+      {
+        "q": "Define a precipitate.",
+        "a": "A new insoluble solid formed during a reaction",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A gas released by heating a liquid",
+          "A substance that dissolves completely during mixing"
+        ]
+      },
+      {
+        "q": "Explain why a temperature change can be evidence of a chemical reaction.",
+        "a": "Energy may be transferred as new substances form.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Atoms gain mass whenever the temperature rises",
+          "Temperature changes prove no new substances have formed"
+        ]
+      },
+      {
+        "q": "Define a reactant.",
+        "a": "A starting substance in a chemical reaction",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "A substance formed at the end of a reaction",
+          "A substance that can never change chemically"
+        ]
+      },
+      {
+        "q": "Define a product.",
+        "a": "A new substance formed in a chemical reaction",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "A starting substance that is used in a reaction",
+          "Only an insoluble solid formed in a reaction"
+        ]
+      },
+      {
+        "q": "State what a word equation communicates.",
+        "a": "The names of the reactants and products in a reaction",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the colours of the substances",
+          "Only the masses of the containers"
+        ]
+      },
+      {
+        "q": "Describe how the arrow in a word equation can be read aloud.",
+        "a": "Reacts to form",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Is identical to",
+          "Has the same number of molecules as"
+        ]
+      },
+      {
+        "q": "State where reactants are written in a chemical equation.",
+        "a": "On the left of the arrow",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "On the right of the arrow",
+          "Always above the arrow"
+        ]
+      },
+      {
+        "q": "State where products are written in a chemical equation.",
+        "a": "On the right of the arrow",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "On the left of the arrow",
+          "Always below the arrow"
+        ]
+      },
+      {
+        "q": "State what must be equal on both sides of a balanced chemical equation.",
+        "a": "The number of atoms of each element",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The number of molecules regardless of atom types",
+          "The number of reactants and products listed"
+        ]
+      },
+      {
+        "q": "Identify which number can be changed to balance an equation.",
+        "a": "A coefficient in front of a formula",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A subscript within a formula",
+          "An element's atomic number"
+        ]
+      },
+      {
+        "q": "Explain why changing a subscript is incorrect when balancing a chemical equation.",
+        "a": "It changes the identity or formula of the substance.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It changes only the size of the written text",
+          "It changes only the number of molecules, never their identity"
+        ]
+      },
+      {
+        "q": "Describe how an equation should be checked after coefficients are added.",
+        "a": "Count the atoms of every element on both sides again.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Check only that both sides have the same number of letters",
+          "Count only one chosen element and ignore the others"
+        ]
+      },
+      {
+        "q": "Describe how a balanced equation represents conservation of atoms.",
+        "a": "It shows that the same number of each type of atom is present before and after the reaction.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Atoms disappear and new atom types are created",
+          "Every reactant molecule survives unchanged"
+        ]
+      },
+      {
+        "q": "State what the pH scale tells us about an aqueous solution.",
+        "a": "Whether a solution is acidic, neutral or alkaline",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The mass of dissolved material only",
+          "The electrical conductivity only"
+        ]
+      },
+      {
+        "q": "State what an indicator can show.",
+        "a": "A colour that gives evidence about a solution's pH range",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The exact identity of every dissolved substance",
+          "The total number of molecules in the solution"
+        ]
+      },
+      {
+        "q": "Identify which pH is neutral.",
+        "a": "7",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "0",
+          "14"
+        ]
+      },
+      {
+        "q": "Identify which pH values are acidic.",
+        "a": "Below 7",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Above 7",
+          "Exactly 7"
+        ]
+      },
+      {
+        "q": "Identify which pH values are alkaline.",
+        "a": "Above 7",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Below 7",
+          "Exactly 7"
+        ]
+      },
+      {
+        "q": "State the products of neutralisation between an acid and a base.",
+        "a": "A salt and water",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A salt and hydrogen",
+          "A salt and carbon dioxide"
+        ]
+      },
+      {
+        "q": "Identify which gas forms when a suitable metal reacts with an acid.",
+        "a": "Hydrogen",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Oxygen",
+          "Carbon dioxide"
+        ]
+      },
+      {
+        "q": "Identify which gas forms when an acid reacts with a carbonate.",
+        "a": "Carbon dioxide",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Hydrogen",
+          "Oxygen"
+        ]
+      },
+      {
+        "q": "Describe what happens to the surroundings during an exothermic reaction.",
+        "a": "They gain energy and usually warm up.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They lose energy and usually cool down",
+          "Their energy and temperature must stay unchanged"
+        ]
+      },
+      {
+        "q": "Describe what happens to the surroundings during an endothermic reaction.",
+        "a": "They lose energy and usually cool down.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They gain energy and usually warm up",
+          "They must give out light without any energy transfer"
+        ]
+      },
+      {
+        "q": "A reaction mixture warms its surroundings. Classify the reaction as exothermic or endothermic.",
+        "a": "Exothermic",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Endothermic",
+          "Neither: no energy transfer occurs"
+        ]
+      },
+      {
+        "q": "A reaction mixture cools its surroundings. Classify the reaction as exothermic or endothermic.",
+        "a": "Endothermic",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Exothermic",
+          "Neither: cooling means no energy transfer"
+        ]
+      },
+      {
+        "q": "Name the two reactants required for combustion.",
+        "a": "A fuel and oxygen",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "A fuel and nitrogen",
+          "Carbon dioxide and water"
+        ]
+      },
+      {
+        "q": "Identify which energy changes are commonly observed in combustion.",
+        "a": "Heat and light are released.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Heat and light are absorbed from the surroundings",
+          "No energy is transferred to the surroundings"
+        ]
+      },
+      {
+        "q": "Identify which forms during complete combustion of a hydrocarbon.",
+        "a": "Carbon dioxide and water",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Carbon monoxide and hydrogen only",
+          "A salt and water only"
+        ]
+      },
+      {
+        "q": "State when one metal can displace another from a compound solution.",
+        "a": "When the added metal is more reactive than the metal in the compound.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "When the added metal is less reactive",
+          "Whenever the two metals have different colours"
+        ]
+      },
+      {
+        "q": "Describe how a displacement reaction can compare metal reactivity.",
+        "a": "If one metal replaces another, the added metal is more reactive.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "The replaced metal is always more reactive",
+          "Any metal that dissolves must be less reactive"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-forces",
+    "name": "The Effect of Forces",
+    "strand": "Physics",
+    "questions": [
+      {
+        "q": "State the SI unit of force.",
+        "a": "Newton (N)",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Kilogram (kg)",
+          "Pascal (Pa)"
+        ]
+      },
+      {
+        "q": "State what the direction and length of a force arrow represent.",
+        "a": "The direction and relative magnitude of the force.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The object's speed and mass",
+          "The object's acceleration and temperature"
+        ]
+      },
+      {
+        "q": "Define net force.",
+        "a": "The overall force after all forces and directions are combined.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The largest force only, ignoring the others",
+          "The sum of force magnitudes with directions ignored"
+        ]
+      },
+      {
+        "q": "Describe what happens when the net force is zero.",
+        "a": "An object remains at rest or moves at constant velocity in a straight line.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It must slow down until it stops",
+          "It must accelerate in its current direction"
+        ]
+      },
+      {
+        "q": "Define inertia.",
+        "a": "An object's resistance to a change in its motion.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The force that always slows a moving object",
+          "An object's ability to create energy"
+        ]
+      },
+      {
+        "q": "Describe how mass affects inertia.",
+        "a": "Greater mass means greater inertia.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Greater mass means less inertia",
+          "Mass has no effect on inertia"
+        ]
+      },
+      {
+        "q": "State Newton's Second Law equation.",
+        "a": "F = ma",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "F = m/a",
+          "F = a/m"
+        ]
+      },
+      {
+        "q": "Predict how acceleration changes when net force increases while mass stays constant.",
+        "a": "Acceleration increases.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Acceleration decreases",
+          "Acceleration stays the same"
+        ]
+      },
+      {
+        "q": "Define a force.",
+        "a": "A push or pull caused by an interaction between objects",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "The energy stored by a moving object",
+          "The mass contained in an object"
+        ]
+      },
+      {
+        "q": "Name one change a force can cause.",
+        "a": "A change in speed, direction or shape",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "A change in an element's atomic number",
+          "A change of mass into force"
+        ]
+      },
+      {
+        "q": "State what the arrowhead shows in a force diagram.",
+        "a": "The direction of the force",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "The magnitude of the force",
+          "The speed of the object"
+        ]
+      },
+      {
+        "q": "State what the length of an arrow shows in a force diagram.",
+        "a": "The relative magnitude of the force",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "The direction of the force",
+          "The distance the object has travelled"
+        ]
+      },
+      {
+        "q": "Name one common force used in the force diagrams.",
+        "a": "An applied push or pull, friction, or weight",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Mass, speed or temperature",
+          "Energy, time or density"
+        ]
+      },
+      {
+        "q": "Define a contact force.",
+        "a": "A force caused by an interaction between objects that are touching",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A force acting only between objects that are separated",
+          "A force that acts only when an object is stationary"
+        ]
+      },
+      {
+        "q": "Define a non-contact force.",
+        "a": "A force that acts between objects without direct contact",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A force that requires surfaces to touch",
+          "A force that cannot act through empty space"
+        ]
+      },
+      {
+        "q": "Describe how net force is found for forces acting in opposite directions.",
+        "a": "Subtract the smaller magnitude from the larger and use the direction of the larger force.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Add the magnitudes regardless of direction",
+          "Subtract the smaller and point in the smaller force's direction"
+        ]
+      },
+      {
+        "q": "Describe how net force is found for forces acting in the same direction.",
+        "a": "Add their magnitudes.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Subtract their magnitudes",
+          "Multiply their magnitudes"
+        ]
+      },
+      {
+        "q": "Define balanced forces.",
+        "a": "The forces combine to give a net force of zero.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "There are no individual forces present",
+          "All forces must act in the same direction"
+        ]
+      },
+      {
+        "q": "State whether a moving object can have balanced forces. Explain your answer.",
+        "a": "Yes. It can move at constant velocity in a straight line.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "No. Balanced forces occur only when an object is at rest",
+          "No. Every moving object needs a forward net force"
+        ]
+      },
+      {
+        "q": "Describe what happens when the net force is non-zero.",
+        "a": "The object's speed and/or direction changes.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It must remain at constant velocity",
+          "It must have no change of speed or direction"
+        ]
+      },
+      {
+        "q": "State Newton's First Law.",
+        "a": "With zero net force, an object stays at rest or moves at constant velocity in a straight line.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A moving object always needs a forward net force",
+          "An object with zero net force always slows down"
+        ]
+      },
+      {
+        "q": "State whether a force is required to keep an object moving at constant velocity. Explain your answer.",
+        "a": "No, not when the net force is zero.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Any motion requires a forward net force",
+          "Yes. The force must increase continuously"
+        ]
+      },
+      {
+        "q": "State whether inertia is a force. Explain your answer.",
+        "a": "No. It is resistance to a change in motion.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. It is a forward force acting on every moving object",
+          "Yes. It is the same as friction"
+        ]
+      },
+      {
+        "q": "Explain why a more massive object requires a greater force for the same acceleration.",
+        "a": "It has greater inertia.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It has less inertia",
+          "Its acceleration must always be zero"
+        ]
+      },
+      {
+        "q": "Explain why a passenger lurches forward when a bus stops suddenly.",
+        "a": "The passenger's inertia resists the sudden change in motion.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A new forward force appears when the bus stops",
+          "The passenger's mass suddenly increases"
+        ]
+      },
+      {
+        "q": "Describe how a seatbelt relates to Newton's First Law.",
+        "a": "It provides a force that changes the passenger's motion during a sudden stop.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It removes all forces from the passenger",
+          "It increases the passenger's inertia to stop motion"
+        ]
+      },
+      {
+        "q": "Define acceleration in Newton's second law.",
+        "a": "Acceleration is the rate of change of velocity.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The distance travelled each second",
+          "The force acting per unit area"
+        ]
+      },
+      {
+        "q": "State the SI unit of mass when using F = ma.",
+        "a": "Kilograms (kg)",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Grams (g)",
+          "Newtons (N)"
+        ]
+      },
+      {
+        "q": "State the SI unit of acceleration when using F = ma.",
+        "a": "Metres per second squared (m/s²)",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "Metres per second (m/s)",
+          "Newtons per second (N/s)"
+        ]
+      },
+      {
+        "q": "A 3 kg object accelerates at 2 m/s². Calculate the net force acting on it.",
+        "a": "6 N",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "1.5 N",
+          "5 N"
+        ]
+      },
+      {
+        "q": "Predict how acceleration changes when mass increases while net force stays constant.",
+        "a": "Acceleration decreases.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Acceleration increases",
+          "Acceleration stays the same"
+        ]
+      },
+      {
+        "q": "Explain why an empty trolley accelerates more than a full trolley under the same force.",
+        "a": "The empty trolley has less mass.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The empty trolley has greater inertia",
+          "The force is larger just because the trolley is empty"
+        ]
+      },
+      {
+        "q": "State Newton's Third Law.",
+        "a": "Interaction forces occur in pairs on different objects, in opposite directions.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Paired forces act on the same object in the same direction",
+          "Only the larger object in an interaction exerts a force"
+        ]
+      },
+      {
+        "q": "State how many objects are acted on by a Newton's third-law force pair.",
+        "a": "Two different objects",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "One object only",
+          "Three objects in every case"
+        ]
+      },
+      {
+        "q": "Describe how the directions of a Newton's Third Law pair compare.",
+        "a": "They are opposite.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "They have the same direction",
+          "Their directions depend only on the objects' masses"
+        ]
+      },
+      {
+        "q": "Describe how the magnitudes of a Newton's Third Law pair compare.",
+        "a": "They are equal.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "The heavier object always exerts a larger force",
+          "The faster object always exerts a larger force"
+        ]
+      },
+      {
+        "q": "Explain why action and reaction forces do not cancel each other.",
+        "a": "They act on different objects.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They act in the same direction",
+          "They always have unequal magnitudes"
+        ]
+      },
+      {
+        "q": "Identify which force pair helps a person walk forward.",
+        "a": "The foot pushes the ground backward and the ground pushes the foot forward.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The foot pushes the ground forward and the ground pushes the foot forward",
+          "Both forces act only on the person's foot"
+        ]
+      },
+      {
+        "q": "Describe how a rocket uses a force pair.",
+        "a": "The rocket pushes exhaust gases backward and the gases push the rocket forward.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The rocket needs surrounding air to push against",
+          "The gases push the rocket backward while escaping backward"
+        ]
+      },
+      {
+        "q": "Compare the forces that a large object and a small object exert on each other during a collision.",
+        "a": "The interaction forces on the two objects are equal in magnitude and opposite in direction.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "The larger object always exerts the larger force",
+          "The smaller object exerts no force"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-pressure-fluids",
+    "name": "Fluids and Pressure",
+    "strand": "Physics",
+    "questions": [
+      {
+        "q": "Define a fluid.",
+        "a": "A substance that can flow, including liquids and gases.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Any material with a fixed shape",
+          "Only a liquid, never a gas"
+        ]
+      },
+      {
+        "q": "Describe how liquid pressure changes with depth.",
+        "a": "It increases.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "It decreases",
+          "It stays the same at every depth"
+        ]
+      },
+      {
+        "q": "Explain why liquid pressure increases with depth.",
+        "a": "There is a greater weight of liquid above.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The water particles become larger with depth",
+          "Gravity stops acting near the surface"
+        ]
+      },
+      {
+        "q": "Describe how atmospheric pressure changes with altitude.",
+        "a": "It decreases.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "It increases",
+          "It stays the same at all heights"
+        ]
+      },
+      {
+        "q": "Explain why atmospheric pressure decreases with altitude.",
+        "a": "There is less air above, so its weight is smaller.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "There is a greater weight of air above",
+          "Air has no mass at high altitude"
+        ]
+      },
+      {
+        "q": "Define upthrust.",
+        "a": "The upward force exerted by a fluid on an object.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The downward gravitational force on an object",
+          "The mass of liquid displaced by an object"
+        ]
+      },
+      {
+        "q": "Identify which force balance occurs when an object floats at rest.",
+        "a": "Upthrust equals weight.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Upthrust is greater than weight",
+          "Weight is greater than upthrust"
+        ]
+      },
+      {
+        "q": "Explain why a model of fluid pressure is limited.",
+        "a": "It represents selected patterns but cannot reproduce every feature, scale or condition of the real system.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It reproduces every condition of the real system exactly",
+          "It cannot be used to make any predictions"
+        ]
+      },
+      {
+        "q": "Explain why liquids and gases are called fluids.",
+        "a": "They can flow.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "They always have a fixed shape",
+          "They contain no particles"
+        ]
+      },
+      {
+        "q": "Define depth.",
+        "a": "Distance below a surface",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Height above sea level",
+          "Distance along the water surface"
+        ]
+      },
+      {
+        "q": "Define altitude.",
+        "a": "Height above a reference level, such as sea level",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Distance below a water surface",
+          "The mass of air above an object"
+        ]
+      },
+      {
+        "q": "Identify where water pressure is greater: near the surface or deeper underwater.",
+        "a": "Deeper down",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Near the surface",
+          "The pressure is equal at every depth"
+        ]
+      },
+      {
+        "q": "Explain what causes the depth-pressure pattern in a liquid.",
+        "a": "The weight of the liquid above the point being considered",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The colour of the liquid above",
+          "The speed of light in the liquid"
+        ]
+      },
+      {
+        "q": "Explain why a diver experiences greater pressure when descending.",
+        "a": "The diver has a greater depth and therefore more water weight above.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The diver becomes heavier because gravity increases greatly",
+          "Water pressure decreases as the diver descends"
+        ]
+      },
+      {
+        "q": "Identify where atmospheric pressure is greater: at sea level or high on a mountain.",
+        "a": "Sea level",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "High on a mountain",
+          "The pressure is identical in both places"
+        ]
+      },
+      {
+        "q": "Explain what causes the altitude-pressure pattern in air.",
+        "a": "The changing weight of air above",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The air above changes colour",
+          "Air loses all mass above sea level"
+        ]
+      },
+      {
+        "q": "Explain why there is less atmospheric pressure high on a mountain.",
+        "a": "There is less air above, so the weight of air above is smaller.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "There is more air above the mountain",
+          "Gravity has completely stopped acting"
+        ]
+      },
+      {
+        "q": "Describe the relationship between liquid pressure and depth shown by a graph.",
+        "a": "Pressure increases as depth increases.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Pressure decreases as depth increases",
+          "Pressure is unrelated to depth"
+        ]
+      },
+      {
+        "q": "Describe the relationship between atmospheric pressure and altitude shown by a graph.",
+        "a": "Pressure decreases as altitude increases.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Pressure increases as altitude increases",
+          "Pressure stays fixed at all altitudes"
+        ]
+      },
+      {
+        "q": "Describe how a demonstration can provide evidence about fluid pressure.",
+        "a": "Its observations can show a consistent pressure pattern as depth or altitude changes.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "One observation guarantees every possible explanation",
+          "Only the appearance of the apparatus matters"
+        ]
+      },
+      {
+        "q": "State what a labelled pressure model should identify.",
+        "a": "The fluid, the depth or altitude, and the weight of fluid above",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the colour of the apparatus",
+          "Only the name of the person using it"
+        ]
+      },
+      {
+        "q": "Explain why models are used to explain fluid pressure.",
+        "a": "They represent mechanisms and patterns that are difficult to observe directly.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They copy every real-world detail without simplification",
+          "They eliminate the need to compare predictions with evidence"
+        ]
+      },
+      {
+        "q": "State whether a model is identical to the real system. Explain your answer.",
+        "a": "No. It is a simplified representation.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Every detail is reproduced exactly",
+          "Yes. The model and real system always have identical scale"
+        ]
+      },
+      {
+        "q": "Name one possible limitation of a classroom fluid-pressure model.",
+        "a": "It may not reproduce the real scale, materials or natural conditions.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It must predict the wrong pattern because it is a model",
+          "It cannot show any feature of pressure"
+        ]
+      },
+      {
+        "q": "Explain why an explanation should connect model evidence to a real system.",
+        "a": "The model is useful only when its observed pattern supports the real-world claim.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Any model proves a claim even if its results disagree",
+          "Models replace all need for real-world evidence"
+        ]
+      },
+      {
+        "q": "Name the scientist after whom the SI pressure unit, the pascal, is named.",
+        "a": "Blaise Pascal.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Isaac Newton",
+          "Albert Einstein"
+        ]
+      },
+      {
+        "q": "State the direction of upthrust on an object in a fluid.",
+        "a": "Upward",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Downward",
+          "Horizontally only"
+        ]
+      },
+      {
+        "q": "Identify which type of material exerts upthrust.",
+        "a": "A fluid, so either a liquid or a gas",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only liquids, never gases",
+          "Only solids, never liquids or gases"
+        ]
+      },
+      {
+        "q": "Identify which downward force is compared with upthrust.",
+        "a": "Weight",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Mass",
+          "Temperature"
+        ]
+      },
+      {
+        "q": "Describe what happens when upthrust is greater than weight.",
+        "a": "The object moves or accelerates upward.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It accelerates downward",
+          "It must remain at rest"
+        ]
+      },
+      {
+        "q": "Describe what happens when weight is greater than upthrust.",
+        "a": "The object moves or accelerates downward and sinks.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It accelerates upward",
+          "It must remain at rest"
+        ]
+      },
+      {
+        "q": "Describe what happens when upthrust and weight are balanced.",
+        "a": "There is no vertical acceleration, so the object can float at rest.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The object must accelerate upward",
+          "No forces can be acting"
+        ]
+      },
+      {
+        "q": "State whether floating means that no forces act on an object. Explain your answer.",
+        "a": "No. Upthrust and weight can be balanced.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. There are no forces acting while it floats",
+          "Yes. Gravity stops acting at the water surface"
+        ]
+      },
+      {
+        "q": "Explain why an object's mass alone cannot predict whether it floats in water.",
+        "a": "Floating is explained by comparing its upthrust with its weight.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Every heavy object sinks and every light object floats",
+          "Mass alone fixes upthrust regardless of shape or displaced fluid"
+        ]
+      },
+      {
+        "q": "State whether upthrust is the same thing as pressure. Explain your answer.",
+        "a": "No. Upthrust is an upward force in a fluid.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Upthrust is force per unit area",
+          "Yes. Upthrust is the mass of the fluid"
+        ]
+      },
+      {
+        "q": "Describe how a prediction about floating or sinking can be justified.",
+        "a": "Compare the expected upthrust with the object's weight.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Compare only the object's colour with the liquid's colour",
+          "Compare only the object's mass without considering upthrust"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-transport-humans",
+    "name": "Transport Systems in Humans",
+    "strand": "Biology",
+    "questions": [
+      {
+        "q": "State the three main parts of the human circulatory system.",
+        "a": "The heart, blood vessels and blood.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "The lungs, stomach and kidneys",
+          "The heart, bones and muscles"
+        ]
+      },
+      {
+        "q": "Name four substances transported by blood.",
+        "a": "For example, oxygen, nutrients, hormones and waste products such as carbon dioxide or urea. Blood also transfers thermal energy.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only oxygen, red cells, platelets and plasma",
+          "Only undigested food, air bubbles, bones and skin"
+        ]
+      },
+      {
+        "q": "Define blood plasma.",
+        "a": "The liquid component of blood that carries cells and dissolved substances.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The solid cell fragments that cause clotting",
+          "A type of cell that carries oxygen"
+        ]
+      },
+      {
+        "q": "State the main function of red blood cells.",
+        "a": "Transporting oxygen.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Killing pathogens as their main role",
+          "Causing blood to clot as their main role"
+        ]
+      },
+      {
+        "q": "Identify which molecule in red blood cells binds oxygen.",
+        "a": "Haemoglobin",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Chlorophyll",
+          "Insulin"
+        ]
+      },
+      {
+        "q": "State the main role of white blood cells.",
+        "a": "Defending the body against pathogens and disease.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Transporting most of the blood's oxygen",
+          "Producing the pressure that pumps blood"
+        ]
+      },
+      {
+        "q": "State the main role of platelets.",
+        "a": "Helping blood clot.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Transporting oxygen around the body",
+          "Digesting food in the intestine"
+        ]
+      },
+      {
+        "q": "State whether deoxygenated blood is blue. Explain your answer.",
+        "a": "No. It is dark red.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Yes. It is blue until it contacts air",
+          "No. It is colourless until it reaches the lungs"
+        ]
+      },
+      {
+        "q": "State whether blood is only a liquid. Explain your answer.",
+        "a": "No. It is a tissue containing cells suspended in plasma.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. It contains no cells or fragments",
+          "Yes. All blood cells are dissolved molecules"
+        ]
+      },
+      {
+        "q": "Name the four chambers of the heart.",
+        "a": "Right atrium, right ventricle, left atrium and left ventricle.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Two atria and two aortas",
+          "Two ventricles and two venae cavae"
+        ]
+      },
+      {
+        "q": "Describe the function of heart valves.",
+        "a": "They prevent backflow and maintain one-way movement of blood.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They mix blood from both sides of the heart",
+          "They produce all the force used to pump blood"
+        ]
+      },
+      {
+        "q": "Describe the septum in the human heart.",
+        "a": "The wall separating the left and right sides of the heart.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A valve between an atrium and ventricle",
+          "The main artery leaving the heart"
+        ]
+      },
+      {
+        "q": "Define double circulation.",
+        "a": "Blood passes through the heart twice in one complete circuit: pulmonary and systemic.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Blood flows through only one loop and the heart once",
+          "Oxygenated and deoxygenated blood mix in one chamber"
+        ]
+      },
+      {
+        "q": "Define pulmonary circulation.",
+        "a": "Blood flow between the heart and lungs.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Blood flow between the heart and the whole body except the lungs",
+          "Blood movement within the kidneys only"
+        ]
+      },
+      {
+        "q": "Define systemic circulation.",
+        "a": "Blood flow between the heart and the rest of the body.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Blood flow between the heart and lungs only",
+          "Air movement between the lungs and atmosphere"
+        ]
+      },
+      {
+        "q": "Identify which vessel carries blood from the heart to the body.",
+        "a": "The aorta",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "The vena cava",
+          "The pulmonary vein"
+        ]
+      },
+      {
+        "q": "Identify which vessel returns blood from the body to the heart.",
+        "a": "The vena cava",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "The aorta",
+          "The pulmonary artery"
+        ]
+      },
+      {
+        "q": "Identify which vessels carry blood away from the heart.",
+        "a": "Arteries",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Veins",
+          "Capillaries only"
+        ]
+      },
+      {
+        "q": "Identify which vessels carry blood toward the heart.",
+        "a": "Veins",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Arteries",
+          "Capillaries only"
+        ]
+      },
+      {
+        "q": "State where exchange between blood and tissues occurs.",
+        "a": "Capillaries",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Inside the heart valves",
+          "Inside the aorta only"
+        ]
+      },
+      {
+        "q": "Explain why arteries have thick, elastic walls.",
+        "a": "They withstand and maintain high pressure from the heart.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Their walls must allow whole blood cells to escape",
+          "They carry blood at lower pressure than veins"
+        ]
+      },
+      {
+        "q": "Explain why veins contain valves.",
+        "a": "Blood pressure is lower, so valves help prevent backflow.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Valves generate the heart's pumping force",
+          "Valves allow blood to flow freely in both directions"
+        ]
+      },
+      {
+        "q": "Explain why capillary walls are one cell thick.",
+        "a": "They provide a short diffusion distance.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They stop all diffusion into tissues",
+          "They allow blood cells to leave every capillary"
+        ]
+      },
+      {
+        "q": "Explain why the statement 'all arteries carry oxygenated blood' is incorrect.",
+        "a": "The pulmonary artery carries deoxygenated blood from the heart to the lungs.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The aorta normally carries deoxygenated blood",
+          "The pulmonary artery carries oxygenated blood to the lungs"
+        ]
+      },
+      {
+        "q": "Explain why the statement 'all veins carry deoxygenated blood' is incorrect.",
+        "a": "The pulmonary vein carries oxygenated blood from the lungs to the heart.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The vena cava normally carries oxygenated blood",
+          "The pulmonary vein carries deoxygenated blood to the heart"
+        ]
+      },
+      {
+        "q": "Explain why the left ventricle wall is thicker than the right.",
+        "a": "It must produce higher pressure to pump blood around the whole body.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It pumps only to the lungs at lower pressure",
+          "It stores all the blood between heartbeats"
+        ]
+      },
+      {
+        "q": "Define heart rate.",
+        "a": "The number of heart beats per minute.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "The volume of blood in the whole body",
+          "The number of breaths per minute"
+        ]
+      },
+      {
+        "q": "Explain why heart rate increases during exercise.",
+        "a": "To deliver more oxygen and glucose and remove carbon dioxide as respiration increases.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "To reduce oxygen delivery to active muscles",
+          "To stop glucose reaching respiring cells"
+        ]
+      },
+      {
+        "q": "Define a pulse.",
+        "a": "A pressure wave in arteries caused by heart contractions.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The movement of air through the lungs",
+          "A wave caused by blood moving backward in veins"
+        ]
+      },
+      {
+        "q": "Explain why heart-rate measurements should be repeated.",
+        "a": "To improve reliability and reduce the influence of random variation.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "To guarantee every measurement matches exactly",
+          "To remove all systematic error automatically"
+        ]
+      },
+      {
+        "q": "State what BPM stands for.",
+        "a": "Beats per minute",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Breaths per minute",
+          "Blood pressure measurement"
+        ]
+      },
+      {
+        "q": "Suggest one variable to control when investigating how exercise affects heart rate.",
+        "a": "A factor kept the same, such as exercise duration or measurement method.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The measured heart rate, which must be forced to stay constant",
+          "The final result, which must be chosen in advance"
+        ]
+      },
+      {
+        "q": "State what a faster recovery rate often indicates.",
+        "a": "The heart rate returns toward rest more quickly, often associated with fitness.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Heart rate takes longer to return toward resting level",
+          "Heart rate never changes during exercise"
+        ]
+      },
+      {
+        "q": "Define diffusion.",
+        "a": "Net movement from higher concentration to lower concentration.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Net movement from lower to higher concentration",
+          "Movement that happens only when particles stop moving"
+        ]
+      },
+      {
+        "q": "Identify which features make an efficient exchange surface.",
+        "a": "Large surface area, thin barrier and maintained concentration gradient.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Small surface area and a thick barrier",
+          "No concentration gradient and a long diffusion distance"
+        ]
+      },
+      {
+        "q": "Explain why a high surface-area-to-volume ratio improves exchange.",
+        "a": "There is more surface available for diffusion relative to the amount of tissue.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "There is less surface available for each unit of tissue",
+          "It prevents particles from moving across the surface"
+        ]
+      },
+      {
+        "q": "State whether particles stop moving at diffusion equilibrium. Explain your answer.",
+        "a": "No. There is no net movement, but particles continue moving.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. All particles stop completely",
+          "Yes. Only particles on one side keep moving"
+        ]
+      },
+      {
+        "q": "Explain why inflammation can reduce exchange efficiency.",
+        "a": "It can thicken the barrier or increase diffusion distance.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It always makes the barrier thinner",
+          "It always removes the need for a concentration gradient"
+        ]
+      },
+      {
+        "q": "Explain why blood donation is useful.",
+        "a": "Donated blood components can replace red cells, platelets or plasma for patients.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Donated blood permanently replaces the heart",
+          "Donated blood makes all blood groups interchangeable"
+        ]
+      },
+      {
+        "q": "Describe how the circulatory system links the digestive and gas-exchange systems.",
+        "a": "It carries absorbed nutrients and oxygen to cells and removes wastes.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It carries whole food pieces directly into the lungs",
+          "It supplies only the lungs and never the body's cells"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-spheres-earth",
+    "name": "Spheres of the Earth",
+    "strand": "Chemistry",
+    "questions": [
+      {
+        "q": "Define the atmosphere.",
+        "a": "The layer of gases surrounding Earth.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "All water on Earth",
+          "The solid outer rocks only"
+        ]
+      },
+      {
+        "q": "Define the hydrosphere.",
+        "a": "All Earth's water in liquid, solid and gaseous states.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only Earth's liquid oceans",
+          "Only water found underground"
+        ]
+      },
+      {
+        "q": "Define the geosphere.",
+        "a": "The solid Earth.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "All gases around Earth",
+          "All living organisms on Earth"
+        ]
+      },
+      {
+        "q": "Define the lithosphere.",
+        "a": "The rigid rocky outer part of the geosphere.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The layer of gases surrounding Earth",
+          "All water in oceans and rivers"
+        ]
+      },
+      {
+        "q": "Define the biosphere.",
+        "a": "Earth's living and recently living organisms.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only non-living rocks and minerals",
+          "Only gases in the upper atmosphere"
+        ]
+      },
+      {
+        "q": "Explain why Earth's atmosphere, hydrosphere, geosphere and biosphere are described as an interacting system.",
+        "a": "They overlap and exchange matter and energy.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They never exchange matter or energy",
+          "Each sphere acts independently of all the others"
+        ]
+      },
+      {
+        "q": "Give one example of atmosphere–biosphere interaction.",
+        "a": "For example, plants take in carbon dioxide and release oxygen.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Rainwater eroding a bare rock with no organisms involved",
+          "Water freezing in a sealed container with no organisms involved"
+        ]
+      },
+      {
+        "q": "Give one example of hydrosphere–geosphere interaction.",
+        "a": "Water infiltrates soil, flows through rock or causes weathering and erosion.",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "A plant taking carbon dioxide from the air",
+          "A bird breathing oxygen from the air"
+        ]
+      },
+      {
+        "q": "Identify which scientist introduced terms including hydrosphere, lithosphere and biosphere.",
+        "a": "Eduard Suess",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "Dmitri Mendeleev",
+          "Isaac Newton"
+        ]
+      },
+      {
+        "q": "Identify the most abundant gas in dry air.",
+        "a": "Nitrogen",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Oxygen",
+          "Carbon dioxide"
+        ]
+      },
+      {
+        "q": "State the approximate percentage of nitrogen in dry air.",
+        "a": "78%",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "21%",
+          "0.04%"
+        ]
+      },
+      {
+        "q": "State the approximate percentage of oxygen in dry air.",
+        "a": "21%",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "78%",
+          "0.9%"
+        ]
+      },
+      {
+        "q": "State the approximate percentage of argon in dry air.",
+        "a": "0.9%",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "21%",
+          "78%"
+        ]
+      },
+      {
+        "q": "State the approximate percentage of carbon dioxide in dry air.",
+        "a": "0.04%",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "4%",
+          "21%"
+        ]
+      },
+      {
+        "q": "Explain why the atmosphere is a mixture.",
+        "a": "Its gases are physically combined rather than chemically bonded.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "All its gases are chemically bonded in a fixed ratio",
+          "It contains only a single type of particle"
+        ]
+      },
+      {
+        "q": "State whether water vapour has a fixed percentage in air. Explain your answer.",
+        "a": "No. It varies with location, weather and temperature.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Water vapour always makes up 21% of air",
+          "Yes. Water vapour always makes up 78% of air"
+        ]
+      },
+      {
+        "q": "State whether visible clouds consist of water vapour. Explain your answer.",
+        "a": "No. They contain tiny liquid droplets or ice crystals.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Visible clouds are made only of invisible water-vapour gas",
+          "No. Clouds contain only dry nitrogen gas"
+        ]
+      },
+      {
+        "q": "State what humidity describes.",
+        "a": "The amount of water vapour in the air.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The amount of liquid rain falling per hour",
+          "The total amount of oxygen in air"
+        ]
+      },
+      {
+        "q": "Identify which energy source drives the water cycle.",
+        "a": "Solar energy",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Energy from the Moon's reflected light alone",
+          "Chemical energy from rocks alone"
+        ]
+      },
+      {
+        "q": "Define evaporation.",
+        "a": "Change of liquid water to water vapour at the surface.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Change of water vapour into liquid",
+          "Change of liquid water into ice"
+        ]
+      },
+      {
+        "q": "Define transpiration.",
+        "a": "Loss of water vapour from plants.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Water soaking from soil into roots only",
+          "Water vapour changing to liquid on leaves"
+        ]
+      },
+      {
+        "q": "Define condensation.",
+        "a": "Change of water vapour to liquid water.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Change of liquid water into water vapour",
+          "Change of solid ice directly into water vapour"
+        ]
+      },
+      {
+        "q": "Define precipitation in the water cycle.",
+        "a": "Water falling from the atmosphere, such as rain, snow or hail.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Water soaking into soil",
+          "Water vapour leaving plant leaves"
+        ]
+      },
+      {
+        "q": "Define runoff.",
+        "a": "Water flowing over the land surface.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Water soaking vertically into the ground only",
+          "Water changing from liquid to gas"
+        ]
+      },
+      {
+        "q": "Define infiltration.",
+        "a": "Water soaking into soil or porous ground.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Water moving over the ground surface",
+          "Water falling from clouds"
+        ]
+      },
+      {
+        "q": "Define groundwater.",
+        "a": "Water stored and moving beneath Earth's surface.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Water found only above the ground",
+          "Water vapour in the upper atmosphere only"
+        ]
+      },
+      {
+        "q": "State whether water is created and destroyed during the water cycle. Explain your answer.",
+        "a": "No. It changes state and location but is conserved.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Evaporation destroys water permanently",
+          "Yes. Rain creates new water from nothing"
+        ]
+      },
+      {
+        "q": "State whether the water cycle follows one fixed circular route. Explain your answer.",
+        "a": "No. Water can follow many pathways and remain stored for different times.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Every water molecule follows exactly the same route",
+          "Yes. Every water molecule spends the same time in each store"
+        ]
+      },
+      {
+        "q": "Explain why the equator receives more concentrated solar radiation than the poles.",
+        "a": "Solar energy strikes more directly and is spread over a smaller area.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "The equator receives solar energy spread over a larger area",
+          "The poles receive more direct sunlight all year"
+        ]
+      },
+      {
+        "q": "Define convection in the ocean.",
+        "a": "Movement of water caused by density differences, transferring thermal energy.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Thermal energy moving through stationary water only",
+          "Water movement caused only by differences in colour"
+        ]
+      },
+      {
+        "q": "Describe how warm ocean water can move energy.",
+        "a": "Currents transport thermal energy from warmer to cooler regions.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Warm currents transport coldness without transferring energy",
+          "Ocean currents never transfer thermal energy"
+        ]
+      },
+      {
+        "q": "Describe one way a change in Earth's atmosphere, hydrosphere, geosphere or biosphere can affect another of these systems.",
+        "a": "Matter and energy transfers connect the spheres, so one change alters linked processes.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "The spheres do not affect one another",
+          "Only the biosphere can affect other spheres"
+        ]
+      },
+      {
+        "q": "Describe how the Waikato River illustrates interacting spheres.",
+        "a": "Water interacts with air, rocks and soils, organisms and human activities.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It belongs only to the hydrosphere and cannot interact with rocks or life",
+          "It stops matter and energy from moving between spheres"
+        ]
+      },
+      {
+        "q": "Explain why atmospheric composition matters to living systems.",
+        "a": "Organisms depend on gases for photosynthesis and respiration, and gases affect climate and weather.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "All organisms depend only on nitrogen gas for respiration",
+          "Atmospheric gases cannot affect living things or climate"
+        ]
+      },
+      {
+        "q": "Define atmospheric composition.",
+        "a": "The proportions of different gases in the atmosphere.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The speed of clouds above a location",
+          "The depth of the ocean below a location"
+        ]
+      },
+      {
+        "q": "Explain why carbon dioxide is important to life despite making up a small percentage of Earth's atmosphere.",
+        "a": "It is used in photosynthesis and affects Earth's energy balance.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It is the main gas used by humans in respiration",
+          "It makes up most of the atmosphere"
+        ]
+      },
+      {
+        "q": "Describe how the biosphere influences atmospheric oxygen.",
+        "a": "Photosynthetic organisms release oxygen, while respiration uses it.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Photosynthesis uses oxygen and respiration releases it",
+          "Living organisms never change atmospheric oxygen"
+        ]
+      },
+      {
+        "q": "Describe how the hydrosphere influences weather.",
+        "a": "Water evaporates, condenses and transports energy through the atmosphere.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It prevents evaporation from supplying water to the atmosphere",
+          "It has no role in cloud formation or energy transfer"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-ecosystems",
+    "name": "Ecosystems",
+    "strand": "Biology",
+    "questions": [
+      {
+        "q": "Define an individual in ecology.",
+        "a": "One organism.",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "All organisms of one species in an area",
+          "All populations in an area"
+        ]
+      },
+      {
+        "q": "Define a population in ecology.",
+        "a": "All organisms of one species living in an area.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "All organisms of all species on Earth",
+          "One organism living alone"
+        ]
+      },
+      {
+        "q": "Define a community.",
+        "a": "All the populations of different species in an area.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only members of one species in an area",
+          "Only the non-living conditions in an area"
+        ]
+      },
+      {
+        "q": "Define an ecosystem.",
+        "a": "A community and its abiotic environment interacting as a system.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the animals living in an area",
+          "A population with no non-living surroundings"
+        ]
+      },
+      {
+        "q": "Define the biosphere.",
+        "a": "The global system containing all ecosystems and living organisms.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Only the gases surrounding Earth",
+          "Only the water found in Earth's oceans"
+        ]
+      },
+      {
+        "q": "Put these in order from smallest to largest: community, individual, ecosystem, population, biosphere.",
+        "a": "Individual → population → community → ecosystem → biosphere.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Individual → community → population → ecosystem → biosphere",
+          "Population → individual → ecosystem → community → biosphere"
+        ]
+      },
+      {
+        "q": "Define a niche.",
+        "a": "The role of a species and how it uses resources and interacts in its environment.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Only the place where an organism sleeps",
+          "The total number of organisms in a habitat"
+        ]
+      },
+      {
+        "q": "Define distribution.",
+        "a": "Where organisms are found across an area.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "How many organisms are present",
+          "How fast an organism reproduces"
+        ]
+      },
+      {
+        "q": "Define abundance.",
+        "a": "How many organisms are present.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Where organisms are found",
+          "The role an organism has in its ecosystem"
+        ]
+      },
+      {
+        "q": "Describe how an abiotic factor can affect distribution.",
+        "a": "Organisms occur where conditions such as light, water or temperature meet their needs and tolerances.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "All organisms thrive at exactly the same light and temperature",
+          "Abiotic conditions influence rocks but never living things"
+        ]
+      },
+      {
+        "q": "Describe how a biotic factor can affect abundance.",
+        "a": "Predation, competition, food or disease can change survival and reproduction.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Biotic interactions cannot affect survival",
+          "Predation always increases the abundance of the prey"
+        ]
+      },
+      {
+        "q": "State whether ecosystems are normally in a perfectly static balance. Explain your answer.",
+        "a": "No. They change through interactions and disturbances.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Population sizes never change naturally",
+          "Yes. Every disturbance permanently destroys all life"
+        ]
+      },
+      {
+        "q": "Define a nutrient cycle.",
+        "a": "Movement and recycling of nutrients through organisms and the environment.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "One-way movement of energy with no recycling of nutrients",
+          "Creation of new atoms by organisms"
+        ]
+      },
+      {
+        "q": "Name three important cycles in ecosystems.",
+        "a": "Carbon, nitrogen and water cycles",
+        "difficulty": "foundation",
+        "kind": "short",
+        "wrong": [
+          "Food, sunlight and sound cycles",
+          "Predator, prey and competition cycles"
+        ]
+      },
+      {
+        "q": "Define decomposition.",
+        "a": "Breakdown of dead material and waste.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Production of food by photosynthesis",
+          "Movement of water vapour from plant leaves"
+        ]
+      },
+      {
+        "q": "Explain why microorganisms are important in decomposition.",
+        "a": "They break down organic material and release nutrients for reuse.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "They destroy all nutrients so none can be reused",
+          "They convert all dead material directly into sunlight"
+        ]
+      },
+      {
+        "q": "State whether matter is used up in an ecosystem. Explain your answer.",
+        "a": "No. Matter is transferred and recycled.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. Organisms permanently destroy atoms when they respire",
+          "Yes. Matter leaves existence after decomposition"
+        ]
+      },
+      {
+        "q": "Define a carbon store.",
+        "a": "A part of the Earth system where carbon remains for a period, such as forests, soil or oceans.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A process that creates new carbon atoms",
+          "Only carbon dioxide currently moving through the atmosphere"
+        ]
+      },
+      {
+        "q": "Describe how healthy soil can depend on decomposition.",
+        "a": "Decomposition returns mineral nutrients and organic matter to soil.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Decomposition removes all minerals from the soil forever",
+          "Decomposition prevents any organic matter entering soil"
+        ]
+      },
+      {
+        "q": "State what a quadrat can help estimate about organisms in a habitat.",
+        "a": "The abundance or distribution of organisms in a defined area.",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "The exact age of every organism",
+          "The speed of all flying animals"
+        ]
+      },
+      {
+        "q": "State the purpose of a transect in an ecological investigation.",
+        "a": "Sampling changes in organisms or conditions along a line.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Measuring only one chosen individual repeatedly",
+          "Collecting organisms only from the richest patch"
+        ]
+      },
+      {
+        "q": "Explain why quadrats should be placed using an appropriate sampling method.",
+        "a": "To reduce bias and make the sample more representative.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "To guarantee the highest possible organism count",
+          "To avoid ever sampling any unusual areas"
+        ]
+      },
+      {
+        "q": "Describe how mean abundance can be calculated.",
+        "a": "Add the counts from samples and divide by the number of samples.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Multiply the highest count by the number of samples",
+          "Subtract the lowest count from the highest count"
+        ]
+      },
+      {
+        "q": "Explain why multiple samples are needed.",
+        "a": "Organisms are unevenly distributed, so repeats improve representativeness and reliability.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "One sample always represents every part of a habitat",
+          "Repeats make environmental differences disappear"
+        ]
+      },
+      {
+        "q": "State whether quadrats can be used only for plants. Explain your answer.",
+        "a": "No. They can sample stationary or slow-moving organisms and traces.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Yes. No animals can ever be sampled with quadrats",
+          "Yes. Quadrats can measure only tree height"
+        ]
+      },
+      {
+        "q": "Define ngā tohu o te taiao.",
+        "a": "Environmental signs or indicators used to understand seasonal change and ecosystem health.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A laboratory equation for pressure",
+          "A list of chemical symbols for minerals"
+        ]
+      },
+      {
+        "q": "Describe how flowering or bird movement can act as an environmental indicator.",
+        "a": "Changes in timing or abundance can signal seasonal or ecosystem changes.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "These changes never provide information about ecosystems",
+          "Only laboratory measurements can act as evidence"
+        ]
+      },
+      {
+        "q": "State whether mātauranga Māori environmental knowledge is based on evidence. Explain your answer.",
+        "a": "It is based on sustained observation, experience and knowledge passed between generations.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "No. It excludes observation of environmental patterns",
+          "No. It consists only of random predictions"
+        ]
+      },
+      {
+        "q": "Define ecosystem stability.",
+        "a": "The capacity of a system to maintain or recover its functions through change.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The absence of every natural change",
+          "A guarantee that no population will ever change"
+        ]
+      },
+      {
+        "q": "Define a disturbance in an ecosystem.",
+        "a": "An event or change that alters ecosystem structure or conditions.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "An event that cannot affect living organisms",
+          "The total number of species in a habitat"
+        ]
+      },
+      {
+        "q": "Give one example of an ecosystem disturbance.",
+        "a": "A new predator, drought, flood, disease, logging or pollution",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Counting organisms without changing their habitat",
+          "Recording the temperature without changing it"
+        ]
+      },
+      {
+        "q": "Explain why a new predator can affect more than its direct prey.",
+        "a": "Food-web relationships create indirect effects across multiple populations.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Only the prey can ever be affected",
+          "Food webs prevent indirect effects between populations"
+        ]
+      },
+      {
+        "q": "Define interdependence.",
+        "a": "Organisms and environmental factors depend on and influence one another.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Each organism survives independently of its surroundings",
+          "Only predators depend on other organisms"
+        ]
+      },
+      {
+        "q": "Define ecological restoration.",
+        "a": "Actions intended to repair ecosystem structure, function or biodiversity.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Replacing every habitat with a single introduced species",
+          "Removing all living organisms from a site"
+        ]
+      },
+      {
+        "q": "Name one restoration strategy.",
+        "a": "Native planting, pest control, wetland restoration, pollution reduction or habitat protection",
+        "difficulty": "foundation",
+        "kind": "explain",
+        "wrong": [
+          "Introducing a new invasive predator",
+          "Increasing untreated pollution entering a river"
+        ]
+      },
+      {
+        "q": "Define conservation.",
+        "a": "Protection and careful management of species, habitats and resources.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Using all available resources as quickly as possible",
+          "Replacing all native habitats with roads"
+        ]
+      },
+      {
+        "q": "Define sustainability.",
+        "a": "Meeting needs while maintaining environmental systems for the future.",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Meeting today's needs while ignoring future impacts",
+          "Using resources faster than natural systems can recover"
+        ]
+      },
+      {
+        "q": "Explain why an ecosystem action plan should use evidence.",
+        "a": "Evidence helps identify causes, evaluate options and monitor whether actions work.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Evidence is useful only if it agrees with the preferred action",
+          "An action plan should never be changed after it begins"
+        ]
+      },
+      {
+        "q": "Describe how local Waikato River data can support ecosystem decisions.",
+        "a": "It can reveal trends in water quality, species, land use and restoration outcomes.",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Local data cannot show changes over time",
+          "Only data from unrelated rivers can inform local decisions"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "y9-scientific-skills",
+    "name": "Scientific Skills",
+    "strand": "Skills",
+    "questions": [
+      {
+        "q": "Define directional hypothesis in a scientific investigation.",
+        "a": "A prediction that states how the dependent variable will change",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A summary written only after the results are collected",
+          "A list of hazards with no predicted relationship"
+        ]
+      },
+      {
+        "q": "Name the term for “a prediction that states how the dependent variable will change”.",
+        "a": "directional hypothesis",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "method evaluation",
+          "controlled condition"
+        ]
+      },
+      {
+        "q": "Explain why directional hypothesis matters in a scientific investigation.",
+        "a": "It gives a precise relationship that the results can support or challenge",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It guarantees that the prediction will be correct",
+          "It removes the need to collect any data"
+        ]
+      },
+      {
+        "q": "Define operational variable in a scientific investigation.",
+        "a": "A variable defined by exactly how it will be changed or measured",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A factor named without saying how it is measured",
+          "A result chosen after the conclusion is written"
+        ]
+      },
+      {
+        "q": "Name the term for “a variable defined by exactly how it will be changed or measured”.",
+        "a": "operational variable",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "measurement uncertainty",
+          "directional hypothesis"
+        ]
+      },
+      {
+        "q": "Explain why variables need to be defined in terms of how they are changed or measured.",
+        "a": "It makes the method clear enough for another person to repeat",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It prevents anyone else from repeating the investigation",
+          "It means units and measurement methods are unnecessary"
+        ]
+      },
+      {
+        "q": "Define controlled condition in a scientific investigation.",
+        "a": "An environmental or procedural factor kept constant across trials",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The outcome deliberately measured in each trial",
+          "The factor deliberately changed between trials"
+        ]
+      },
+      {
+        "q": "Name the term for “an environmental or procedural factor kept constant across trials”.",
+        "a": "controlled condition",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "random error",
+          "operational variable"
+        ]
+      },
+      {
+        "q": "Explain why controlled condition matters in a scientific investigation.",
+        "a": "It prevents a confounding explanation for the observed pattern",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It makes all variables change at the same time",
+          "It guarantees that every measurement has zero error"
+        ]
+      },
+      {
+        "q": "Define instrument resolution in a scientific investigation.",
+        "a": "The smallest change that a measuring instrument can display",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "The largest value the instrument can measure",
+          "How close repeated readings are to one another"
+        ]
+      },
+      {
+        "q": "Name the term for “the smallest change that a measuring instrument can display”.",
+        "a": "instrument resolution",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "measurement accuracy",
+          "measurement precision"
+        ]
+      },
+      {
+        "q": "Explain why instrument resolution matters in a scientific investigation.",
+        "a": "Finer resolution allows smaller differences to be detected",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It automatically removes all systematic errors",
+          "It guarantees every reading equals the true value"
+        ]
+      },
+      {
+        "q": "Define random error in a scientific investigation.",
+        "a": "Unpredictable variation that makes repeated readings scatter",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "A consistent shift of every reading in one direction",
+          "A prediction about how the variables are related"
+        ]
+      },
+      {
+        "q": "Name the term for “unpredictable variation that makes repeated readings scatter”.",
+        "a": "random error",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "systematic error",
+          "controlled condition"
+        ]
+      },
+      {
+        "q": "Explain how repeating measurements and calculating a mean reduce the effect of random error.",
+        "a": "Repeats and a mean reduce its effect on the final value",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "A mean guarantees the exact true value",
+          "Repeating a reading makes its random error identical every time"
+        ]
+      },
+      {
+        "q": "Define systematic error in a scientific investigation.",
+        "a": "A consistent bias that shifts measurements in the same direction",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Unpredictable scatter in repeated readings",
+          "The smallest change a scale can display"
+        ]
+      },
+      {
+        "q": "Name the term for “a consistent bias that shifts measurements in the same direction”.",
+        "a": "systematic error",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "random error",
+          "measurement precision"
+        ]
+      },
+      {
+        "q": "Explain why repeating readings cannot remove a systematic error.",
+        "a": "Repeating readings does not remove it, so the method or instrument must be corrected",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Averaging enough repeats always cancels the fixed bias",
+          "Repeating readings turns a fixed bias into a true value"
+        ]
+      },
+      {
+        "q": "Define zero error in a scientific investigation.",
+        "a": "A non-zero instrument reading when the true value should be zero",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "An instrument showing zero when the true value is zero",
+          "Any scatter between repeated measurements"
+        ]
+      },
+      {
+        "q": "Name the term for “a non-zero instrument reading when the true value should be zero”.",
+        "a": "zero error",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "random error",
+          "instrument resolution"
+        ]
+      },
+      {
+        "q": "Explain why an instrument should be checked for zero error before measurements are taken.",
+        "a": "Checking and correcting the zero prevents a systematic offset",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It increases the smallest scale division",
+          "It guarantees that random variation is impossible"
+        ]
+      },
+      {
+        "q": "Define measurement accuracy in a scientific investigation.",
+        "a": "Closeness of a result to the accepted or true value",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Closeness of repeated readings to each other",
+          "The smallest change an instrument can display"
+        ]
+      },
+      {
+        "q": "Name the term for “closeness of a result to the accepted or true value”.",
+        "a": "measurement accuracy",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "measurement precision",
+          "instrument resolution"
+        ]
+      },
+      {
+        "q": "Describe how calibration and reducing systematic errors can improve measurement accuracy.",
+        "a": "Calibration and suitable technique improve accuracy",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Writing extra decimal places always improves accuracy",
+          "Repeating a biased method guarantees an accurate mean"
+        ]
+      },
+      {
+        "q": "Define measurement precision in a scientific investigation.",
+        "a": "Closeness of repeated measurements to one another",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Closeness to the accepted or true value",
+          "The largest value an instrument can display"
+        ]
+      },
+      {
+        "q": "Name the term for “closeness of repeated measurements to one another”.",
+        "a": "measurement precision",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "measurement accuracy",
+          "measurement uncertainty"
+        ]
+      },
+      {
+        "q": "Explain why precision and accuracy must be judged separately.",
+        "a": "Small spread indicates precise measurement but does not guarantee accuracy",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Precise readings must always equal the true value",
+          "Accurate readings must always have zero spread"
+        ]
+      },
+      {
+        "q": "Define repeatability in a scientific investigation.",
+        "a": "Agreement when the same person repeats a method using the same equipment",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Agreement between different investigators using different methods",
+          "Agreement of a result with the true value"
+        ]
+      },
+      {
+        "q": "Name the term for “agreement when the same person repeats a method using the same equipment”.",
+        "a": "repeatability",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "reproducibility",
+          "measurement accuracy"
+        ]
+      },
+      {
+        "q": "Explain why repeatability matters in a scientific investigation.",
+        "a": "It tests whether the procedure gives consistent outcomes",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It proves the result is accurate without any calibration",
+          "It removes all uncertainty from the measurements"
+        ]
+      },
+      {
+        "q": "Define reproducibility in a scientific investigation.",
+        "a": "Agreement when a different person or method repeats the investigation",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Agreement when only the same person uses the same equipment",
+          "The number of decimal places in a measurement"
+        ]
+      },
+      {
+        "q": "Name the term for “agreement when a different person or method repeats the investigation”.",
+        "a": "reproducibility",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "repeatability",
+          "instrument resolution"
+        ]
+      },
+      {
+        "q": "Explain why reproducibility matters in a scientific investigation.",
+        "a": "It provides a stronger check that the finding is not tied to one setup",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It proves that every instrument has zero error",
+          "It replaces the need to describe the method"
+        ]
+      },
+      {
+        "q": "Define measurement uncertainty in a scientific investigation.",
+        "a": "An estimated interval around a measured value within which the true value may lie",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "The exact error known with complete certainty",
+          "Only the largest reading in a set"
+        ]
+      },
+      {
+        "q": "Name the term for “an estimated interval around a measured value within which the true value may lie”.",
+        "a": "measurement uncertainty",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "instrument resolution",
+          "measurement precision"
+        ]
+      },
+      {
+        "q": "Explain why measurement uncertainty must be recorded and included in relevant calculations.",
+        "a": "It prevents measurements being reported with unjustified certainty",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It makes a measured value exact",
+          "It removes the need to state measurement units"
+        ]
+      },
+      {
+        "q": "Define significant figures in a scientific investigation.",
+        "a": "Digits used to show the precision justified by a measurement",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Every digit displayed by a calculator, regardless of the data",
+          "Only the zeros before the first non-zero digit"
+        ]
+      },
+      {
+        "q": "Name the term for “digits used to show the precision justified by a measurement”.",
+        "a": "significant figures",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "instrument resolution",
+          "zero error"
+        ]
+      },
+      {
+        "q": "Explain why a calculated answer should not imply greater precision than the measurements used.",
+        "a": "Calculated answers should not imply greater precision than the data",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "More calculator digits always mean better measurements",
+          "Every calculated answer must contain ten decimal places"
+        ]
+      },
+      {
+        "q": "Define scatter graph in a scientific investigation.",
+        "a": "A graph of paired numerical data used to look for association",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A graph showing only separate named categories",
+          "A graph showing parts of a whole as sectors"
+        ]
+      },
+      {
+        "q": "Name the term for “a graph of paired numerical data used to look for association”.",
+        "a": "scatter graph",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "bar chart",
+          "pie chart"
+        ]
+      },
+      {
+        "q": "Explain why scatter graph matters in a scientific investigation.",
+        "a": "It shows the direction, strength and shape of a possible relationship",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It proves that one variable causes the other",
+          "It removes the need to inspect unusual points"
+        ]
+      },
+      {
+        "q": "Define line of best fit in a scientific investigation.",
+        "a": "A line positioned to represent the central trend through scattered points",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A line joining every data point in order",
+          "A line forced through the origin in every investigation"
+        ]
+      },
+      {
+        "q": "Name the term for “a line positioned to represent the central trend through scattered points”.",
+        "a": "line of best fit",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "line graph joining every point",
+          "risk matrix"
+        ]
+      },
+      {
+        "q": "Explain why line of best fit matters in a scientific investigation.",
+        "a": "It supports estimates and gradient calculations without following noise",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "It must pass through every measurement",
+          "It proves every point away from the line is wrong"
+        ]
+      },
+      {
+        "q": "Define correlation in a scientific investigation.",
+        "a": "An association in which two measured variables change together",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Proof that one factor causes another",
+          "The amount by which an instrument fails to read zero"
+        ]
+      },
+      {
+        "q": "Name the term for “an association in which two measured variables change together”.",
+        "a": "correlation",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "causal claim",
+          "zero error"
+        ]
+      },
+      {
+        "q": "Explain why correlation alone does not establish causation.",
+        "a": "It identifies a relationship but does not by itself prove causation",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "A positive correlation always proves causation",
+          "Any relationship automatically rules out other explanations"
+        ]
+      },
+      {
+        "q": "Define causal claim in a scientific investigation.",
+        "a": "A claim that changing one factor produces a change in another",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "A statement that two variables are associated without a cause",
+          "A statement that every result is perfectly accurate"
+        ]
+      },
+      {
+        "q": "Name the term for “a claim that changing one factor produces a change in another”.",
+        "a": "causal claim",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "correlation",
+          "measurement precision"
+        ]
+      },
+      {
+        "q": "Explain why a claim of causation needs evidence from a valid controlled investigation.",
+        "a": "It requires a valid controlled investigation rather than correlation alone",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Correlation alone is always sufficient proof",
+          "A single uncontrolled observation proves the cause"
+        ]
+      },
+      {
+        "q": "Define outlier in a scientific investigation.",
+        "a": "A data point far from the overall pattern",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "A data point lying exactly on the overall trend",
+          "The mean of all results"
+        ]
+      },
+      {
+        "q": "Name the term for “a data point far from the overall pattern”.",
+        "a": "outlier",
+        "difficulty": "core",
+        "kind": "short",
+        "wrong": [
+          "line of best fit",
+          "controlled condition"
+        ]
+      },
+      {
+        "q": "Explain why excluding an outlier must be scientifically justified.",
+        "a": "Its cause should be investigated and any exclusion justified",
+        "difficulty": "core",
+        "kind": "explain",
+        "wrong": [
+          "Every outlier must be deleted immediately",
+          "Only results matching the prediction should be kept"
+        ]
+      },
+      {
+        "q": "Define risk matrix in a scientific investigation.",
+        "a": "A way of comparing likelihood and severity to judge risk level",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "A table showing only the costs of equipment",
+          "A graph of the measured dependent variable"
+        ]
+      },
+      {
+        "q": "Name the term for “a way of comparing likelihood and severity to judge risk level”.",
+        "a": "risk matrix",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "results table",
+          "scatter graph"
+        ]
+      },
+      {
+        "q": "Explain why risk matrix matters in a scientific investigation.",
+        "a": "It helps prioritise the hazards that need the strongest controls",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "It guarantees no accidents can occur",
+          "It replaces all practical safety controls"
+        ]
+      },
+      {
+        "q": "Define method evaluation in a scientific investigation.",
+        "a": "A reasoned judgement about strengths, limitations and improvements",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "A list of results with no judgement",
+          "A repetition of the hypothesis without considering evidence"
+        ]
+      },
+      {
+        "q": "Name the term for “a reasoned judgement about strengths, limitations and improvements”.",
+        "a": "method evaluation",
+        "difficulty": "stretch",
+        "kind": "short",
+        "wrong": [
+          "directional hypothesis",
+          "method instructions"
+        ]
+      },
+      {
+        "q": "State what an evaluation of an investigation should explain about weaknesses and improvements.",
+        "a": "It links each limitation to its likely effect on the evidence",
+        "difficulty": "stretch",
+        "kind": "explain",
+        "wrong": [
+          "Only whether the expected result was obtained",
+          "Only the names of equipment, with no effect on evidence"
+        ]
+      }
+    ]
+  }
+]

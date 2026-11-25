@@ -1,0 +1,60 @@
+A summary written only after the results are collected|A list of hazards with no predicted relationship
+method evaluation|controlled condition
+It guarantees that the prediction will be correct|It removes the need to collect any data
+A factor named without saying how it is measured|A result chosen after the conclusion is written
+measurement uncertainty|directional hypothesis
+It prevents anyone else from repeating the investigation|It means units and measurement methods are unnecessary
+The outcome deliberately measured in each trial|The factor deliberately changed between trials
+random error|operational variable
+It makes all variables change at the same time|It guarantees that every measurement has zero error
+The largest value the instrument can measure|How close repeated readings are to one another
+measurement accuracy|measurement precision
+It automatically removes all systematic errors|It guarantees every reading equals the true value
+A consistent shift of every reading in one direction|A prediction about how the variables are related
+systematic error|controlled condition
+A mean guarantees the exact true value|Repeating a reading makes its random error identical every time
+Unpredictable scatter in repeated readings|The smallest change a scale can display
+random error|measurement precision
+Averaging enough repeats always cancels the fixed bias|Repeating readings turns a fixed bias into a true value
+An instrument showing zero when the true value is zero|Any scatter between repeated measurements
+random error|instrument resolution
+It increases the smallest scale division|It guarantees that random variation is impossible
+Closeness of repeated readings to each other|The smallest change an instrument can display
+measurement precision|instrument resolution
+Writing extra decimal places always improves accuracy|Repeating a biased method guarantees an accurate mean
+Closeness to the accepted or true value|The largest value an instrument can display
+measurement accuracy|measurement uncertainty
+Precise readings must always equal the true value|Accurate readings must always have zero spread
+Agreement between different investigators using different methods|Agreement of a result with the true value
+reproducibility|measurement accuracy
+It proves the result is accurate without any calibration|It removes all uncertainty from the measurements
+Agreement when only the same person uses the same equipment|The number of decimal places in a measurement
+repeatability|instrument resolution
+It proves that every instrument has zero error|It replaces the need to describe the method
+The exact error known with complete certainty|Only the largest reading in a set
+instrument resolution|measurement precision
+It makes a measured value exact|It removes the need to state measurement units
+Every digit displayed by a calculator, regardless of the data|Only the zeros before the first non-zero digit
+instrument resolution|zero error
+More calculator digits always mean better measurements|Every calculated answer must contain ten decimal places
+A graph showing only separate named categories|A graph showing parts of a whole as sectors
+bar chart|pie chart
+It proves that one variable causes the other|It removes the need to inspect unusual points
+A line joining every data point in order|A line forced through the origin in every investigation
+line graph joining every point|risk matrix
+It must pass through every measurement|It proves every point away from the line is wrong
+Proof that one factor causes another|The amount by which an instrument fails to read zero
+causal claim|zero error
+A positive correlation always proves causation|Any relationship automatically rules out other explanations
+A statement that two variables are associated without a cause|A statement that every result is perfectly accurate
+correlation|measurement precision
+Correlation alone is always sufficient proof|A single uncontrolled observation proves the cause
+A data point lying exactly on the overall trend|The mean of all results
+line of best fit|controlled condition
+Every outlier must be deleted immediately|Only results matching the prediction should be kept
+A table showing only the costs of equipment|A graph of the measured dependent variable
+results table|scatter graph
+It guarantees no accidents can occur|It replaces all practical safety controls
+A list of results with no judgement|A repetition of the hypothesis without considering evidence
+directional hypothesis|method instructions
+Only whether the expected result was obtained|Only the names of equipment, with no effect on evidence

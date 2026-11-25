@@ -1,0 +1,36 @@
+Any material with a fixed shape|Only a liquid, never a gas
+It decreases|It stays the same at every depth
+The water particles become larger with depth|Gravity stops acting near the surface
+It increases|It stays the same at all heights
+There is a greater weight of air above|Air has no mass at high altitude
+The downward gravitational force on an object|The mass of liquid displaced by an object
+Upthrust is greater than weight|Weight is greater than upthrust
+It reproduces every condition of the real system exactly|It cannot be used to make any predictions
+They always have a fixed shape|They contain no particles
+Height above sea level|Distance along the water surface
+Distance below a water surface|The mass of air above an object
+Near the surface|The pressure is equal at every depth
+The colour of the liquid above|The speed of light in the liquid
+The diver becomes heavier because gravity increases greatly|Water pressure decreases as the diver descends
+High on a mountain|The pressure is identical in both places
+The air above changes colour|Air loses all mass above sea level
+There is more air above the mountain|Gravity has completely stopped acting
+Pressure decreases as depth increases|Pressure is unrelated to depth
+Pressure increases as altitude increases|Pressure stays fixed at all altitudes
+One observation guarantees every possible explanation|Only the appearance of the apparatus matters
+Only the colour of the apparatus|Only the name of the person using it
+They copy every real-world detail without simplification|They eliminate the need to compare predictions with evidence
+Yes. Every detail is reproduced exactly|Yes. The model and real system always have identical scale
+It must predict the wrong pattern because it is a model|It cannot show any feature of pressure
+Any model proves a claim even if its results disagree|Models replace all need for real-world evidence
+Isaac Newton|Albert Einstein
+Downward|Horizontally only
+Only liquids, never gases|Only solids, never liquids or gases
+Mass|Temperature
+It accelerates downward|It must remain at rest
+It accelerates upward|It must remain at rest
+The object must accelerate upward|No forces can be acting
+Yes. There are no forces acting while it floats|Yes. Gravity stops acting at the water surface
+Every heavy object sinks and every light object floats|Mass alone fixes upthrust regardless of shape or displaced fluid
+Yes. Upthrust is force per unit area|Yes. Upthrust is the mass of the fluid
+Compare only the object's colour with the liquid's colour|Compare only the object's mass without considering upthrust
