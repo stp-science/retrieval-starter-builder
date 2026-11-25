@@ -1,5 +1,5 @@
 import {LADDER,newRun,remaining,finish,live,mark,bank,makeDeck,shuffle} from './core.mjs';
-import {createShowAudio} from './audio.mjs';
+import {createShowAudio} from './audio.mjs?v=suspense4';
 const $=id=>document.getElementById(id), app=$('app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>n.toLocaleString('en-NZ');
